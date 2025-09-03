@@ -54,5 +54,6 @@ dkms.conf
 
 
 /.vscode
+/USER/.vscode
 
 
