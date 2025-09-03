@@ -59,10 +59,10 @@ void bsp_adapter_delay_register(void)
     struct delay_wrapper wrapper = {
         .idx = 0,
         .user_data = NULL,
-        .init = bsp_adapter_delay_init,
-        .delay_us = bsp_adapter_delay_us,
-        .delay_ms = bsp_adapter_delay_ms,
-        .delay_sec = bsp_adapter_delay_sec,
+        .pf_init = bsp_adapter_delay_init,
+        .pf_delay_us = bsp_adapter_delay_us,
+        .pf_delay_ms = bsp_adapter_delay_ms,
+        .pf_delay_sec = bsp_adapter_delay_sec,
     };
 
     bsp_wrapper_delay_link(&wrapper);

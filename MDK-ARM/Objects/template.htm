@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\template.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\template.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Sep 03 18:32:56 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Sep 03 20:37:59 2025
 <BR><P>
 <H3>Maximum Stack Usage =        224 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -703,6 +703,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[140]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_sflash_init
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_light_init
 <LI><a href="#[13a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_display_init
+<LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_delay_init
 <LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STD_USART1_Init
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_adapter_display_put_pixel
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_adapter_display_init
@@ -759,6 +760,7 @@ Global Symbols
 <LI><a href="#[14f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_touchpad_link
 <LI><a href="#[149]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_display_link
 <LI><a href="#[14b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_light_link
+<LI><a href="#[146]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_delay_link
 </UL>
 
 <P><STRONG><a name="[193]"></a>__aeabi_memcpy8</STRONG> (Thumb, 0 bytes, Stack size 8 bytes, rt_memcpy_w.o(.text), UNUSED)
@@ -776,6 +778,7 @@ Global Symbols
 <LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_sflash_link
 <LI><a href="#[149]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_display_link
 <LI><a href="#[14b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_light_link
+<LI><a href="#[146]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_delay_link
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gt911_scan
 <LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;STD_SPI_DMA_Transmit16Bit
 </UL>
@@ -1412,7 +1415,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[134]"></a>bsp_adapter_delay_register</STRONG> (Thumb, 24 bytes, Stack size 32 bytes, bsp_adapter_delay.o(i.bsp_adapter_delay_register))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = bsp_adapter_delay_register &rArr; __aeabi_memcpy4
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = bsp_adapter_delay_register &rArr; bsp_wrapper_delay_link &rArr; __aeabi_memcpy4
 </UL>
 <BR>[Calls]<UL><LI><a href="#[146]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wrapper_delay_link
 <LI><a href="#[145]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
@@ -1482,12 +1485,22 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_adapter_sflash_init
 </UL>
 
-<P><STRONG><a name="[135]"></a>bsp_wrapper_delay_init</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, bsp_wrapper_delay.o(i.bsp_wrapper_delay_init))
-<BR><BR>[Called By]<UL><LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_init_bsp
+<P><STRONG><a name="[135]"></a>bsp_wrapper_delay_init</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, bsp_wrapper_delay.o(i.bsp_wrapper_delay_init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
+<LI>Call Chain = bsp_wrapper_delay_init &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_init_bsp
 </UL>
 
-<P><STRONG><a name="[146]"></a>bsp_wrapper_delay_link</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, bsp_wrapper_delay.o(i.bsp_wrapper_delay_link))
-<BR><BR>[Called By]<UL><LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_adapter_delay_register
+<P><STRONG><a name="[146]"></a>bsp_wrapper_delay_link</STRONG> (Thumb, 62 bytes, Stack size 16 bytes, bsp_wrapper_delay.o(i.bsp_wrapper_delay_link))
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = bsp_wrapper_delay_link &rArr; __aeabi_memcpy4
+</UL>
+<BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[145]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
+</UL>
+<BR>[Called By]<UL><LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_adapter_delay_register
 </UL>
 
 <P><STRONG><a name="[13b]"></a>bsp_wrapper_display_backlight_on</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, bsp_wrapper_display.o(i.bsp_wrapper_display_backlight_on))
@@ -2126,13 +2139,13 @@ Local Symbols
 <P><STRONG><a name="[94]"></a>delay_init</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, bsp_driver_delay.o(i.delay_init))
 <BR>[Address Reference Count : 1]<UL><LI> bsp_driver_delay.o(i.bsp_driver_delay_link)
 </UL>
-<P><STRONG><a name="[96]"></a>delay_ms</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, bsp_driver_delay.o(i.delay_ms))
+<P><STRONG><a name="[96]"></a>delay_ms</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, bsp_driver_delay.o(i.delay_ms))
 <BR>[Address Reference Count : 1]<UL><LI> bsp_driver_delay.o(i.bsp_driver_delay_link)
 </UL>
-<P><STRONG><a name="[97]"></a>delay_sec</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, bsp_driver_delay.o(i.delay_sec))
+<P><STRONG><a name="[97]"></a>delay_sec</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, bsp_driver_delay.o(i.delay_sec))
 <BR>[Address Reference Count : 1]<UL><LI> bsp_driver_delay.o(i.bsp_driver_delay_link)
 </UL>
-<P><STRONG><a name="[95]"></a>delay_us</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, bsp_driver_delay.o(i.delay_us))
+<P><STRONG><a name="[95]"></a>delay_us</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, bsp_driver_delay.o(i.delay_us))
 <BR>[Address Reference Count : 1]<UL><LI> bsp_driver_delay.o(i.bsp_driver_delay_link)
 </UL>
 <P><STRONG><a name="[a7]"></a>led_init</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, bsp_driver_led.o(i.led_init))
