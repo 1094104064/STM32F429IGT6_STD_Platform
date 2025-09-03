@@ -19,11 +19,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include "user_conf.h"
 /*********************
  *      DEFINES
  *********************/
@@ -35,18 +31,19 @@ extern "C" {
 struct delay_wrapper {
     int8_t idx;
     void * user_data;
+    const char * name;
 
-    int (* init)(struct delay_wrapper * self);
-    void (* delay_us)(struct delay_wrapper * self, uint32_t us);
-    void (* delay_ms)(struct delay_wrapper * self, uint32_t ms);
-    void (* delay_sec)(struct delay_wrapper * self, uint32_t sec);
+    int  (* pf_init)(struct delay_wrapper * self);
+    void (* pf_delay_us)(struct delay_wrapper * self, uint32_t us);
+    void (* pf_delay_ms)(struct delay_wrapper * self, uint32_t ms);
+    void (* pf_delay_sec)(struct delay_wrapper * self, uint32_t sec);
 };
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
 void bsp_wrapper_delay_link(struct delay_wrapper * self);
-void bsp_wrapper_delay_init(void);
+bool bsp_wrapper_delay_init(void);
 void bsp_wrapper_delay_us(uint32_t us);
 void bsp_wrapper_delay_ms(uint32_t ms);
 void bsp_wrapper_delay_sec(uint32_t sec);

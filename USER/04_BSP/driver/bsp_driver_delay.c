@@ -33,7 +33,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void delay_init(struct delay_driver * self);
+static bool delay_init(struct delay_driver * self);
 static void delay_us(struct delay_driver * self, uint32_t us);
 static void delay_ms(struct delay_driver * self, uint32_t ms);
 static void delay_sec(struct delay_driver * self, uint32_t sec);
@@ -51,50 +51,40 @@ void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
     }
 
     self->oper = oper;
-
-    self->init = delay_init;
-    self->delay_us = delay_us;
-    self->delay_ms = delay_ms;
-    self->delay_sec = delay_sec;
+    
+    self->pf_init = delay_init;
+    self->pf_delay_us = delay_us;
+    self->pf_delay_ms = delay_ms;
+    self->pf_delay_sec = delay_sec;
 }
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-static void delay_init(struct delay_driver * self)
+static bool delay_init(struct delay_driver * self)
 {
-    if(self == NULL || self->oper == NULL) {
-        return;
+    if(self->oper->pf_delay_us  == NULL ||
+       self->oper->pf_delay_ms  == NULL ||
+       self->oper->pf_delay_sec == NULL) {
+        return false;
     }
 
-    self->oper->init();
+    return true;
 }
 
 
 static void delay_us(struct delay_driver * self, uint32_t us)
 {
-    if(self == NULL || self->oper == NULL) {
-        return;
-    }
-
-    self->oper->delay_us(us);
+    self->oper->pf_delay_us(us);
 }
 
 static void delay_ms(struct delay_driver * self, uint32_t ms)
 {
-    if(self == NULL || self->oper == NULL) {
-        return;
-    }
-
-    self->oper->delay_ms(ms);
+    self->oper->pf_delay_ms(ms);
 }
 
 static void delay_sec(struct delay_driver * self, uint32_t sec)
 {
-    if(self == NULL || self->oper == NULL) {
-        return;
-    }
-
-    self->oper->delay_sec(sec);
+    self->oper->pf_delay_sec(sec);
 }
 
 /******************************* (END OF FILE) *********************************/
