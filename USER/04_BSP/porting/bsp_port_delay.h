@@ -31,11 +31,6 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-static inline void bsp_port_delay_init(void)
-{
-
-}
-
 
 static inline void bsp_port_delay_us(uint32_t us)
 {
