@@ -33,18 +33,18 @@ extern "C" {
  **********************/
 
 struct delay_oper {
-    void (* delay_us)(uint32_t us);
-    void (* delay_ms)(uint32_t ms);
-    void (* delay_sec)(uint32_t sec);
+    void (* pf_delay_us)(uint32_t us);
+    void (* pf_delay_ms)(uint32_t ms);
+    void (* pf_delay_sec)(uint32_t sec);
 };
-
+    
 struct delay_driver {
     struct delay_oper * oper;
-
-    bool (* init)(struct delay_driver * self);
-    void (* delay_us)(struct delay_driver * self, uint32_t us);
-    void (* delay_ms)(struct delay_driver * self, uint32_t ms);
-    void (* delay_sec)(struct delay_driver * self, uint32_t sec);
+            
+    bool (* pf_init)(struct delay_driver * self);
+    void (* pf_delay_us)(struct delay_driver * self, uint32_t us);
+    void (* pf_delay_ms)(struct delay_driver * self, uint32_t ms);
+    void (* pf_delay_sec)(struct delay_driver * self, uint32_t sec);
 };
 
 /**********************

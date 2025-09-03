@@ -52,19 +52,19 @@ void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
 
     self->oper = oper;
 
-    self->init = delay_init;
-    self->delay_us = delay_us;
-    self->delay_ms = delay_ms;
-    self->delay_sec = delay_sec;
+    self->pf_init = delay_init;
+    self->pf_delay_us = delay_us;
+    self->pf_delay_ms = delay_ms;
+    self->pf_delay_sec = delay_sec;
 }
 /**********************
  *   STATIC FUNCTIONS
  **********************/
 static bool delay_init(struct delay_driver * self)
 {
-    if(self->oper->delay_us == NULL ||
-       self->oper->delay_ms == NULL ||
-       self->oper->delay_sec == NULL) {
+    if(self->oper->pf_delay_us  == NULL ||
+       self->oper->pf_delay_ms  == NULL ||
+       self->oper->pf_delay_sec == NULL) {
         return false;
     }
 
@@ -78,7 +78,7 @@ static void delay_us(struct delay_driver * self, uint32_t us)
         return;
     }
 
-    self->oper->delay_us(us);
+    self->oper->pf_delay_us(us);
 }
 
 static void delay_ms(struct delay_driver * self, uint32_t ms)
@@ -87,7 +87,7 @@ static void delay_ms(struct delay_driver * self, uint32_t ms)
         return;
     }
 
-    self->oper->delay_ms(ms);
+    self->oper->pf_delay_ms(ms);
 }
 
 static void delay_sec(struct delay_driver * self, uint32_t sec)
@@ -96,7 +96,7 @@ static void delay_sec(struct delay_driver * self, uint32_t sec)
         return;
     }
 
-    self->oper->delay_sec(sec);
+    self->oper->pf_delay_sec(sec);
 }
 
 /******************************* (END OF FILE) *********************************/
