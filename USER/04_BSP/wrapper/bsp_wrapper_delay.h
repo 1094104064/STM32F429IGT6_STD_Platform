@@ -29,13 +29,13 @@ extern "C" {
  **********************/
 
 struct delay_wrapper {
-    int8_t idx;
-    void * user_data;
-    const char * name;
+    int8_t          idx;
+    void *          user_data;
+    const char *    name;
 
-    int  (* pf_init)(struct delay_wrapper * self);
-    void (* pf_delay_us)(struct delay_wrapper * self, uint32_t us);
-    void (* pf_delay_ms)(struct delay_wrapper * self, uint32_t ms);
+    int  (* pf_init)     (struct delay_wrapper * self);
+    void (* pf_delay_us) (struct delay_wrapper * self, uint32_t us);
+    void (* pf_delay_ms) (struct delay_wrapper * self, uint32_t ms);
     void (* pf_delay_sec)(struct delay_wrapper * self, uint32_t sec);
 };
 
