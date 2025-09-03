@@ -36,7 +36,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void bsp_adapter_delay_init(struct delay_wrapper * self);
+static int bsp_adapter_delay_init(struct delay_wrapper * self);
 static void bsp_adapter_delay_us(struct delay_wrapper * self, uint32_t us);
 static void bsp_adapter_delay_ms(struct delay_wrapper * self, uint32_t ms);
 static void bsp_adapter_delay_sec(struct delay_wrapper * self, uint32_t sec);
@@ -71,11 +71,13 @@ void bsp_adapter_delay_register(void)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-static void bsp_adapter_delay_init(struct delay_wrapper * self)
+static int bsp_adapter_delay_init(struct delay_wrapper * self)
 {
     bsp_driver_delay_link(&delay_drv, &delay_ops);
 
     delay_drv.init(&delay_drv);
+
+    return 0;
 }
 
 static void bsp_adapter_delay_us(struct delay_wrapper * self, uint32_t us)

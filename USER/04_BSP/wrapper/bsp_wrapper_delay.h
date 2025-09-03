@@ -36,7 +36,7 @@ struct delay_wrapper {
     int8_t idx;
     void * user_data;
 
-    void (* init)(struct delay_wrapper * self);
+    int (* init)(struct delay_wrapper * self);
     void (* delay_us)(struct delay_wrapper * self, uint32_t us);
     void (* delay_ms)(struct delay_wrapper * self, uint32_t ms);
     void (* delay_sec)(struct delay_wrapper * self, uint32_t sec);
