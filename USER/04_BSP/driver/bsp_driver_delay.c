@@ -33,7 +33,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void delay_init(struct delay_driver * self);
+static bool delay_init(struct delay_driver * self);
 static void delay_us(struct delay_driver * self, uint32_t us);
 static void delay_ms(struct delay_driver * self, uint32_t ms);
 static void delay_sec(struct delay_driver * self, uint32_t sec);
@@ -60,13 +60,15 @@ void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-static void delay_init(struct delay_driver * self)
+static bool delay_init(struct delay_driver * self)
 {
-    if(self == NULL || self->oper == NULL) {
-        return;
+    if(self->oper->delay_us == NULL ||
+       self->oper->delay_ms == NULL ||
+       self->oper->delay_sec == NULL) {
+        return false;
     }
 
-    self->oper->init();
+    return true;
 }
 
 

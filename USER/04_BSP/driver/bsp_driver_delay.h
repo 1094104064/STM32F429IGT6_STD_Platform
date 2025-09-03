@@ -33,7 +33,6 @@ extern "C" {
  **********************/
 
 struct delay_oper {
-    void (* init)(void);
     void (* delay_us)(uint32_t us);
     void (* delay_ms)(uint32_t ms);
     void (* delay_sec)(uint32_t sec);
@@ -42,7 +41,7 @@ struct delay_oper {
 struct delay_driver {
     struct delay_oper * oper;
 
-    void (* init)(struct delay_driver * self);
+    bool (* init)(struct delay_driver * self);
     void (* delay_us)(struct delay_driver * self, uint32_t us);
     void (* delay_ms)(struct delay_driver * self, uint32_t ms);
     void (* delay_sec)(struct delay_driver * self, uint32_t sec);
