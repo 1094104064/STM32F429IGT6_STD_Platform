@@ -54,6 +54,5 @@ dkms.conf
 
 
 /.vscode
-/USER/.vscode
 
-
+#/MDK-ARM/.vscode
