@@ -3606,9 +3606,9 @@
       <ActiveTab>0</ActiveTab>
       <Doc>
         <Name>..\USER\04_BSP\wrapper\bsp_wrapper_light.c</Name>
-        <ColumnNumber>21</ColumnNumber>
+        <ColumnNumber>0</ColumnNumber>
         <TopLine>22</TopLine>
-        <CurrentLine>43</CurrentLine>
+        <CurrentLine>36</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

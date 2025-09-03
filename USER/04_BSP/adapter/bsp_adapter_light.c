@@ -92,20 +92,34 @@ void bsp_adapter_light_register(void)
 static int bsp_adapter_light_init(struct light_wrapper * self)
 {
     if(self->name == blue_led) {
+
         bsp_driver_led_link(&blue_led_driver, &blue_led_oper);
-        if (blue_led_driver.pf_init(&blue_led_driver) == false) {
+
+        if(blue_led_driver.pf_init == NULL || blue_led_driver.pf_on == NULL ||
+           blue_led_driver.pf_off  == NULL) {
             return 1;
+        }
+
+        if (blue_led_driver.pf_init(&blue_led_driver) == false) {
+            return 2;
         }
     }
     else if(self->name == yellow_led) {
+
         bsp_driver_led_link(&yellow_led_driver, &yellow_led_oper);
-        if (yellow_led_driver.pf_init(&yellow_led_driver) == false) {
+
+        if(yellow_led_driver.pf_init == NULL || yellow_led_driver.pf_on == NULL ||
+           yellow_led_driver.pf_off  == NULL) {
             return 1;
+        }
+
+        if (yellow_led_driver.pf_init(&yellow_led_driver) == false) {
+            return 2;
         }
     }
     else {
         pr_error("Unknown light name");
-        return 2;
+        return 3;
     }
 
     return 0;
