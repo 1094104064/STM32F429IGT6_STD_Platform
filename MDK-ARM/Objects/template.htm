@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\template.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\template.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Sep 03 20:37:59 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Sep 03 20:42:15 2025
 <BR><P>
 <H3>Maximum Stack Usage =        224 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -967,8 +967,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[150]"></a>GPIO_ResetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f4xx_gpio.o(i.GPIO_ResetBits))
-<BR><BR>[Called By]<UL><LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_st7735_rst_low
-<LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_st7735_dc_low
+<BR><BR>[Called By]<UL><LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_st7735_dc_low
 <LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_st7735_cs_low
 <LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_st7735_backlight_off
 <LI><a href="#[d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_lcd_backlight_off
@@ -984,6 +983,7 @@ Global Symbols
 <LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_w25q64_cs_low
 <LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_gt911_rst_low
 <LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_gt911_int_low
+<LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_port_st7735_rst_low
 </UL>
 
 <P><STRONG><a name="[112]"></a>GPIO_SetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f4xx_gpio.o(i.GPIO_SetBits))
@@ -1485,8 +1485,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_adapter_sflash_init
 </UL>
 
-<P><STRONG><a name="[135]"></a>bsp_wrapper_delay_init</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, bsp_wrapper_delay.o(i.bsp_wrapper_delay_init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
+<P><STRONG><a name="[135]"></a>bsp_wrapper_delay_init</STRONG> (Thumb, 88 bytes, Stack size 16 bytes, bsp_wrapper_delay.o(i.bsp_wrapper_delay_init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 160 + Unknown Stack Size
 <LI>Call Chain = bsp_wrapper_delay_init &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf

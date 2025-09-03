@@ -64,6 +64,7 @@ void bsp_wrapper_delay_link(struct delay_wrapper * self)
 
 bool bsp_wrapper_delay_init(void)
 {
+    int ret = 0;
     struct delay_wrapper * self = &delay_wrappers[current_delay_idx];
 
     if( self->pf_init       == NULL || self->pf_delay_us    == NULL ||
@@ -71,9 +72,11 @@ bool bsp_wrapper_delay_init(void)
         pr_fatal("%s : there is a missing function pointer", self->name);
         return false;
     }
-        
-    if(self->pf_init(self) != 0) {
-        pr_error("%s : failed to initialize", self->name);
+
+    ret = self->pf_init(self);
+
+    if(ret != 0) {
+        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
         return false;
     }
 
