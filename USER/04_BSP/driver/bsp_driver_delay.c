@@ -52,10 +52,10 @@ void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
 
     self->oper = oper;
     
-    self->pf_init = delay_init;
-    self->pf_delay_us = delay_us;
-    self->pf_delay_ms = delay_ms;
-    self->pf_delay_sec = delay_sec;
+    self->pf_init       = delay_init;
+    self->pf_delay_us   = delay_us;
+    self->pf_delay_ms   = delay_ms;
+    self->pf_delay_sec  = delay_sec;
 }
 /**********************
  *   STATIC FUNCTIONS

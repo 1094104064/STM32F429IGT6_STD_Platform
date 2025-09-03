@@ -38,17 +38,17 @@
  *  STATIC VARIABLES
  **********************/
 static struct light_wrapper light_wrappers[LIGHT_MAX_NUM];
-static int8_t current_light_idx = 0;
+static uint8_t current_light_idx = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 void bsp_wrapper_light_link(struct light_wrapper * self)
 {
-    int8_t idx = 0;
+    uint8_t idx = 0;
 
     current_light_idx++;
 
-    if((0 <= current_light_idx) && (current_light_idx < LIGHT_MAX_NUM)) {
+    if(current_light_idx < LIGHT_MAX_NUM) {
         idx = current_light_idx;
     }
     else {
@@ -67,19 +67,20 @@ bool bsp_wrapper_light_init(void)
     int ret = 0;
     struct light_wrapper * self = &light_wrappers[current_light_idx];
 
-    if(self->pf_init) {
-        ret = self->pf_init(self);
-        if(ret != 0) {
-            pr_error("Light wrapper init failed: %s, error: %d", self->name, ret);
-            return false;
-        }
-        else {
-            pr_info("Light wrapper init succeeded: %s", self->name);
-        }
+    if( self->pf_init == NULL || self->pf_on == NULL ||
+        self->pf_off == NULL) {
+        pr_fatal("%s : there is a missing function pointer", self->name);
+        return false;
     }
-    else {
-        pr_error("Light wrapper init function not defined: %s", self->name);
+
+    ret = self->pf_init(self);
+        
+    if(ret != 0) {
+        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
+        return false;
     }
+
+    pr_info("%s : initialized successfully", self->name);
 
     return true;
 }
@@ -105,18 +106,14 @@ void bsp_wrapper_light_on(void)
 {
     struct light_wrapper * self = &light_wrappers[current_light_idx];
 
-    if(self->pf_on) {
-        self->pf_on(self);
-    }
+    self->pf_on(self);
 }
 
 void bsp_wrapper_light_off(void)
 {
     struct light_wrapper * self = &light_wrappers[current_light_idx];
 
-    if(self->pf_off) {
-        self->pf_off(self);
-    }
+    self->pf_off(self);
 }
 
 /**********************

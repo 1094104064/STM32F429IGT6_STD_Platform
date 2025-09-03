@@ -51,9 +51,9 @@ void bsp_driver_led_link(struct led_driver * self, struct led_oper * oper)
 
     self->oper = oper;
 
-    self->pf_init = led_init;
-    self->pf_on = led_on;
-    self->pf_off = led_off;
+    self->pf_init   = led_init;
+    self->pf_on     = led_on;
+    self->pf_off    = led_off;
 }
 /**********************
  *   STATIC FUNCTIONS
