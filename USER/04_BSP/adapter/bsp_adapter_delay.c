@@ -74,6 +74,11 @@ static int bsp_adapter_delay_init(struct delay_wrapper * self)
 {
     bsp_driver_delay_link(&delay_drv, &delay_ops);
 
+    if( delay_drv.pf_init       == NULL || delay_drv.pf_delay_us    == NULL ||
+        delay_drv.pf_delay_ms   == NULL || delay_drv.pf_delay_sec   == NULL) {
+        return 1;
+    }
+
     if(delay_drv.pf_init(&delay_drv) == false) {
         return 2;
     }
