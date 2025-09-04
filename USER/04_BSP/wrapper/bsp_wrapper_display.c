@@ -38,18 +38,18 @@
  *  STATIC VARIABLES
  **********************/
 static struct display_wrapper display_wrappers[DISPLAY_MAX_NUM];
-static int8_t current_display_idx = 0;
+static uint8_t current_display_idx = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 
 void bsp_wrapper_display_link(struct display_wrapper * self)
 {
-    int8_t idx = 0;
+    uint8_t idx = 0;
 
     current_display_idx++;
-
-    if((0 <= current_display_idx) && (current_display_idx < DISPLAY_MAX_NUM)) {
+ 
+    if(current_display_idx < DISPLAY_MAX_NUM) {
         idx = current_display_idx;
     }
     else {
@@ -67,53 +67,53 @@ bool bsp_wrapper_display_init(void)
 {
     int ret = 0;
     struct display_wrapper * self = &display_wrappers[current_display_idx];
-    if(self->pf_init) {
-        ret = self->pf_init(self);
-        if (ret != 0) {
-            pr_error("Display initialization failed, error: %d", ret);
-        }
-        else {
-            pr_info("Display initialized successfully, index: %d, name: %s", self->idx, self->name);
-        }
-    }
-    else {
-        pr_fatal("Current display object is not initialized");
+
+    if( self->pf_init           == NULL || self->pf_backlight_on    == NULL ||
+        self->pf_backlight_off  == NULL || self->pf_put_pixel       == NULL ||
+        self->pf_fill_rect      == NULL || self->pf_fill_screen     == NULL ||
+        self->pf_copy_buffer    == NULL ) {
+        pr_fatal("%s : there is a missing function pointer", self->name);
         return false;
     }
 
-    return (ret == 0);
+    ret = self->pf_init(self);
+
+    if(ret != 0) {
+        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
+        return false;
+    }
+
+    pr_info("%s : initialized successfully", self->name);
+
+    return true;
 }
 
 void bsp_wrapper_display_backlight_on(void)
 {
     struct display_wrapper * self = &display_wrappers[current_display_idx];
-    if (self->pf_backlight_on) {
-        self->pf_backlight_on(self);
-    }
+
+    self->pf_backlight_on(self);
 }
 
 void bsp_wrapper_display_backlight_off(void)
 {
     struct display_wrapper * self = &display_wrappers[current_display_idx];
-    if (self->pf_backlight_off) {
-        self->pf_backlight_off(self);
-    }
+
+    self->pf_backlight_off(self);
 }
 
 void bsp_wrapper_display_draw_pixel(uint16_t x, uint16_t y, uint32_t color)
 {
     struct display_wrapper * self = &display_wrappers[current_display_idx];
-    if (self->pf_put_pixel) {
-        self->pf_put_pixel(self, x, y, color);
-    }
+
+    self->pf_put_pixel(self, x, y, color);
 }
 
 void bsp_wrapper_display_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
     struct display_wrapper * self = &display_wrappers[current_display_idx];
-    if (self->pf_fill_rect) {
-        self->pf_fill_rect(self, x, y, width, height, color);
-    }
+
+    self->pf_fill_rect(self, x, y, width, height, color);
 }
 
 void bsp_wrapper_display_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t color)
@@ -296,17 +296,15 @@ void bsp_wrapper_display_draw_ellipse(int32_t x, int32_t y, int32_t r1, int32_t 
 void bsp_wrapper_display_fill_screen(uint32_t color)
 {
     struct display_wrapper * self = &display_wrappers[current_display_idx];
-    if (self->pf_fill_screen) {
-        self->pf_fill_screen(self, color);
-    }
+
+    self->pf_fill_screen(self, color);
 }
 
 void bsp_wrapper_display_draw_image(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * image_data)
 {
     struct display_wrapper * self = &display_wrappers[current_display_idx];
 
-    if(self->pf_copy_buffer)
-        self->pf_copy_buffer(self, x, y, width, height, image_data);
+    self->pf_copy_buffer(self, x, y, width, height, image_data);
 }
 
 void bsp_wrapper_display_draw_grad_rgb565(uint16_t grid_size)

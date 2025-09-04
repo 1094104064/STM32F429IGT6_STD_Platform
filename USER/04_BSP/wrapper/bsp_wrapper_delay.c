@@ -59,7 +59,7 @@ void bsp_wrapper_delay_link(struct delay_wrapper * self)
     memset(&delay_wrappers[idx], 0, sizeof(struct delay_wrapper));
 
     delay_wrappers[idx] = *self;
-    delay_wrappers[idx].idx = self->idx;
+    delay_wrappers[idx].idx = idx;
 }
 
 bool bsp_wrapper_delay_init(void)
