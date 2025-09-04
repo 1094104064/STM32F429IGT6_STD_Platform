@@ -33,40 +33,40 @@ extern "C" {
  **********************/
 
 struct st7735_oper_info {
-    uint16_t width;
-    uint16_t height;
-    uint8_t rotated;
+    uint16_t    width;
+    uint16_t    height;
+    uint8_t     rotated;
 };
 
 struct st7735_oper_spi {
-    void (* pf_transmit_8bit)(uint8_t data);
-    void (* pf_transmit_16bit)(uint16_t data, uint32_t size);
-    void (* pf_transmit_dma_8bit)(uint8_t * buf, uint32_t size);
-    void (* pf_transmit_dma_16bit)(uint16_t * buf, uint32_t size);
+    void (* pf_transmit_8bit)       (uint8_t data);
+    void (* pf_transmit_16bit)      (uint16_t data, uint32_t size);
+    void (* pf_transmit_dma_8bit)   (uint8_t * buf, uint32_t size);
+    void (* pf_transmit_dma_16bit)  (uint16_t * buf, uint32_t size);
 };
 
 
 struct st7735_oper_ctrl {
-    void (* pf_cs_high)(void);
-    void (* pf_cs_low)(void);
-    void (* pf_dc_high)(void);
-    void (* pf_dc_low)(void);
+    void (* pf_cs_high) (void);
+    void (* pf_cs_low)  (void);
+    void (* pf_dc_high) (void);
+    void (* pf_dc_low)  (void);
     void (* pf_rst_high)(void);
-    void (* pf_rst_low)(void);
+    void (* pf_rst_low) (void);
 };
 
 struct st7735_oper_backlight {
-    void (* pf_on)(void);
-    void (* pf_off)(void);
-    void (* pf_set)(uint8_t brightness);
+    void (* pf_on)  (void);
+    void (* pf_off) (void);
+    void (* pf_set) (uint8_t brightness);
 };
 
 
 struct st7735_oper {
-    struct st7735_oper_info * oper_info;
-    struct st7735_oper_spi *  oper_spi;
-    struct st7735_oper_ctrl * oper_ctrl;
-    struct st7735_oper_backlight * oper_backlight;
+    struct st7735_oper_info *       oper_info;
+    struct st7735_oper_spi *        oper_spi;
+    struct st7735_oper_ctrl *       oper_ctrl;
+    struct st7735_oper_backlight *  oper_backlight;
 
     void (* pf_delay_ms)(uint32_t ms);
 };
@@ -75,19 +75,19 @@ struct st7735_driver {
 
     struct st7735_oper * oper;
 
-    void (* pf_write_data)(struct st7735_driver * self, uint8_t byte);
-    void (* pf_write_command)(struct st7735_driver * self, uint8_t cmd);
-    bool (* pf_init)(struct st7735_driver * self);
-    void (* pf_set_cursor)(struct st7735_driver * self, uint16_t x, uint16_t y);
-    void (* pf_set_window)(struct st7735_driver * self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-    void (* pf_put_pixel)(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t color);
-    void (* pf_fill_rect)(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
-    void (* pf_fill_screen)(struct st7735_driver * self, uint16_t color);
-    void (* pf_copy_buffer)(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data);
+    void (* pf_write_data)      (struct st7735_driver * self, uint8_t byte);
+    void (* pf_write_command)   (struct st7735_driver * self, uint8_t cmd);
+    bool (* pf_init)            (struct st7735_driver * self);
+    void (* pf_set_cursor)      (struct st7735_driver * self, uint16_t x, uint16_t y);
+    void (* pf_set_window)      (struct st7735_driver * self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    void (* pf_put_pixel)       (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t color);
+    void (* pf_fill_rect)       (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+    void (* pf_fill_screen)     (struct st7735_driver * self, uint16_t color);
+    void (* pf_copy_buffer)     (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data);
 
-    void (* pf_backlight_on)(struct st7735_driver * self);
-    void (* pf_backlight_off)(struct st7735_driver * self);
-    void (* pf_backlight_set)(struct st7735_driver * self, uint8_t brightness);
+    void (* pf_backlight_on)    (struct st7735_driver * self);
+    void (* pf_backlight_off)   (struct st7735_driver * self);
+    void (* pf_backlight_set)   (struct st7735_driver * self, uint8_t brightness);
 };
 
 /**********************
