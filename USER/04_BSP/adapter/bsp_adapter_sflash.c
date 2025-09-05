@@ -59,12 +59,15 @@ static struct w25q64_oper w25q64_ops = {
 void bsp_adapter_sflash_register(void)
 {
     struct sflash_wrapper w25q64_wrapper = {
-        .pf_init = bsp_adapter_sflash_init,
-        .pf_get_device_id = bsp_adapter_sflash_get_device_id,
-        .pf_read = bsp_adapter_sflash_read,
-        .pf_write = bsp_adapter_sflash_write,
-        .pf_erase = bsp_adapter_sflash_erase,
-        .pf_erase_chip = bsp_adapter_sflash_erase_chip,
+
+        .user_data          = NULL,
+
+        .pf_init            = bsp_adapter_sflash_init,
+        .pf_get_device_id   = bsp_adapter_sflash_get_device_id,
+        .pf_read            = bsp_adapter_sflash_read,
+        .pf_write           = bsp_adapter_sflash_write,
+        .pf_erase           = bsp_adapter_sflash_erase,
+        .pf_erase_chip      = bsp_adapter_sflash_erase_chip,
     };
 
     bsp_wrapper_sflash_link(&w25q64_wrapper);
@@ -76,7 +79,6 @@ void bsp_adapter_sflash_register(void)
 
 static int bsp_adapter_sflash_init(struct sflash_wrapper * self)
 {
-
     bsp_driver_w25q64_link(&w25q64_drv, &w25q64_ops);
 
     if(w25q64_drv.pf_init               == NULL || w25q64_drv.pf_read_id            == NULL || 
@@ -90,8 +92,6 @@ static int bsp_adapter_sflash_init(struct sflash_wrapper * self)
     if(w25q64_drv.pf_init(&w25q64_drv) == false) {
         return 2;
     }
-
-
 
     return 0;
 }

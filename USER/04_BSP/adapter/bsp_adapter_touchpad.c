@@ -66,7 +66,6 @@ static struct gt911_oper gt911_ops = {
 void bsp_adapter_touchpad_register(void)
 {
     struct touchpad_wrapper wrapper = {
-        .idx        = 0,
         .user_data  = NULL,
 
         .pf_init               = bsp_adapter_touchpad_init,
