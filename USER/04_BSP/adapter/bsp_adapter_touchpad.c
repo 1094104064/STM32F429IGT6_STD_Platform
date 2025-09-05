@@ -73,7 +73,7 @@ void bsp_adapter_touchpad_register(void)
         .pf_reset              = bsp_adapter_touchpad_reset,
         .pf_is_pressed         = bsp_adapter_touchpad_is_pressed,
         .pf_scan               = bsp_adapter_touchpad_scan,
-        .pf_get_coordinates     = bsp_adapter_touchpad_get_coordinates,
+        .pf_get_coordinates    = bsp_adapter_touchpad_get_coordinates,
     };
 
     bsp_wrapper_touchpad_link(&wrapper);
