@@ -27,7 +27,7 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-#define PLATFORM_VERSION "1.0.2"
+#define PLATFORM_VERSION "1.0.3"
 /**********************
  *      TYPEDEFS
  **********************/
