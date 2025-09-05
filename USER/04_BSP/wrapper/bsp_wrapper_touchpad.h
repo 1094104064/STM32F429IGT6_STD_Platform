@@ -19,11 +19,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include "user_conf.h"
 /*********************
  *      DEFINES
  *********************/
@@ -33,14 +29,15 @@ extern "C" {
  **********************/
  
 struct touchpad_wrapper {
-    int8_t idx;
-    void * user_data;
+    int8_t          idx;
+    void *          user_data;
+    const char *    name;
 
-    void (* init)(struct touchpad_wrapper * self);
-    void (* reset)(struct touchpad_wrapper * self);
-    void (* scan)(struct touchpad_wrapper * self);
-    uint8_t (* is_pressed)(struct touchpad_wrapper * self);
-    void (* get_coordinates)(struct touchpad_wrapper * self, uint16_t * x, uint16_t * y, uint8_t num);
+    int (* pf_init)            (struct touchpad_wrapper * self);
+    void (* pf_reset)           (struct touchpad_wrapper * self);
+    void (* pf_scan)            (struct touchpad_wrapper * self);
+    uint8_t (* pf_is_pressed)   (struct touchpad_wrapper * self);
+    void (* pf_get_coordinates) (struct touchpad_wrapper * self, uint16_t * x, uint16_t * y, uint8_t num);
 };
 
 
@@ -48,7 +45,7 @@ struct touchpad_wrapper {
 *  GLOBAL PROTOTYPES
  **********************/
 void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self);
-void bsp_wrapper_touchpad_init(void);
+bool bsp_wrapper_touchpad_init(void);
 void bsp_wrapper_touchpad_reset(void);
 void bsp_wrapper_touchpad_scan(void);
 uint8_t bsp_wrapper_touchpad_is_pressed(void);

@@ -64,25 +64,25 @@ static struct led_oper    yellow_led_oper = {
 void bsp_adapter_light_register(void)
 {
     struct light_wrapper blue_led_wrapper = {
-        .idx = 0,
-        .user_data = NULL,
-        .name = blue_led,
+        .idx        = 0,
+        .user_data  = NULL,
+        .name       = blue_led,
 
-        .pf_init = bsp_adapter_light_init,
-        .pf_on = bsp_adapter_light_on,
-        .pf_off = bsp_adapter_light_off,
+        .pf_init    = bsp_adapter_light_init,
+        .pf_on      = bsp_adapter_light_on,
+        .pf_off     = bsp_adapter_light_off,
     };
 
     bsp_wrapper_light_link(&blue_led_wrapper);
 
     struct light_wrapper yellow_led_wrapper = {
         .idx = 1,
-        .user_data = NULL,
-        .name = yellow_led,
+        .user_data  = NULL,
+        .name       = yellow_led,
 
-        .pf_init = bsp_adapter_light_init,
-        .pf_on = bsp_adapter_light_on,
-        .pf_off = bsp_adapter_light_off,
+        .pf_init    = bsp_adapter_light_init,
+        .pf_on      = bsp_adapter_light_on,
+        .pf_off     = bsp_adapter_light_off,
     };
     bsp_wrapper_light_link(&yellow_led_wrapper);
 }

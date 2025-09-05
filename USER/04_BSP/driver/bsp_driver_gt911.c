@@ -38,7 +38,7 @@ static volatile struct gt911_information gt911_info;
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void gt911_init(struct gt911_driver * self);
+static bool gt911_init(struct gt911_driver * self);
 static void gt911_reset(struct gt911_driver * self);
 static void gt911_read_id(struct gt911_driver * self, uint8_t * id);
 static void gt911_read_resolution(struct gt911_driver * self, uint16_t * width, uint16_t * height);
@@ -62,25 +62,40 @@ void bsp_driver_gt911_link( struct gt911_driver * self,
         return;
     }
 
-    self->oper = oper;
-    self->oper->oper_i2c = oper_i2c;
-    self->oper->oper_ctrl = oper_ctrl;
+    self->oper                      = oper;
+    self->oper->oper_i2c            = oper_i2c;
+    self->oper->oper_ctrl           = oper_ctrl;
 
-    self->pf_init = gt911_init;
-    self->pf_reset = gt911_reset;
-    self->pf_read_id = gt911_read_id;
-    self->pf_read_resolution = gt911_read_resolution;
-    self->pf_read_firmware_version = gt911_read_firmware_version;
-    self->pf_scan = gt911_scan;
-    self->pf_is_pressed = gt911_is_pressed;
-    self->pf_get_coordinates = gt911_get_coordinates;
+    self->pf_init                   = gt911_init;
+    self->pf_reset                  = gt911_reset;
+    self->pf_read_id                = gt911_read_id;
+    self->pf_read_resolution        = gt911_read_resolution;
+    self->pf_read_firmware_version  = gt911_read_firmware_version;
+    self->pf_scan                   = gt911_scan;
+    self->pf_is_pressed             = gt911_is_pressed;
+    self->pf_get_coordinates        = gt911_get_coordinates;
 }
 
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-static void gt911_init(struct gt911_driver * self)
+static bool gt911_init(struct gt911_driver * self)
 {
+    if( self->oper->pf_delay_ms             == NULL ||
+
+        self->oper->oper_ctrl->pf_int_high  == NULL || 
+        self->oper->oper_ctrl->pf_int_low   == NULL || 
+        self->oper->oper_ctrl->pf_int_in    == NULL ||
+        self->oper->oper_ctrl->pf_int_out   == NULL ||
+        self->oper->oper_ctrl->pf_rst_high  == NULL || 
+        self->oper->oper_ctrl->pf_rst_low   == NULL ||
+
+        self->oper->oper_i2c->pf_read_reg   == NULL ||
+        self->oper->oper_i2c->pf_write_reg  == NULL) {
+
+        return false;
+    }
+
     uint8_t info[16] = {0};
 
     gt911_reset(self);
@@ -88,12 +103,11 @@ static void gt911_init(struct gt911_driver * self)
     self->oper->oper_i2c->pf_read_reg(GT911_DEV_ADD, GT911_ID_REG, info, 11);
 
     if(info[0] == '9') {
-        pr_info("Touchpad ID: GT%.4s", info);
+        return true;
     }
     else {
-        pr_error("Touchpad ID: Unknown");
+        return false;
     }
-    
 }
 
 
@@ -150,7 +164,6 @@ static void gt911_scan(struct gt911_driver * self)
             uint8_t * coord = &touch_data[2 + i * 8];
             gt911_info.x[i] = (coord[1] << 8) | coord[0];
             gt911_info.y[i] = (coord[3] << 8) | coord[2];
-            pr_info("x[%d] = %d, y[%d]= %d", i, gt911_info.x[i], i, gt911_info.y[i]);
         }
 
         for(i = gt911_info.touch_num; i < GT911_TOUCH_MAX; i++) {

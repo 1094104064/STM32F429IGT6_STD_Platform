@@ -79,6 +79,12 @@ void bsp_driver_w25q64_link(struct w25q64_driver * self, struct w25q64_oper * op
 
 static bool w25q64_init(struct w25q64_driver * self)
 {
+    if( self->oper->pf_spi_read_write   == NULL ||
+        self->oper->pf_spi_cs_high      == NULL ||
+        self->oper->pf_spi_cs_low       == NULL) {
+        return false;
+    }
+
     return true;
 }
 
