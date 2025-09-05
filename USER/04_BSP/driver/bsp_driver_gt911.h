@@ -52,7 +52,7 @@ struct gt911_oper {
 struct gt911_driver {
     struct gt911_oper * oper;
 
-    void (* pf_init)(struct gt911_driver * self);
+    bool (* pf_init)(struct gt911_driver * self);
     void (* pf_reset)(struct gt911_driver * self);
     void (* pf_read_id)(struct gt911_driver * self, uint8_t * id);
     void (* pf_read_resolution)(struct gt911_driver * self, uint16_t * width, uint16_t * height);
