@@ -57,13 +57,13 @@ void bsp_driver_lcd_link(struct lcd_driver * drv, struct lcd_oper * oper, const 
     drv->panel = panel;
     drv->layer = layer;
 
-    drv->pf_init = lcd_layer_config;
-    drv->pf_backlight_on = lcd_backlight_on;
-    drv->pf_backlight_off = lcd_backlight_off;
-    drv->pf_put_pixel = lcd_put_pixel;
-    drv->pf_fill_rect = lcd_fill_rect;
-    drv->pf_fill_screen = lcd_fill_screen;
-    drv->pf_copy_buffer = lcd_copy_buffer;
+    drv->pf_init            = lcd_layer_config;
+    drv->pf_backlight_on    = lcd_backlight_on;
+    drv->pf_backlight_off   = lcd_backlight_off;
+    drv->pf_put_pixel       = lcd_put_pixel;
+    drv->pf_fill_rect       = lcd_fill_rect;
+    drv->pf_fill_screen     = lcd_fill_screen;
+    drv->pf_copy_buffer     = lcd_copy_buffer;
 }
 /**********************
  *   STATIC FUNCTIONS
@@ -133,7 +133,7 @@ static void lcd_put_pixel(struct lcd_driver * self, uint16_t x, uint16_t y, uint
         *(volatile uint16_t*)(self->layer->start_address + 2 * pixel_pos ) = color;
     }
     else {
-        pr_warn("Unsupported pixel size");
+
     }
 }
 

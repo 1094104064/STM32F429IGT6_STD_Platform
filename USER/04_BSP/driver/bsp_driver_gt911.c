@@ -164,7 +164,6 @@ static void gt911_scan(struct gt911_driver * self)
             uint8_t * coord = &touch_data[2 + i * 8];
             gt911_info.x[i] = (coord[1] << 8) | coord[0];
             gt911_info.y[i] = (coord[3] << 8) | coord[2];
-            pr_info("x[%d] = %d, y[%d]= %d", i, gt911_info.x[i], i, gt911_info.y[i]);
         }
 
         for(i = gt911_info.touch_num; i < GT911_TOUCH_MAX; i++) {
