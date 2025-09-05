@@ -36,7 +36,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void bsp_adapter_touchpad_init(struct touchpad_wrapper * self);
+static int bsp_adapter_touchpad_init(struct touchpad_wrapper * self);
 static void bsp_adapter_touchpad_reset(struct touchpad_wrapper * self);
 static void bsp_adapter_touchpad_scan(struct touchpad_wrapper * self);
 static uint8_t bsp_adapter_touchpad_is_pressed(struct touchpad_wrapper * self);
@@ -69,11 +69,11 @@ void bsp_adapter_touchpad_register(void)
         .idx = 0,
         .user_data = NULL,
 
-        .init = bsp_adapter_touchpad_init,
-        .reset = bsp_adapter_touchpad_reset,
-        .is_pressed = bsp_adapter_touchpad_is_pressed,
-        .scan = bsp_adapter_touchpad_scan,
-        .get_coordinates = bsp_adapter_touchpad_get_coordinates,
+        .pf_init = bsp_adapter_touchpad_init,
+        .pf_reset = bsp_adapter_touchpad_reset,
+        .pf_is_pressed = bsp_adapter_touchpad_is_pressed,
+        .pf_scan = bsp_adapter_touchpad_scan,
+        .pf_get_coordinates = bsp_adapter_touchpad_get_coordinates,
     };
 
     bsp_wrapper_touchpad_link(&wrapper);
@@ -84,11 +84,13 @@ void bsp_adapter_touchpad_register(void)
  *   STATIC FUNCTIONS
  **********************/
 
-static void bsp_adapter_touchpad_init(struct touchpad_wrapper * self)
+static int bsp_adapter_touchpad_init(struct touchpad_wrapper * self)
 {
     bsp_driver_gt911_link(&gt911_drv, &gt911_ops, &gt911_i2c, &gt911_ctrl);
 
     gt911_drv.pf_init(&gt911_drv);
+
+    return 0;
 }
 
 
