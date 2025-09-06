@@ -19,7 +19,6 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "user_conf.h"
 #include "gpio.h"
 /*********************
  *      DEFINES
@@ -45,8 +44,8 @@ uint8_t msp_emul_i2c_read_byte(struct i2c_gpio * self);
 uint8_t msp_emul_i2c_wait_ack(struct i2c_gpio * self);
 void msp_emul_i2c_generate_ack(struct i2c_gpio * self);
 void msp_emul_i2c_generate_nack(struct i2c_gpio * self);
-void msp_emul_i2c_write(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * src, uint16_t len);
-void msp_emul_i2c_read(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * dst, uint16_t len);
+int msp_emul_i2c_write(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * src, uint16_t len);
+int msp_emul_i2c_read(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * dst, uint16_t len);
 /**********************
  *      MACROS
  **********************/

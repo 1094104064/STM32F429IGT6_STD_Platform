@@ -20,6 +20,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "msp_emul_i2c.h"
+#include "user_conf.h"
 /*********************
  *      DEFINES
  *********************/
@@ -55,13 +56,13 @@ void msp_cluster_i2c_read(uint8_t cluster, uint8_t dev_addr, uint8_t reg_addr, u
 
 
 
-#define GT911_I2C_START()         msp_cluster_i2c_start(I2C_GT911)
-#define GT911_I2C_STOP()          msp_cluster_i2c_stop(I2C_GT911)
-#define GT911_I2C_WRITE_BYTE(data)    msp_cluster_i2c_write_byte(I2C_GT911, data)
-#define GT911_I2C_READ_BYTE()     msp_cluster_i2c_read_byte(I2C_GT911)
-#define GT911_I2C_WAIT_ACK()      msp_cluster_i2c_wait_ack(I2C_GT911)
-#define GT911_I2C_ACK()           msp_cluster_i2c_generate_ack(I2C_GT911)
-#define GT911_I2C_NACK()         msp_cluster_i2c_generate_nack(I2C_GT911)
+#define GT911_I2C_START()               msp_cluster_i2c_start(I2C_GT911)
+#define GT911_I2C_STOP()                msp_cluster_i2c_stop(I2C_GT911)
+#define GT911_I2C_WRITE_BYTE(data)      msp_cluster_i2c_write_byte(I2C_GT911, data)
+#define GT911_I2C_READ_BYTE()           msp_cluster_i2c_read_byte(I2C_GT911)
+#define GT911_I2C_WAIT_ACK()            msp_cluster_i2c_wait_ack(I2C_GT911)
+#define GT911_I2C_ACK()                 msp_cluster_i2c_generate_ack(I2C_GT911)
+#define GT911_I2C_NACK()                msp_cluster_i2c_generate_nack(I2C_GT911)
 
 
 #ifdef __cplusplus

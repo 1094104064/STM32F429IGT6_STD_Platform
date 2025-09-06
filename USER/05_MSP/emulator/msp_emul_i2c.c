@@ -164,60 +164,56 @@ void msp_emul_i2c_generate_nack(struct i2c_gpio * self)
     delay_us(2);
 }
 
-void msp_emul_i2c_write(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * src, uint16_t len)
+int msp_emul_i2c_write(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * src, uint16_t len)
 {
     msp_emul_i2c_start(self);
 
     msp_emul_i2c_write_byte(self, dev_addr);
     if (msp_emul_i2c_wait_ack(self)) {
         msp_emul_i2c_stop(self);
-        pr_error("I2C write failed: no ACK received");
-        return;
+        return 1;
     }
 
     msp_emul_i2c_write_byte(self, reg_addr);
     if (msp_emul_i2c_wait_ack(self)) {
         msp_emul_i2c_stop(self);
-        pr_error("I2C write failed: no ACK received");
-        return;
+        return 2;
     }
 
     for (uint16_t i = 0; i < len; i++) {
         msp_emul_i2c_write_byte(self, src[i]);
         if (msp_emul_i2c_wait_ack(self)) {
             msp_emul_i2c_stop(self);
-            pr_error("I2C write failed: no ACK received");
-            return;
+            return 3;
         }
     }
 
     msp_emul_i2c_stop(self);
+
+    return 0;
 }
 
-void msp_emul_i2c_read(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * dst, uint16_t len)
+int msp_emul_i2c_read(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_addr, uint8_t * dst, uint16_t len)
 {
     msp_emul_i2c_start(self);
 
     msp_emul_i2c_write_byte(self, dev_addr);
     if (msp_emul_i2c_wait_ack(self)) {
         msp_emul_i2c_stop(self);
-        pr_error("I2C read failed: no ACK received");
-        return;
+        return 1;
     }
 
     msp_emul_i2c_write_byte(self, reg_addr);
     if (msp_emul_i2c_wait_ack(self)) {
         msp_emul_i2c_stop(self);
-        pr_error("I2C read failed: no ACK received");
-        return;
+        return 2;
     }
 
     msp_emul_i2c_start(self);
     msp_emul_i2c_write_byte(self, dev_addr | 0x01);
     if (msp_emul_i2c_wait_ack(self)) {
         msp_emul_i2c_stop(self);
-        pr_error("I2C read failed: no ACK received");
-        return;
+        return 3;
     }
 
     for (uint16_t i = 0; i < len; i++) {
@@ -230,6 +226,8 @@ void msp_emul_i2c_read(struct i2c_gpio * self, uint8_t dev_addr, uint8_t reg_add
     }
 
     msp_emul_i2c_stop(self);
+
+    return 0;
 }
 
 /**********************

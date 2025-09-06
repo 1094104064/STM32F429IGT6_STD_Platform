@@ -41,21 +41,21 @@ static inline void bsp_port_gt911_write_reg(uint8_t dev_addr, uint16_t reg_addr,
     GT911_I2C_WRITE_BYTE(dev_addr);
     if(GT911_I2C_WAIT_ACK()) {
         GT911_I2C_STOP();
-        pr_error("I2C Error!\r\n");
+        pr_error("I2C Error!");
         return;
     }
 
     GT911_I2C_WRITE_BYTE(reg_addr >> 8);
     if(GT911_I2C_WAIT_ACK()) {
         GT911_I2C_STOP();
-        pr_error("I2C Error!\r\n");
+        pr_error("I2C Error!");
         return;
     }
 
     GT911_I2C_WRITE_BYTE(reg_addr & 0xFF);
     if(GT911_I2C_WAIT_ACK()) {
         GT911_I2C_STOP();
-        pr_error("I2C Error!\r\n");
+        pr_error("I2C Error!");
         return;
     }
 
@@ -63,7 +63,7 @@ static inline void bsp_port_gt911_write_reg(uint8_t dev_addr, uint16_t reg_addr,
         GT911_I2C_WRITE_BYTE(src[i]);
         if(GT911_I2C_WAIT_ACK()) {
             GT911_I2C_STOP();
-            pr_error("I2C Error!\r\n");
+            pr_error("I2C Error!");
             return;
         }
     }
@@ -78,21 +78,21 @@ static inline void bsp_port_gt911_read_reg(uint8_t dev_addr, uint16_t reg_addr, 
     GT911_I2C_WRITE_BYTE(dev_addr);
     if(GT911_I2C_WAIT_ACK()) {
         GT911_I2C_STOP();
-        pr_error("I2C Error!\r\n");
+        pr_error("I2C Error!");
         return;
     }
 
     GT911_I2C_WRITE_BYTE(reg_addr >> 8);
     if(GT911_I2C_WAIT_ACK()) {
         GT911_I2C_STOP();
-        pr_error("I2C Error!\r\n");
+        pr_error("I2C Error!");
         return;
     }
 
     GT911_I2C_WRITE_BYTE(reg_addr & 0xFF);
     if(GT911_I2C_WAIT_ACK()) {
         GT911_I2C_STOP();
-        pr_error("I2C Error!\r\n");
+        pr_error("I2C Error!");
         return;
     }
 
@@ -100,7 +100,7 @@ static inline void bsp_port_gt911_read_reg(uint8_t dev_addr, uint16_t reg_addr, 
     GT911_I2C_WRITE_BYTE(dev_addr | 0x01);
     if(GT911_I2C_WAIT_ACK()) {
         GT911_I2C_STOP();
-        pr_error("I2C Error!\r\n");
+        pr_error("I2C Error!");
         return;
     }
 
