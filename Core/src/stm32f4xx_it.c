@@ -10,13 +10,10 @@
 	***************************************************************************
 ***/
 #include "stm32f4xx_it.h"
-#include <stdio.h>
-#include "systick.h"
-#include "lvgl.h"
-//#include "FreeRTOS.h"
-//#include "task.h"
+#include "main.h"
 
-extern 
+
+
 
 /** @addtogroup Template_Project
   * @{
@@ -51,11 +48,11 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-  printf("HardFault_Handler\r\n");
-  /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
-  }
+    printf("%s\r\n", __FUNCTION__);
+    /* Go to infinite loop when Hard Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -65,11 +62,11 @@ void HardFault_Handler(void)
   */
 void MemManage_Handler(void)
 {
-  printf("MemManage_Handler\r\n");
-  /* Go to infinite loop when Memory Manage exception occurs */
-  while (1)
-  {
-  }
+    printf("%s\r\n", __FUNCTION__);
+    /* Go to infinite loop when Memory Manage exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -79,10 +76,11 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
-  /* Go to infinite loop when Bus Fault exception occurs */
-  while (1)
-  {
-  }
+    printf("%s\r\n", __FUNCTION__);
+    /* Go to infinite loop when Bus Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -92,10 +90,11 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
-  /* Go to infinite loop when Usage Fault exception occurs */
-  while (1)
-  {
-  }
+    printf("%s\r\n", __FUNCTION__);
+    /* Go to infinite loop when Usage Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 #if 0
@@ -137,7 +136,16 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
     STD_SYSTICK_Inc(1);
+
+#if OS_ENABLE
+extern void xPortSysTickHandler(void);
+    if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) 
+        xPortSysTickHandler();
+#endif
+
+#if LVGL_ENABLE
     lv_tick_inc(1);
+#endif
 }
 
 /**

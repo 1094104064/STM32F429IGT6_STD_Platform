@@ -28,6 +28,7 @@ extern "C" {
 #include <stddef.h>
 #include <math.h>
 #include "stm32f4xx.h"
+
 #include "user_macros.h"
 #include "user_conf.h"
 
@@ -40,6 +41,9 @@ extern "C" {
 #include "dwt.h"
 #include "dma.h"
 #include "dma2d.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 #include "bsp_adapter_delay.h"
 #include "bsp_wrapper_delay.h"
@@ -62,6 +66,8 @@ extern "C" {
 #include "lv_port_disp_template.h"
 #include "lv_port_indev_template.h"
 #include "lv_demos.h"
+
+#include "app_main.h"
 
 /*********************
  *      DEFINES

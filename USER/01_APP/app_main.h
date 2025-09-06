@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    app_init.h
+  * @file    app_main.h
   * @author  Jamin
-  * @brief   Header file of app_init module.
+  * @brief   Header file of app_main module.
   *
   ******************************************************************************
   **/
   
-#ifndef _APP_INIT_H
-#define _APP_INIT_H
+#ifndef _APP_MAIN_H
+#define _APP_MAIN_H
 
 
 #ifdef __cplusplus
@@ -23,7 +23,9 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-
+#define OS_ENABLE           1
+#define ELOG_ENABLE         0
+#define LVGL_ENABLE         0
 /**********************
  *      TYPEDEFS
  **********************/
@@ -31,9 +33,7 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void app_init_core(void);
-void app_init_bsp(void);
-void app_init_middleware(void);
+void app_main(void);
 /**********************
  *      MACROS
  **********************/
@@ -44,7 +44,7 @@ void app_init_middleware(void);
 }
 #endif
 
-#endif /*_APP_INIT_H*/
+#endif /*_APP_MAIN_H*/
 
 
 /******************************* (END OF FILE) *********************************/

@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F429_439xx,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\porting;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\05_MSP\cluster;..\USER\05_MSP\emulator;..\USER\02_MID\LVGL\demos;..\USER\01_APP;..\USER</IncludePath>
+              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\porting;..\USER\05_MSP\cluster;..\USER\05_MSP\emulator</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -385,9 +385,9 @@
           <GroupName>01_APP</GroupName>
           <Files>
             <File>
-              <FileName>app_init.c</FileName>
+              <FileName>app_main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\01_APP\app_init.c</FilePath>
+              <FilePath>..\USER\01_APP\app_main.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1605,7 +1605,54 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>03_OS</GroupName>
+          <GroupName>03_OS/FreeRTOS</GroupName>
+          <Files>
+            <File>
+              <FileName>croutine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\core\croutine.c</FilePath>
+            </File>
+            <File>
+              <FileName>event_groups.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\core\event_groups.c</FilePath>
+            </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\core\list.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\core\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>stream_buffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\core\stream_buffer.c</FilePath>
+            </File>
+            <File>
+              <FileName>tasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\core\tasks.c</FilePath>
+            </File>
+            <File>
+              <FileName>timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\core\timers.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap_4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\portable\MemMang\heap_4.c</FilePath>
+            </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F\port.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>04_BSP/Wrapper</GroupName>

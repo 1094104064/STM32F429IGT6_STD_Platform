@@ -17,7 +17,6 @@
  *      INCLUDES
  *********************/
 #include "main.h"
-#include "app_init.h"
 /*********************
  *      DEFINES
  *********************/
@@ -74,13 +73,7 @@ static void Init(void)
     /*!< interrupt priority divide into groups */
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 
-    app_init_core();
-    app_init_bsp();
-    app_init_middleware();
-
-
-
-    // vTaskStartScheduler();
+    app_main();
 }
 
 
