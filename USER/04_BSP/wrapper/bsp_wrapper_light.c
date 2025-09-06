@@ -60,6 +60,10 @@ void bsp_wrapper_light_link(struct light_wrapper * self)
     light_wrappers[idx] = *self;
     light_wrappers[idx].idx = idx;
 
+    if(light_wrappers[idx].name == NULL) {
+        pr_warn("This wrapper has no name and will be filled with a default name");
+        light_wrappers[idx].name = "light_default";
+    }
 }
 
 bool bsp_wrapper_light_init(void)

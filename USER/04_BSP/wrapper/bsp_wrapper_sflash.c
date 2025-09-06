@@ -59,6 +59,11 @@ void bsp_wrapper_sflash_link(struct sflash_wrapper * self)
 
     sflash_wrappers[idx] = *self;
     sflash_wrappers[idx].idx = idx;
+
+    if(sflash_wrappers[idx].name == NULL) {
+        pr_warn("This wrapper has no name and will be filled with a default name");
+        sflash_wrappers[idx].name = "sflash_default";
+    }
 }
 
 bool bsp_wrapper_sflash_init(void)

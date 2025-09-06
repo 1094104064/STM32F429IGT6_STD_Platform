@@ -60,6 +60,11 @@ void bsp_wrapper_delay_link(struct delay_wrapper * self)
 
     delay_wrappers[idx] = *self;
     delay_wrappers[idx].idx = idx;
+
+    if(delay_wrappers[idx].name == NULL) {
+        pr_warn("This wrapper has no name and will be filled with a default name");
+        delay_wrappers[idx].name = "delay_default";
+    }
 }
 
 bool bsp_wrapper_delay_init(void)

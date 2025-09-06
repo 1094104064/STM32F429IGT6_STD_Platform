@@ -60,6 +60,11 @@ void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self)
 
     touchpad_wrappers[idx] = *self;
     touchpad_wrappers[idx].idx = idx;
+
+    if(touchpad_wrappers[idx].name == NULL) {
+        pr_warn("This wrapper has no name and will be filled with a default name");
+        touchpad_wrappers[idx].name = "touchpad_default";
+    }
 }
 
 bool bsp_wrapper_touchpad_init(void)

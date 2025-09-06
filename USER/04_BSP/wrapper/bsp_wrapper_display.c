@@ -61,6 +61,10 @@ void bsp_wrapper_display_link(struct display_wrapper * self)
     display_wrappers[idx] = *self;
     display_wrappers[idx].idx = idx;
 
+    if(display_wrappers[idx].name == NULL) {
+        pr_warn("This wrapper has no name and will be filled with a default name");
+        display_wrappers[idx].name = "display_default";
+    }
 }
 
 bool bsp_wrapper_display_init(void)

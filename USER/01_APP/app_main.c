@@ -88,8 +88,8 @@ static void _core_init(void)
     STD_DMA2D_ClockCmd(ENABLE);
 
     STD_FMC_SDRAM_Init();
-    STD_LTDC_Init();
-    STD_LTDC_LayerInit();
+    // STD_LTDC_Init();
+    // STD_LTDC_LayerInit();
 
     STD_SPI1_Init();
     STD_SPI3_Init();
