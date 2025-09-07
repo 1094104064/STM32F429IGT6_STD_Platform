@@ -73,25 +73,25 @@ void bsp_driver_st7735_link(    struct st7735_driver * self,
     if(self == NULL || oper == NULL || info == NULL || spi == NULL || ctrl == NULL || backlight == NULL)
         return;
 
-    self->oper = oper;
-    self->oper->oper_info = info;
-    self->oper->oper_spi = spi;
-    self->oper->oper_ctrl = ctrl;
-    self->oper->oper_backlight = backlight;
+    self->oper                  = oper;
+    self->oper->oper_info       = info;
+    self->oper->oper_spi        = spi;
+    self->oper->oper_ctrl       = ctrl;
+    self->oper->oper_backlight  = backlight;
 
 
-    self->pf_write_data = st7735_write_data;
-    self->pf_write_command = st7735_write_command;
-    self->pf_init = st7735_init;
-    self->pf_set_cursor = st7735_set_cursor;
-    self->pf_set_window = st7735_set_window;
-    self->pf_put_pixel = st7735_put_pixel;
-    self->pf_fill_rect = st7735_fill_rect;
-    self->pf_fill_screen = st7735_fill_screen;
-    self->pf_copy_buffer = st7735_copy_buffer;
-    self->pf_backlight_on = st7735_backlight_on;
-    self->pf_backlight_off = st7735_backlight_off;
-    self->pf_backlight_set = st7735_backlight_set;
+    self->pf_write_data         = st7735_write_data;
+    self->pf_write_command      = st7735_write_command;
+    self->pf_init               = st7735_init;
+    self->pf_set_cursor         = st7735_set_cursor;
+    self->pf_set_window         = st7735_set_window;
+    self->pf_put_pixel          = st7735_put_pixel;
+    self->pf_fill_rect          = st7735_fill_rect;
+    self->pf_fill_screen        = st7735_fill_screen;
+    self->pf_copy_buffer        = st7735_copy_buffer;
+    self->pf_backlight_on       = st7735_backlight_on;
+    self->pf_backlight_off      = st7735_backlight_off;
+    self->pf_backlight_set      = st7735_backlight_set;
 }
 
 /**********************
@@ -113,6 +113,23 @@ static void st7735_write_command(struct st7735_driver * self, uint8_t cmd)
 
 static bool st7735_init(struct st7735_driver * self)
 {
+    if(self->oper->pf_delay_ms                      == NULL ||
+       self->oper->oper_ctrl->pf_cs_high            == NULL ||
+       self->oper->oper_ctrl->pf_cs_low             == NULL ||
+       self->oper->oper_ctrl->pf_dc_high            == NULL ||
+       self->oper->oper_ctrl->pf_dc_low             == NULL ||
+       self->oper->oper_ctrl->pf_rst_high           == NULL ||
+       self->oper->oper_ctrl->pf_rst_low            == NULL ||
+       self->oper->oper_spi->pf_transmit_8bit       == NULL || 
+       self->oper->oper_spi->pf_transmit_16bit      == NULL ||
+       self->oper->oper_spi->pf_transmit_dma_16bit  == NULL ||
+       self->oper->oper_backlight->pf_on            == NULL ||
+       self->oper->oper_backlight->pf_off           == NULL ||
+       self->oper->oper_backlight->pf_set           == NULL) {
+        return false;
+    }
+
+
     uint32_t i = 0;
 
     self->oper->oper_ctrl->pf_rst_low();
