@@ -28,6 +28,23 @@ extern "C" {
  *      DEFINES
  *********************/
 #define GT911_TOUCH_MAX 5
+
+#define GT911_DEBUG_ENABLE 0
+
+#if GT911_DEBUG_ENABLE
+
+    #define gt911_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+    #define gt911_assert_null(param)                                                            \
+            do {                                                                                \
+                if(param == NULL) { gt911_dbg("NULL pointer: %s", #param); while(1); }          \
+            } while (0)    
+#else
+    #define gt911_dbg(fmt, ...)             do {} while (0)
+    #define gt911_assert_null(param)        do {} while (0)
+#endif
+
+
 /**********************
  *      TYPEDEFS
  **********************/

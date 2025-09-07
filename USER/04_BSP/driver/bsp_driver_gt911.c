@@ -58,6 +58,11 @@ void bsp_driver_gt911_link( struct gt911_driver * self,
                             struct gt911_oper_i2c * oper_i2c,
                             struct gt911_oper_ctrl * oper_ctrl)
 {
+    gt911_assert_null(self);
+    gt911_assert_null(oper);
+    gt911_assert_null(oper_i2c);
+    gt911_assert_null(oper_ctrl);
+
     if(self == NULL || oper == NULL || oper_i2c == NULL || oper_ctrl == NULL) {
         return;
     }
@@ -81,6 +86,16 @@ void bsp_driver_gt911_link( struct gt911_driver * self,
  **********************/
 static bool gt911_init(struct gt911_driver * self)
 {
+    gt911_assert_null(self->oper->pf_delay_ms);
+    gt911_assert_null(self->oper->oper_ctrl->pf_int_high);
+    gt911_assert_null(self->oper->oper_ctrl->pf_int_low);
+    gt911_assert_null(self->oper->oper_ctrl->pf_int_in);
+    gt911_assert_null(self->oper->oper_ctrl->pf_int_out);
+    gt911_assert_null(self->oper->oper_ctrl->pf_rst_high);
+    gt911_assert_null(self->oper->oper_ctrl->pf_rst_low);
+    gt911_assert_null(self->oper->oper_i2c->pf_read_reg);
+    gt911_assert_null(self->oper->oper_i2c->pf_write_reg);
+
     if( self->oper->pf_delay_ms             == NULL ||
 
         self->oper->oper_ctrl->pf_int_high  == NULL || 
@@ -103,6 +118,7 @@ static bool gt911_init(struct gt911_driver * self)
     self->oper->oper_i2c->pf_read_reg(GT911_DEV_ADD, GT911_ID_REG, info, 11);
 
     if(info[0] == '9') {
+        gt911_dbg("gt911 init successfully");
         return true;
     }
     else {

@@ -53,6 +53,9 @@ static void w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t *
  **********************/ 
 void bsp_driver_w25q64_link(struct w25q64_driver * self, struct w25q64_oper * oper)
 {
+    w25q64_assert_null(self);
+    w25q64_assert_null(oper);
+
     if(self == NULL || oper == NULL) {
         return;
     }
@@ -79,11 +82,17 @@ void bsp_driver_w25q64_link(struct w25q64_driver * self, struct w25q64_oper * op
 
 static bool w25q64_init(struct w25q64_driver * self)
 {
+    w25q64_assert_null(self->oper->pf_spi_read_write);
+    w25q64_assert_null(self->oper->pf_spi_cs_high);
+    w25q64_assert_null(self->oper->pf_spi_cs_low);
+
     if( self->oper->pf_spi_read_write   == NULL ||
         self->oper->pf_spi_cs_high      == NULL ||
         self->oper->pf_spi_cs_low       == NULL) {
         return false;
     }
+
+    w25q64_dbg("w25q64 init successfully");
 
     return true;
 }
@@ -140,6 +149,7 @@ static void w25q64_erase_sector(struct w25q64_driver * self, uint32_t sector_add
 
     w25q64_wait_for_write_end(self);
 
+    w25q64_dbg("finished");
 }
 
 static void w25q64_erase_block_32k(struct w25q64_driver * self, uint32_t block_address)
@@ -155,6 +165,8 @@ static void w25q64_erase_block_32k(struct w25q64_driver * self, uint32_t block_a
     self->oper->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
+
+    w25q64_dbg("finished");
 }
 
 static void w25q64_erase_block_64k(struct w25q64_driver * self, uint32_t block_address)
@@ -170,6 +182,8 @@ static void w25q64_erase_block_64k(struct w25q64_driver * self, uint32_t block_a
     self->oper->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
+
+    w25q64_dbg("finished");
 }
 
 static void w25q64_erase_chip(struct w25q64_driver * self)
@@ -183,6 +197,8 @@ static void w25q64_erase_chip(struct w25q64_driver * self)
     self->oper->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
+
+    w25q64_dbg("finished");
 }
 
 static void w25q64_write_page(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length)
@@ -197,6 +213,8 @@ static void w25q64_write_page(struct w25q64_driver * self, uint32_t page_address
     self->oper->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
+
+    w25q64_dbg("finished");
 }
 
 static void w25q64_write(struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length)
@@ -212,6 +230,8 @@ static void w25q64_write(struct w25q64_driver * self, uint32_t address, const ui
         w25q64_write_page(self, page_addr, data, page_remain);
         w25q64_write(self, page_addr + page_size, data + page_remain, length - page_remain);
     }
+
+    w25q64_dbg("finished");
 }
 
 static void w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length)
@@ -222,6 +242,8 @@ static void w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t *
     self->oper->pf_spi_read_write(tx_data, NULL, 4);
     self->oper->pf_spi_read_write(NULL, data, length);
     self->oper->pf_spi_cs_high();
+
+    w25q64_dbg("finished");
 }
 
 /******************************* (END OF FILE) *********************************/

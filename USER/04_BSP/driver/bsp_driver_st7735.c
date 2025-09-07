@@ -70,6 +70,13 @@ void bsp_driver_st7735_link(    struct st7735_driver * self,
                                 struct st7735_oper_ctrl * ctrl,
                                 struct st7735_oper_backlight * backlight)
 {
+    st7735_assert_null(self);
+    st7735_assert_null(oper);
+    st7735_assert_null(info);
+    st7735_assert_null(spi);
+    st7735_assert_null(ctrl);
+    st7735_assert_null(backlight);
+
     if(self == NULL || oper == NULL || info == NULL || spi == NULL || ctrl == NULL || backlight == NULL)
         return;
 
@@ -113,6 +120,20 @@ static void st7735_write_command(struct st7735_driver * self, uint8_t cmd)
 
 static bool st7735_init(struct st7735_driver * self)
 {
+    st7735_assert_null(self->oper->pf_delay_ms);
+    st7735_assert_null(self->oper->oper_ctrl->pf_cs_high);
+    st7735_assert_null(self->oper->oper_ctrl->pf_cs_low);
+    st7735_assert_null(self->oper->oper_ctrl->pf_dc_high);
+    st7735_assert_null(self->oper->oper_ctrl->pf_dc_low);
+    st7735_assert_null(self->oper->oper_ctrl->pf_rst_high);
+    st7735_assert_null(self->oper->oper_ctrl->pf_rst_low);
+    st7735_assert_null(self->oper->oper_spi->pf_transmit_8bit);
+    st7735_assert_null(self->oper->oper_spi->pf_transmit_16bit);
+    st7735_assert_null(self->oper->oper_spi->pf_transmit_dma_16bit);
+    st7735_assert_null(self->oper->oper_backlight->pf_on);
+    st7735_assert_null(self->oper->oper_backlight->pf_off);
+    st7735_assert_null(self->oper->oper_backlight->pf_set);
+
     if(self->oper->pf_delay_ms                      == NULL ||
        self->oper->oper_ctrl->pf_cs_high            == NULL ||
        self->oper->oper_ctrl->pf_cs_low             == NULL ||
@@ -219,6 +240,8 @@ static bool st7735_init(struct st7735_driver * self)
     self->oper->pf_delay_ms(100);
 
     self->oper->oper_ctrl->pf_cs_high();
+
+    st7735_dbg("st7735 init successfully");
 
     return true;
 }

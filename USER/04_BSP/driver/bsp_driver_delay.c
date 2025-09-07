@@ -46,6 +46,9 @@ static void delay_sec(struct delay_driver * self, uint32_t sec);
  **********************/ 
 void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
 {
+    delay_assert_null(self);
+    delay_assert_null(oper);
+
     if(self == NULL || oper == NULL) {
         return;
     }
@@ -62,11 +65,17 @@ void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
  **********************/
 static bool delay_init(struct delay_driver * self)
 {
+    delay_assert_null(self->oper->pf_delay_us);
+    delay_assert_null(self->oper->pf_delay_ms);
+    delay_assert_null(self->oper->pf_delay_sec);
+
     if(self->oper->pf_delay_us  == NULL ||
        self->oper->pf_delay_ms  == NULL ||
        self->oper->pf_delay_sec == NULL) {
         return false;
     }
+
+    delay_dbg("delay init successfully");
 
     return true;
 }

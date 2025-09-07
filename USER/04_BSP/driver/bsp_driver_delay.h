@@ -27,6 +27,21 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#define DELAY_DEBUG_ENABLE 0    
+
+#if DELAY_DEBUG_ENABLE
+
+    #define delay_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+    #define delay_assert_null(param)                                                            \
+            do {                                                                                \
+                if(param == NULL) { delay_dbg("NULL pointer: %s", #param); while(1); }          \
+            } while (0)    
+#else
+    #define delay_dbg(fmt, ...)             do {} while (0)
+    #define delay_assert_null(param)        do {} while (0)
+#endif
+
 
 /**********************
  *      TYPEDEFS

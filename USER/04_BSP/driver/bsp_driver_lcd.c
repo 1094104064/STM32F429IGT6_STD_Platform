@@ -49,6 +49,11 @@ static void lcd_copy_buffer(struct lcd_driver * self, uint16_t x, uint16_t y, ui
  **********************/ 
 void bsp_driver_lcd_link(struct lcd_driver * drv, struct lcd_oper * oper, const struct lcd_panel * panel, struct lcd_layer * layer)
 {
+    lcd_assert_null(drv);
+    lcd_assert_null(oper);
+    lcd_assert_null(panel);
+    lcd_assert_null(layer);
+
     if (drv == NULL || oper == NULL || panel == NULL || layer == NULL) {
         return;
     }
@@ -71,6 +76,14 @@ void bsp_driver_lcd_link(struct lcd_driver * drv, struct lcd_oper * oper, const 
 
 static bool lcd_layer_config(struct lcd_driver * self)
 {
+    lcd_assert_null(self->oper->pf_layer_config);
+    lcd_assert_null(self->oper->pf_backlight_on);
+    lcd_assert_null(self->oper->pf_backlight_off);
+    lcd_assert_null(self->oper->pf_put_pixel);
+    lcd_assert_null(self->oper->pf_fast_fill_rect);
+    lcd_assert_null(self->oper->pf_fast_fill_screen);
+    lcd_assert_null(self->oper->pf_copy_buffer);
+
     if (self->oper->pf_layer_config      == NULL ||
         self->oper->pf_backlight_on      == NULL ||
         self->oper->pf_backlight_off     == NULL ||
@@ -85,6 +98,8 @@ static bool lcd_layer_config(struct lcd_driver * self)
                                  &self->layer->rotated, 
                                  &self->layer->start_address);
 
+    lcd_dbg("lcd init successfully");
+
     return true;
 }
 
@@ -98,7 +113,6 @@ static void lcd_backlight_off(struct lcd_driver * self)
 {
     self->oper->pf_backlight_off();
 }
-
 
 static void lcd_put_pixel(struct lcd_driver * self, uint16_t x, uint16_t y, uint32_t color)
 {

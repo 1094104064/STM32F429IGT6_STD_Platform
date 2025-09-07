@@ -28,6 +28,21 @@ extern "C" {
  *      DEFINES
  *********************/
 
+#define W25Q64_DEBUG_ENABLE 0
+
+#if W25Q64_DEBUG_ENABLE
+
+    #define w25q64_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+    #define w25q64_assert_null(param)                                                            \
+            do {                                                                                \
+                if(param == NULL) { w25q64_dbg("NULL pointer: %s", #param); while(1); }          \
+            } while (0)    
+#else
+    #define w25q64_dbg(fmt, ...)             do {} while (0)
+    #define w25q64_assert_null(param)        do {} while (0)
+#endif
+
 /**********************
  *      TYPEDEFS
  **********************/

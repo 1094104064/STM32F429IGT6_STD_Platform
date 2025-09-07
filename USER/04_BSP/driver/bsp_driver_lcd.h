@@ -27,6 +27,20 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#define LCD_DEBUG_ENABLE 0
+
+#if LCD_DEBUG_ENABLE
+
+    #define lcd_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+    #define lcd_assert_null(param)                                                            \
+            do {                                                                              \
+                if(param == NULL) { lcd_dbg("NULL pointer: %s", #param); while(1); }          \
+            } while (0)    
+#else
+    #define lcd_dbg(fmt, ...)             do {} while (0)
+    #define lcd_assert_null(param)        do {} while (0)
+#endif
 
 /**********************
  *      TYPEDEFS

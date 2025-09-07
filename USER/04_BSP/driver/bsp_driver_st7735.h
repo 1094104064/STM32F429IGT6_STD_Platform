@@ -27,6 +27,21 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#define ST7735_DEBUG_ENABLE 0
+
+#if ST7735_DEBUG_ENABLE
+
+    #define st7735_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+    #define st7735_assert_null(param)                                                           \
+            do {                                                                                \
+                if(param == NULL) { st7735_dbg("NULL pointer: %s", #param); while(1); }         \
+            } while (0)    
+#else
+    #define st7735_dbg(fmt, ...)             do {} while (0)
+    #define st7735_assert_null(param)        do {} while (0)
+#endif
+
 
 /**********************
  *      TYPEDEFS

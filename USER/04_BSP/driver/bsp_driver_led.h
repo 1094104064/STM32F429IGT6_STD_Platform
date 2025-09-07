@@ -27,6 +27,24 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#define LED_DEBUG_ENABLE 0
+
+#if LED_DEBUG_ENABLE
+
+    #define led_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+    #define led_assert_null(param)                                                              \
+            do {                                                                                \
+                if(param == NULL) { led_dbg("NULL pointer: %s", #param); while(1); }            \
+            } while (0)    
+#else
+    #define led_dbg(fmt, ...)             do {} while (0)
+    #define led_assert_null(param)        do {} while (0)
+#endif
+
+
+
+
 
 /**********************
  *      TYPEDEFS

@@ -45,6 +45,9 @@ static void led_off(struct led_driver * self);
  **********************/ 
 void bsp_driver_led_link(struct led_driver * self, struct led_oper * oper)
 {
+    led_assert_null(self);
+    led_assert_null(oper);
+
     if (self == NULL || oper == NULL) {
         return;
     }
@@ -60,12 +63,15 @@ void bsp_driver_led_link(struct led_driver * self, struct led_oper * oper)
  **********************/
 static bool led_init(struct led_driver * self)
 {
-    if( self                == NULL || 
-        self->oper          == NULL ||
-        self->oper->pf_on   == NULL ||
+    led_assert_null(self->oper->pf_on);
+    led_assert_null(self->oper->pf_off);
+
+    if( self->oper->pf_on   == NULL ||
         self->oper->pf_off  == NULL)
 
-    return false;
+        return false;
+
+    led_dbg("led init successfully");
 
     return true;
 }
