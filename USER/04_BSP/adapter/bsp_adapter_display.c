@@ -54,29 +54,29 @@ static const char * const display_st7735 = "st7735";
 
 static struct lcd_driver lcd_drv;
 static struct lcd_oper lcd_ops = {
-    .pf_layer_config = bsp_port_lcd_layer_config,
-    .pf_backlight_on = bsp_port_lcd_backlight_on,
-    .pf_backlight_off = bsp_port_lcd_backlight_off,
-    .pf_put_pixel = bsp_port_lcd_put_pixel,
-    .pf_fast_fill_rect = bsp_port_lcd_fill_rectangle,
-    .pf_fast_fill_screen = bsp_port_lcd_fill_screen,
-    .pf_copy_buffer = bsp_port_lcd_copy_buffer,
+    .pf_layer_config        = bsp_port_lcd_layer_config,
+    .pf_backlight_on        = bsp_port_lcd_backlight_on,
+    .pf_backlight_off       = bsp_port_lcd_backlight_off,
+    .pf_put_pixel           = bsp_port_lcd_put_pixel,
+    .pf_fast_fill_rect      = bsp_port_lcd_fill_rectangle,
+    .pf_fast_fill_screen    = bsp_port_lcd_fill_screen,
+    .pf_copy_buffer         = bsp_port_lcd_copy_buffer,
 };
 
 struct lcd_layer lcd_fb = {0};
 
 static const struct lcd_panel simple_panel = {
-    .name = "simple_panel",
+    .name           = "simple_panel",
 
-    .active_width = 480,
-    .active_height = 272,
+    .active_width   = 480,
+    .active_height  = 272,
 
-    .hsync_width = LCD_DEFAULT_HSW,
-    .hfront_porch = LCD_DEFAULT_HFP,
-    .hback_porch = LCD_DEFAULT_HBP,
-    .vsync_width = LCD_DEFAULT_VSW,
-    .vfront_porch = LCD_DEFAULT_VFP,
-    .vback_porch = LCD_DEFAULT_VBP,
+    .hsync_width    = LCD_DEFAULT_HSW,
+    .hfront_porch   = LCD_DEFAULT_HFP,
+    .hback_porch    = LCD_DEFAULT_HBP,
+    .vsync_width    = LCD_DEFAULT_VSW,
+    .vfront_porch   = LCD_DEFAULT_VFP,
+    .vback_porch    = LCD_DEFAULT_VBP,
 };
 
 const struct lcd_panel * panels = &simple_panel;
@@ -86,22 +86,23 @@ static struct st7735_oper st7735_ops = {
     .pf_delay_ms = bsp_port_st7735_delay_ms,
 };
 static struct st7735_oper_spi st7735_spi = {
-    .pf_transmit_8bit = bsp_port_st7735_transmit_8bit,
-    .pf_transmit_16bit = bsp_port_st7735_transmit_16bit,
-    .pf_transmit_dma_8bit = bsp_port_st7735_transmit_dma_8bit,
-    .pf_transmit_dma_16bit = bsp_port_st7735_transmit_dma_16bit,
+    .pf_transmit_8bit       = bsp_port_st7735_transmit_8bit,
+    .pf_transmit_16bit      = bsp_port_st7735_transmit_16bit,
+    .pf_transmit_dma_8bit   = bsp_port_st7735_transmit_dma_8bit,
+    .pf_transmit_dma_16bit  = bsp_port_st7735_transmit_dma_16bit,
 };
 static struct st7735_oper_ctrl st7735_ctrl = {
-    .pf_cs_high = bsp_port_st7735_cs_high,
-    .pf_cs_low = bsp_port_st7735_cs_low,
-    .pf_dc_high = bsp_port_st7735_dc_high,
-    .pf_dc_low = bsp_port_st7735_dc_low,
-    .pf_rst_high = bsp_port_st7735_rst_high,
-    .pf_rst_low = bsp_port_st7735_rst_low,
+    .pf_cs_high     = bsp_port_st7735_cs_high,
+    .pf_cs_low      = bsp_port_st7735_cs_low,
+    .pf_dc_high     = bsp_port_st7735_dc_high,
+    .pf_dc_low      = bsp_port_st7735_dc_low,
+    .pf_rst_high    = bsp_port_st7735_rst_high,
+    .pf_rst_low     = bsp_port_st7735_rst_low,
 };
 static struct st7735_oper_backlight st7735_backlight = {
-    .pf_on = bsp_port_st7735_backlight_on,
+    .pf_on  = bsp_port_st7735_backlight_on,
     .pf_off = bsp_port_st7735_backlight_off,
+    .pf_set = bsp_port_st7735_backlight_set,
 };
 static struct st7735_oper_info st7735_info = {
     .width = 160,
@@ -134,19 +135,19 @@ void bsp_adapter_display_register(void)
 #endif
 
     struct display_wrapper st7735_wrap = {
-        .name = display_st7735,
-        .user_data = NULL,
+        .name       = display_st7735,
+        .user_data  = NULL,
 
-        .width = st7735_info.width,
-        .height = st7735_info.height,
+        .width      = st7735_info.width,
+        .height     = st7735_info.height,
 
-        .pf_init = bsp_adapter_display_init,
-        .pf_backlight_on = bsp_adapter_backlight_on,
-        .pf_backlight_off = bsp_adapter_backlight_off,
-        .pf_put_pixel = bsp_adapter_display_put_pixel,
-        .pf_fill_rect = bsp_adapter_display_fill_rect,
-        .pf_fill_screen = bsp_adapter_display_fill_screen,
-        .pf_copy_buffer = bsp_adapter_display_copy_buffer,
+        .pf_init            = bsp_adapter_display_init,
+        .pf_backlight_on    = bsp_adapter_backlight_on,
+        .pf_backlight_off   = bsp_adapter_backlight_off,
+        .pf_put_pixel       = bsp_adapter_display_put_pixel,
+        .pf_fill_rect       = bsp_adapter_display_fill_rect,
+        .pf_fill_screen     = bsp_adapter_display_fill_screen,
+        .pf_copy_buffer     = bsp_adapter_display_copy_buffer,
     };
 
     bsp_wrapper_display_link(&st7735_wrap);

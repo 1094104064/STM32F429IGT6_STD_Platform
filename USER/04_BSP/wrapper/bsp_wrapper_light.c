@@ -71,9 +71,12 @@ bool bsp_wrapper_light_init(void)
     int ret = 0;
     struct light_wrapper * self = &light_wrappers[current_light_idx];
 
+    assert_null(self->pf_init);
+    assert_null(self->pf_on);
+    assert_null(self->pf_off);
+
     if( self->pf_init == NULL || self->pf_on == NULL ||
         self->pf_off == NULL) {
-        pr_fatal("%s : there is a missing function pointer", self->name);
         return false;
     }
 

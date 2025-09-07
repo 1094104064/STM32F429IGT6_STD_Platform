@@ -72,11 +72,18 @@ bool bsp_wrapper_display_init(void)
     int ret = 0;
     struct display_wrapper * self = &display_wrappers[current_display_idx];
 
+    assert_null(self->pf_init);
+    assert_null(self->pf_backlight_on);
+    assert_null(self->pf_backlight_off);
+    assert_null(self->pf_put_pixel);
+    assert_null(self->pf_fill_rect);
+    assert_null(self->pf_fill_screen);
+    assert_null(self->pf_copy_buffer);
+
     if( self->pf_init           == NULL || self->pf_backlight_on    == NULL ||
         self->pf_backlight_off  == NULL || self->pf_put_pixel       == NULL ||
         self->pf_fill_rect      == NULL || self->pf_fill_screen     == NULL ||
         self->pf_copy_buffer    == NULL ) {
-        pr_fatal("%s : there is a missing function pointer", self->name);
         return false;
     }
 

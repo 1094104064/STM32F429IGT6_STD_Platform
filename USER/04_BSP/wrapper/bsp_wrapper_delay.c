@@ -72,9 +72,13 @@ bool bsp_wrapper_delay_init(void)
     int ret = 0;
     struct delay_wrapper * self = &delay_wrappers[current_delay_idx];
 
+    assert_null(self->pf_init);
+    assert_null(self->pf_delay_us);
+    assert_null(self->pf_delay_ms);
+    assert_null(self->pf_delay_sec);
+
     if( self->pf_init       == NULL || self->pf_delay_us    == NULL ||
         self->pf_delay_ms   == NULL || self->pf_delay_sec   == NULL) {
-        pr_fatal("%s : there is a missing function pointer", self->name);
         return false;
     }
 

@@ -36,7 +36,10 @@
 static void _core_init(void);
 static void _bsp_init(void);
 static void _middleware_init(void);
+
+#if OS_ENABLE
 static void _task_init(void * pvParameters);
+#endif
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -53,15 +56,22 @@ void app_main(void)
     _bsp_init();
     _middleware_init();
 
+    static uint32_t ElapsTick;
+
 #if OS_ENABLE
     static TaskHandle_t StartupTaskHandle = {0};
 
-    xTaskCreate(_task_init, "task_init", 512, NULL, tskIDLE_PRIORITY + 1, &StartupTaskHandle);
+    xTaskCreate(_task_init, "task_init", 512, &ElapsTick, tskIDLE_PRIORITY + 1, &StartupTaskHandle);
     vTaskStartScheduler();
 #else
 
     for(;;) {
 
+        ElapsTick = STD_SYSTICK_Get();
+
+        pr_info("ElapsTick = %d", ElapsTick);
+
+        bsp_wrapper_delay_ms(2000);
     }
 
 #endif
@@ -149,17 +159,21 @@ static void _middleware_init(void)
 
 }
 
+#if OS_ENABLE
 static void _task_init(void * pvParameters)
 {
     /* Initialize tasks here */
     for(;;) {
 
-        pr_info("Hello FreeRTOS!");
+        *(uint32_t *)pvParameters = xTaskGetTickCount();
+
+        pr_info("ElapsTick = %d", *(uint32_t *)pvParameters);
 
         vTaskDelay(2000);
     }
 
 }
+#endif
 
 /******************************* (END OF FILE) *********************************/
 

@@ -36,7 +36,10 @@ extern "C" {
  *      MACROS
  **********************/
 
-#if 1
+#define LOG_ENABLE  1
+
+
+#if LOG_ENABLE
     #define pr_log(fmt, ...)        printf(fmt, ##__VA_ARGS__)
 #else
     #define pr_log(fmt, ...)        do {} while (0)
@@ -89,7 +92,19 @@ extern "C" {
     #define pr_fatal(fmt, ...)      do {} while (0)
 #endif
 
+#if LOG_ENABLE
+    #define assert_msg(expr, msg)                                           \
+        do {                                                                \
+            if((expr)) {                                                    \
+                pr_fatal("Asserted at expression: %s (%s)", #expr, msg);    \
+                while(1);                                                   \
+            }                                                               \
+        } while(0)                                                          
+#else
+    #define assert_msg(expr, msg)  do{}while(0)
+#endif
 
+#define assert_null(p) assert_msg(p == NULL, "NULL pointer")
 
 
 

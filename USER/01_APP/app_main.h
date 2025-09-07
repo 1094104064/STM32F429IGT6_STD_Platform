@@ -23,7 +23,7 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-#define OS_ENABLE           1
+#define OS_ENABLE           0
 #define ELOG_ENABLE         0
 #define LVGL_ENABLE         0
 /**********************

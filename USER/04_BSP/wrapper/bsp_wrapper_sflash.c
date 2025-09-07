@@ -71,10 +71,16 @@ bool bsp_wrapper_sflash_init(void)
     int ret = 0;
     struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
 
+    assert_null(self->pf_init);
+    assert_null(self->pf_get_device_id);
+    assert_null(self->pf_erase);
+    assert_null(self->pf_read);
+    assert_null(self->pf_write);
+    assert_null(self->pf_erase_chip);
+
     if( self->pf_init   == NULL     || self->pf_get_device_id   == NULL ||
         self->pf_erase  == NULL     || self->pf_read            == NULL ||
         self->pf_write  == NULL     || self->pf_erase_chip      == NULL ) {
-        pr_fatal("%s : there is a missing function pointer", self->name);
         return false;
     }
 

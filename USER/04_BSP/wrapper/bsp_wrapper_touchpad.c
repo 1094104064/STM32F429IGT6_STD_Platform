@@ -72,10 +72,15 @@ bool bsp_wrapper_touchpad_init(void)
     int ret = 0;
     struct touchpad_wrapper * self = &touchpad_wrappers[current_touchpad_idx];
 
+    assert_null(self->pf_init);
+    assert_null(self->pf_reset);
+    assert_null(self->pf_is_pressed);
+    assert_null(self->pf_scan);
+    assert_null(self->pf_get_coordinates);
+
     if( self->pf_init               == NULL || self->pf_reset   == NULL ||
         self->pf_is_pressed         == NULL || self->pf_scan    == NULL ||
         self->pf_get_coordinates    == NULL) {
-        pr_fatal("%s : there is a missing function pointer", self->name);
         return false;
     }
 

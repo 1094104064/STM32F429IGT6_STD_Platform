@@ -46,7 +46,7 @@ static void bsp_adapter_delay_sec(struct delay_wrapper * self, uint32_t sec);
 
 static struct delay_driver delay_drv;
 static struct delay_oper delay_ops = {
-    .pf_delay_us = NULL,
+    .pf_delay_us = bsp_port_delay_us,
     .pf_delay_ms = bsp_port_delay_ms,
     .pf_delay_sec = bsp_port_delay_sec,
 };
