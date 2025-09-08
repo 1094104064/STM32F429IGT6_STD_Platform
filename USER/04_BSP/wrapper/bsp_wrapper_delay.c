@@ -43,7 +43,7 @@ static uint8_t current_delay_idx = 0;
  *   GLOBAL FUNCTIONS
  **********************/ 
 
-void bsp_wrapper_delay_link(struct delay_wrapper * self)
+void bsp_wrapper_delay_link(struct delay_wrapper * self, const char * const name, void * const user_data)
 {
     uint8_t idx = 0;
 
@@ -60,6 +60,8 @@ void bsp_wrapper_delay_link(struct delay_wrapper * self)
 
     delay_wrappers[idx] = *self;
     delay_wrappers[idx].idx = idx;
+    delay_wrappers[idx].name = name;
+    delay_wrappers[idx].user_data = user_data;
 
     if(delay_wrappers[idx].name == NULL) {
         pr_warn("This wrapper has no name and will be filled with a default name");

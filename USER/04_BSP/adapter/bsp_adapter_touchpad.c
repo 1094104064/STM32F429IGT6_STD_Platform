@@ -75,7 +75,7 @@ void bsp_adapter_touchpad_register(void)
         .pf_get_coordinates    = bsp_adapter_touchpad_get_coordinates,
     };
 
-    bsp_wrapper_touchpad_link(&wrapper);
+    bsp_wrapper_touchpad_link(&wrapper, "gt911", NULL);
 }
 
 

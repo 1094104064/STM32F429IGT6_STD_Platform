@@ -43,7 +43,7 @@ static uint8_t current_touchpad_idx = 0;
  *   GLOBAL FUNCTIONS
  **********************/ 
 
-void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self)
+void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self, const char * const name, void * const user_data)
 {
     uint8_t idx = 0;
 
@@ -60,6 +60,8 @@ void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self)
 
     touchpad_wrappers[idx] = *self;
     touchpad_wrappers[idx].idx = idx;
+    touchpad_wrappers[idx].name = name;
+    touchpad_wrappers[idx].user_data = user_data;
 
     if(touchpad_wrappers[idx].name == NULL) {
         pr_warn("This wrapper has no name and will be filled with a default name");

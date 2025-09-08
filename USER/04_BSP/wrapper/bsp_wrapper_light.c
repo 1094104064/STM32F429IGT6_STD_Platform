@@ -42,7 +42,7 @@ static uint8_t current_light_idx = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_wrapper_light_link(struct light_wrapper * self)
+void bsp_wrapper_light_link(struct light_wrapper * self, const char * const name, void * const user_data)
 {
     uint8_t idx = 0;
 
@@ -59,6 +59,8 @@ void bsp_wrapper_light_link(struct light_wrapper * self)
 
     light_wrappers[idx] = *self;
     light_wrappers[idx].idx = idx;
+    light_wrappers[idx].name = name;
+    light_wrappers[idx].user_data = user_data;
 
     if(light_wrappers[idx].name == NULL) {
         pr_warn("This wrapper has no name and will be filled with a default name");

@@ -60,8 +60,6 @@ void bsp_adapter_sflash_register(void)
 {
     struct sflash_wrapper w25q64_wrapper = {
 
-        .user_data          = NULL,
-
         .pf_init            = bsp_adapter_sflash_init,
         .pf_get_device_id   = bsp_adapter_sflash_get_device_id,
         .pf_read            = bsp_adapter_sflash_read,
@@ -70,8 +68,7 @@ void bsp_adapter_sflash_register(void)
         .pf_erase_chip      = bsp_adapter_sflash_erase_chip,
     };
 
-    bsp_wrapper_sflash_link(&w25q64_wrapper);
-
+    bsp_wrapper_sflash_link(&w25q64_wrapper, "w25q64", NULL);
 }
 /**********************
  *   STATIC FUNCTIONS

@@ -42,7 +42,7 @@ struct delay_wrapper {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_wrapper_delay_link(struct delay_wrapper * self);
+void bsp_wrapper_delay_link(struct delay_wrapper * self, const char * const name, void * const user_data);
 bool bsp_wrapper_delay_init(void);
 void bsp_wrapper_delay_us(uint32_t us);
 void bsp_wrapper_delay_ms(uint32_t ms);

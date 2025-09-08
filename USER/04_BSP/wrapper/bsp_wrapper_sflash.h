@@ -45,7 +45,7 @@ struct sflash_wrapper {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_wrapper_sflash_link(struct sflash_wrapper * self);
+void bsp_wrapper_sflash_link(struct sflash_wrapper * self, const char * const name, void * const user_data);
 bool bsp_wrapper_sflash_init(void);
 void bsp_wrapper_sflash_deinit(void);
 void bsp_wrapper_sflash_get_device_id(uint32_t * id);

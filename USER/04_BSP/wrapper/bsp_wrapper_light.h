@@ -42,7 +42,7 @@ struct light_wrapper {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_wrapper_light_link(struct light_wrapper * self);
+void bsp_wrapper_light_link(struct light_wrapper * self, const char * const name, void * const user_data);
 bool bsp_wrapper_light_init(void);
 void bsp_wrapper_light_deinit(void);
 void bsp_wrapper_light_set_operation_object(const char * name);

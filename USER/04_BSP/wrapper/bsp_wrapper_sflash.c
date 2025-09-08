@@ -42,7 +42,7 @@ static uint8_t current_sflash_idx = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_wrapper_sflash_link(struct sflash_wrapper * self)
+void bsp_wrapper_sflash_link(struct sflash_wrapper * self, const char * const name, void * const user_data)
 {
     uint8_t idx = 0;
 
@@ -59,6 +59,8 @@ void bsp_wrapper_sflash_link(struct sflash_wrapper * self)
 
     sflash_wrappers[idx] = *self;
     sflash_wrappers[idx].idx = idx;
+    sflash_wrappers[idx].name = name;
+    sflash_wrappers[idx].user_data = user_data;
 
     if(sflash_wrappers[idx].name == NULL) {
         pr_warn("This wrapper has no name and will be filled with a default name");

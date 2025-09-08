@@ -57,15 +57,13 @@ static struct delay_oper delay_ops = {
 void bsp_adapter_delay_register(void)
 {   
     struct delay_wrapper wrapper = {
-        .user_data      = NULL,
-        .name           = "delay",
         .pf_init        = bsp_adapter_delay_init,
         .pf_delay_us    = bsp_adapter_delay_us,
         .pf_delay_ms    = bsp_adapter_delay_ms,
         .pf_delay_sec   = bsp_adapter_delay_sec,
     };
 
-    bsp_wrapper_delay_link(&wrapper);
+    bsp_wrapper_delay_link(&wrapper, "delay", NULL);
 }
 /**********************
  *   STATIC FUNCTIONS

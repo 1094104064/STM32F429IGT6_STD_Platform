@@ -116,8 +116,6 @@ void bsp_adapter_display_register(void)
 {
 #if 0
     struct display_wrapper lcd_wrap = {
-        .name               = display_lcd,
-        .user_data          = NULL,
 
         .width              = simple_panel.active_width,
         .height             = simple_panel.active_height,
@@ -131,12 +129,10 @@ void bsp_adapter_display_register(void)
         .pf_copy_buffer     = bsp_adapter_display_copy_buffer,
     };
 
-    bsp_wrapper_display_link(&lcd_wrap);
+    bsp_wrapper_display_link(&lcd_wrap, display_lcd, NULL);
 #endif
 
     struct display_wrapper st7735_wrap = {
-        .name       = display_st7735,
-        .user_data  = NULL,
 
         .width      = st7735_info.width,
         .height     = st7735_info.height,
@@ -150,7 +146,7 @@ void bsp_adapter_display_register(void)
         .pf_copy_buffer     = bsp_adapter_display_copy_buffer,
     };
 
-    bsp_wrapper_display_link(&st7735_wrap);
+    bsp_wrapper_display_link(&st7735_wrap, display_st7735, NULL);
 
 }
 

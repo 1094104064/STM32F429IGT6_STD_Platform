@@ -79,7 +79,7 @@ struct display_wrapper {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_wrapper_display_link(struct display_wrapper * self);
+void bsp_wrapper_display_link(struct display_wrapper * self, const char * const name, void * const user_data);
 bool bsp_wrapper_display_init(void);
 void bsp_wrapper_display_backlight_on(void);
 void bsp_wrapper_display_backlight_off(void);

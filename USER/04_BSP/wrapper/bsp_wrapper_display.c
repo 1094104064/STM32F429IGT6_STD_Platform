@@ -43,7 +43,7 @@ static uint8_t current_display_idx = 0;
  *   GLOBAL FUNCTIONS
  **********************/ 
 
-void bsp_wrapper_display_link(struct display_wrapper * self)
+void bsp_wrapper_display_link(struct display_wrapper * self, const char * const name, void * const user_data)
 {
     uint8_t idx = 0;
 
@@ -60,6 +60,8 @@ void bsp_wrapper_display_link(struct display_wrapper * self)
 
     display_wrappers[idx] = *self;
     display_wrappers[idx].idx = idx;
+    display_wrappers[idx].name = name;
+    display_wrappers[idx].user_data = user_data;
 
     if(display_wrappers[idx].name == NULL) {
         pr_warn("This wrapper has no name and will be filled with a default name");

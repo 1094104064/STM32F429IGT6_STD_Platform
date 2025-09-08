@@ -44,7 +44,7 @@ struct touchpad_wrapper {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self);
+void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self, const char * const name, void * const user_data);
 bool bsp_wrapper_touchpad_init(void);
 void bsp_wrapper_touchpad_reset(void);
 void bsp_wrapper_touchpad_scan(void);
