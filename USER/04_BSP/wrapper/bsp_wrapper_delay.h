@@ -20,18 +20,22 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "user_conf.h"
+#include "user_macros.h"
 /*********************
  *      DEFINES
  *********************/
-#define DELAY_MAX_NUM  2
+#define DELAY_MAX_NUM  1
 /**********************
  *      TYPEDEFS
  **********************/
 
-struct delay_wrapper {
-    int8_t          idx;
-    void *          user_data;
-    const char *    name;
+typedef struct delay_wrapper delay_wrapper_t;
+
+struct delay_wrapper 
+{
+    uint8_t             index;
+    char                name[BSP_MAX_NAME_LEN];
+    void *              user_data;
 
     int  (* pf_init)     (struct delay_wrapper * self);
     void (* pf_delay_us) (struct delay_wrapper * self, uint32_t us);
@@ -39,14 +43,17 @@ struct delay_wrapper {
     void (* pf_delay_sec)(struct delay_wrapper * self, uint32_t sec);
 };
 
+
+
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_wrapper_delay_link(struct delay_wrapper * self, const char * const name, void * const user_data);
-bool bsp_wrapper_delay_init(void);
-void bsp_wrapper_delay_us(uint32_t us);
-void bsp_wrapper_delay_ms(uint32_t ms);
-void bsp_wrapper_delay_sec(uint32_t sec);
+delay_wrapper_t * bsp_wrapper_delay_create(delay_wrapper_t * src, const char * const name, void * const user_data);
+delay_wrapper_t * bsp_wrapper_delay_find(const char * const name);
+bool bsp_wrapper_delay_init(delay_wrapper_t * obj);
+void bsp_wrapper_delay_us(delay_wrapper_t * obj, uint32_t us);
+void bsp_wrapper_delay_ms(delay_wrapper_t * obj, uint32_t ms);
+void bsp_wrapper_delay_sec(delay_wrapper_t * obj, uint32_t sec);
 /**********************
  *      MACROS
  **********************/

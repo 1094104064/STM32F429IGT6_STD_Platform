@@ -20,6 +20,7 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "systick.h"
+#include "dwt.h"
 /*********************
  *      DEFINES
  *********************/
@@ -34,10 +35,9 @@ extern "C" {
 
 static inline void bsp_port_delay_us(uint32_t us)
 {
-    uint32_t cycles = us * (SystemCoreClock / 1000000UL) / 4; // 根据指令周期调整
-    while(cycles--) {
-        __asm volatile ("nop"); // 空操作指令
-    }
+    uint32_t start = DWT->CYCCNT;
+    uint32_t delay = us * (SystemCoreClock / 1000000);
+    while ((DWT->CYCCNT - start) < delay);
 }
 
 static inline void bsp_port_delay_ms(uint32_t ms)

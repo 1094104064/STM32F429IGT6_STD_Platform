@@ -20,6 +20,9 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "user_conf.h"
+#include "bsp_wrapper_delay.h"
+#include "bsp_driver_delay.h"
+#include "bsp_port_delay.h"
 /*********************
  *      DEFINES
  *********************/
@@ -31,7 +34,7 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_adapter_delay_register(void);
+delay_wrapper_t * bsp_adapter_delay_register(const char * const name, void * const user_data);
 /**********************
  *      MACROS
  **********************/

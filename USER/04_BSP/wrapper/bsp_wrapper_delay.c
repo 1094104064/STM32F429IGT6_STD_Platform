@@ -37,85 +37,87 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static struct delay_wrapper delay_wrappers[DELAY_MAX_NUM];
-static uint8_t current_delay_idx = 0;
+static delay_wrapper_t gs_wrappers[DELAY_MAX_NUM];
+static uint8_t gs_index = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 
-void bsp_wrapper_delay_link(struct delay_wrapper * self, const char * const name, void * const user_data)
+delay_wrapper_t * bsp_wrapper_delay_create(delay_wrapper_t * src, const char * const name, void * const user_data)
 {
-    uint8_t idx = 0;
-
-    current_delay_idx++;
-
-    if(current_delay_idx < DELAY_MAX_NUM) {
-        idx = current_delay_idx;
-    }
-    else {
-        current_delay_idx = 0;
+    if(gs_index >= DELAY_MAX_NUM) {
+        gs_index = 0;
     }
 
-    memset(&delay_wrappers[idx], 0, sizeof(struct delay_wrapper));
+    if(bsp_wrapper_delay_find(name) != NULL) return NULL;
 
-    delay_wrappers[idx] = *self;
-    delay_wrappers[idx].idx = idx;
-    delay_wrappers[idx].name = name;
-    delay_wrappers[idx].user_data = user_data;
+    memset(&gs_wrappers[gs_index], 0, sizeof(delay_wrapper_t));
 
-    if(delay_wrappers[idx].name == NULL) {
-        pr_warn("This wrapper has no name and will be filled with a default name");
-        delay_wrappers[idx].name = "delay_default";
-    }
+    gs_wrappers[gs_index].pf_init       = src->pf_init;
+    gs_wrappers[gs_index].pf_delay_us   = src->pf_delay_us;
+    gs_wrappers[gs_index].pf_delay_ms   = src->pf_delay_ms;
+    gs_wrappers[gs_index].pf_delay_sec  = src->pf_delay_sec;
+    gs_wrappers[gs_index].user_data     = user_data;
+    gs_wrappers[gs_index].index         = gs_index;
+
+    strncpy(gs_wrappers[gs_index].name, name, sizeof(gs_wrappers[gs_index].name) - 1);
+
+    gs_index++;
+
+    return &gs_wrappers[gs_index - 1];
 }
 
-bool bsp_wrapper_delay_init(void)
+delay_wrapper_t * bsp_wrapper_delay_find(const char * const name)
+{
+    for(uint8_t i = 0; i < ARRAY_SIZE(gs_wrappers); i++ ) {
+        if(strncmp(gs_wrappers[i].name, name, BSP_MAX_NAME_LEN) == 0) {
+            return &gs_wrappers[i];
+        }
+    }
+    return NULL;
+}
+
+bool bsp_wrapper_delay_init(delay_wrapper_t * obj)
 {
     int ret = 0;
-    struct delay_wrapper * self = &delay_wrappers[current_delay_idx];
+    
+    assert_null(obj->pf_init);
+    assert_null(obj->pf_delay_us);
+    assert_null(obj->pf_delay_ms);
+    assert_null(obj->pf_delay_sec);
 
-    assert_null(self->pf_init);
-    assert_null(self->pf_delay_us);
-    assert_null(self->pf_delay_ms);
-    assert_null(self->pf_delay_sec);
-
-    if( self->pf_init       == NULL || self->pf_delay_us    == NULL ||
-        self->pf_delay_ms   == NULL || self->pf_delay_sec   == NULL) {
+    if( obj->pf_init       == NULL || obj->pf_delay_us    == NULL ||
+        obj->pf_delay_ms   == NULL || obj->pf_delay_sec   == NULL) {
         return false;
     }
 
-    ret = self->pf_init(self);
+    ret = obj->pf_init(obj);
 
     if(ret != 0) {
-        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
+        pr_error("%s : failed to initialize, error code: %d", obj->name, ret);
         return false;
     }
 
-    pr_info("%s : initialized successfully", self->name);
+    pr_info("%s : initialized successfully", obj->name);
 
     return true;
 }
 
-void bsp_wrapper_delay_us(uint32_t us)
+void bsp_wrapper_delay_us(delay_wrapper_t * obj, uint32_t us)
 {
-    struct delay_wrapper * self = &delay_wrappers[current_delay_idx];
-
-    self->pf_delay_us(self, us);
+    obj->pf_delay_us(obj, us);
 }
 
-void bsp_wrapper_delay_ms(uint32_t ms)
+void bsp_wrapper_delay_ms(delay_wrapper_t * obj, uint32_t ms)
 {
-    struct delay_wrapper * self = &delay_wrappers[current_delay_idx];
-
-    self->pf_delay_ms(self, ms);
+    obj->pf_delay_ms(obj, ms);
 }
 
-void bsp_wrapper_delay_sec(uint32_t sec)
+void bsp_wrapper_delay_sec(delay_wrapper_t * obj, uint32_t sec)
 {
-    struct delay_wrapper * self = &delay_wrappers[current_delay_idx];
-
-    self->pf_delay_sec(self, sec);
+    obj->pf_delay_sec(obj, sec);
 }
+
 
 
 /**********************

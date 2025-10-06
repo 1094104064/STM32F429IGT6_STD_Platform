@@ -1810,6 +1810,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>UTILITIES</GroupName>
+          <Files>
+            <File>
+              <FileName>user_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\user_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>user_macros.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\user_macros.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Core</GroupName>
           <Files>
             <File>

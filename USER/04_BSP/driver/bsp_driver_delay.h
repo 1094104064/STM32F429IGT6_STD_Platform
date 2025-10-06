@@ -47,25 +47,27 @@ extern "C" {
  *      TYPEDEFS
  **********************/
 
-struct delay_oper {
-    void (* pf_delay_us)(uint32_t us);
-    void (* pf_delay_ms)(uint32_t ms);
-    void (* pf_delay_sec)(uint32_t sec);
+struct delay_class 
+{
+    void (* pf_delay_us)    (uint32_t us);
+    void (* pf_delay_ms)    (uint32_t ms);
+    void (* pf_delay_sec)   (uint32_t sec);
 };
     
-struct delay_driver {
-    struct delay_oper * oper;
-            
-    bool (* pf_init)(struct delay_driver * self);
-    void (* pf_delay_us)(struct delay_driver * self, uint32_t us);
-    void (* pf_delay_ms)(struct delay_driver * self, uint32_t ms);
-    void (* pf_delay_sec)(struct delay_driver * self, uint32_t sec);
+struct delay_driver 
+{
+    const struct delay_class * p_class;
+
+    bool (* pf_init)        (struct delay_driver * self);
+    void (* pf_delay_us)    (struct delay_driver * self, uint32_t us);
+    void (* pf_delay_ms)    (struct delay_driver * self, uint32_t ms);
+    void (* pf_delay_sec)   (struct delay_driver * self, uint32_t sec);
 };
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper);
+void bsp_driver_delay_instantiate(struct delay_driver * self, const struct delay_class * p_class);
 /**********************
  *      MACROS
  **********************/

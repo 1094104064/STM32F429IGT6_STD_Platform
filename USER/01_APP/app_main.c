@@ -29,7 +29,7 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
-
+delay_wrapper_t * gp_delay;
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -71,7 +71,6 @@ void app_main(void)
 
         pr_info("ElapsTick = %d", ElapsTick);
 
-        bsp_wrapper_delay_ms(2000);
     }
 
 #endif
@@ -108,8 +107,9 @@ static void _core_init(void)
 static void _bsp_init(void)
 {
     /* Initialize BSP components here */
-    bsp_adapter_delay_register();
-    bsp_wrapper_delay_init();
+
+    gp_delay = bsp_adapter_delay_register("delay", NULL);
+    assert_null(gp_delay);
 
     bsp_adapter_light_register();
     bsp_wrapper_light_set_operation_object("blue_led");

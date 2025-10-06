@@ -44,17 +44,17 @@ static void delay_sec(struct delay_driver * self, uint32_t sec);
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
+void bsp_driver_delay_instantiate(struct delay_driver * self, const struct delay_class * p_class)
 {
     delay_assert_null(self);
-    delay_assert_null(oper);
+    delay_assert_null(p_class);
 
-    if(self == NULL || oper == NULL) {
+    if(self == NULL || p_class == NULL) {
         return;
     }
 
-    self->oper = oper;
-    
+    self->p_class = p_class;
+
     self->pf_init       = delay_init;
     self->pf_delay_us   = delay_us;
     self->pf_delay_ms   = delay_ms;
@@ -65,13 +65,13 @@ void bsp_driver_delay_link(struct delay_driver * self, struct delay_oper * oper)
  **********************/
 static bool delay_init(struct delay_driver * self)
 {
-    delay_assert_null(self->oper->pf_delay_us);
-    delay_assert_null(self->oper->pf_delay_ms);
-    delay_assert_null(self->oper->pf_delay_sec);
+    delay_assert_null(self->p_class->pf_delay_us);
+    delay_assert_null(self->p_class->pf_delay_ms);
+    delay_assert_null(self->p_class->pf_delay_sec);
 
-    if(self->oper->pf_delay_us  == NULL ||
-       self->oper->pf_delay_ms  == NULL ||
-       self->oper->pf_delay_sec == NULL) {
+    if(self->p_class->pf_delay_us  == NULL ||
+       self->p_class->pf_delay_ms  == NULL ||
+       self->p_class->pf_delay_sec == NULL) {
         return false;
     }
 
@@ -83,17 +83,17 @@ static bool delay_init(struct delay_driver * self)
 
 static void delay_us(struct delay_driver * self, uint32_t us)
 {
-    self->oper->pf_delay_us(us);
+    self->p_class->pf_delay_us(us);
 }
 
 static void delay_ms(struct delay_driver * self, uint32_t ms)
 {
-    self->oper->pf_delay_ms(ms);
+    self->p_class->pf_delay_ms(ms);
 }
 
 static void delay_sec(struct delay_driver * self, uint32_t sec)
 {
-    self->oper->pf_delay_sec(sec);
+    self->p_class->pf_delay_sec(sec);
 }
 
 /******************************* (END OF FILE) *********************************/

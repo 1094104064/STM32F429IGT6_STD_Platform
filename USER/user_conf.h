@@ -106,6 +106,8 @@ extern "C" {
 
 #define assert_null(p) assert_msg(p == NULL, "NULL pointer")
 
+#define BSP_MAX_NAME_LEN    16
+
 
 
 #ifdef __cplusplus
