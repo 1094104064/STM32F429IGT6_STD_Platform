@@ -20,7 +20,7 @@
 #include "ltdc.h"
 #include "gpio.h"
 #include "dma2d.h"
-#include "bsp_driver_lcd.h"
+#include "bsp_driver_fb.h"
 /**********************
  *      MACROS
  **********************/
@@ -41,15 +41,118 @@ extern const struct lcd_panel * panels;
 /**********************
  *  STATIC VARIABLES
  **********************/
+static bool ltdc_initialized = false;
 
+static uint16_t active_width;
+static uint16_t active_height;
+
+static uint32_t hsync_width;
+static uint32_t hback_porch;
+static uint32_t hfront_porch;
+static uint32_t vback_porch;
+static uint32_t vsync_width;
+static uint32_t vfront_porch;
+
+static uint8_t pixel_format;
+static uint8_t pixel_size;
+static uint8_t rotated;
+static uint32_t start_address;
+
+static LTDC_Layer_TypeDef * layer = LTDC_Layer1;
 
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 
+void STD_LTDC_TimingInit(uint32_t hsw, uint32_t hbp, uint32_t hfp, uint32_t vsw, uint32_t vbp, uint32_t vfp)
+{
+    hsync_width = hsw;
+    hback_porch = hbp;
+    hfront_porch = hfp;
+    vsync_width = vsw;
+    vback_porch = vbp;
+    vfront_porch = vfp;
+}
+
+void STD_LTDC_ResolutionInit(uint16_t width, uint16_t height)
+{
+    active_width = width;
+    active_height = height;
+}
+
+void STD_LTDC_PixelInfoExport(uint8_t * p_format, uint8_t * p_size)
+{
+    if(p_format) *p_format = pixel_format;
+    if(p_size)   *p_size = pixel_size;
+}
+
+
+void STD_LTDC_SetARGB8888(void)
+{
+    pixel_format = LTDC_Pixelformat_ARGB8888;
+    pixel_size = 4;
+}
+
+void STD_LTDC_SetRGB888(void)
+{
+    pixel_format = LTDC_Pixelformat_RGB888;
+    pixel_size = 3;
+}
+
+void STD_LTDC_SetRGB565(void)
+{
+    pixel_format = LTDC_Pixelformat_RGB565;
+    pixel_size = 2;
+}
+
+void STD_LTDC_SetARGB1555(void)
+{
+    pixel_format = LTDC_Pixelformat_ARGB1555;
+    pixel_size = 2;
+}
+
+void STD_LTDC_SetARGB4444(void)
+{
+    pixel_format = LTDC_Pixelformat_ARGB4444;
+    pixel_size = 2;
+}
+
+void STD_LTDC_SetL8(void)
+{
+    pixel_format = LTDC_Pixelformat_L8;
+    pixel_size = 1;
+}
+
+void STD_LTDC_SetAL44(void)
+{
+    pixel_format = LTDC_Pixelformat_AL44;
+    pixel_size = 2;
+}
+
+void STD_LTDC_SetAL88(void)
+{
+    pixel_format = LTDC_Pixelformat_AL88;
+    pixel_size = 2;
+}
+
+void STD_LTDC_SetLayer0(uint32_t address)
+{
+    layer = LTDC_Layer1;
+    start_address = address;
+}
+
+void STD_LTDC_SetLayer1(uint32_t address)
+{
+    layer = LTDC_Layer2;
+    start_address = address;
+}
 
 void STD_LTDC_Init(void)
 {
+    if(ltdc_initialized) {
+        return;
+    }
+
     STD_GPIO_Init(LTDC_R2_PORT, LTDC_R2_PIN, GPIO_Mode_AF, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, GPIO_AF_LTDC);
     STD_GPIO_Init(LTDC_R3_PORT, LTDC_R3_PIN, GPIO_Mode_AF, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, GPIO_AF_LTDC);
     STD_GPIO_Init(LTDC_R4_PORT, LTDC_R4_PIN, GPIO_Mode_AF, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, GPIO_AF_LTDC);
@@ -80,7 +183,7 @@ void STD_LTDC_Init(void)
     uint8_t  LCD_PLLSAIR = 3;   /* 用于分频的PLLSAIR参数，可取范围为2~7 */
     uint8_t  LCD_CLKDIV  = 8;   /* LCD时钟分频参数，默认设置为8分频，数值上等于RCC_PLLSAIDivR_Div8 */
 
-    LTDC_InitTypeDef  ltdc_init;
+    LTDC_InitTypeDef  ltdc_init = {0};
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_LTDC, ENABLE); 	
 
     LCD_PLLSAIN = LCD_CLK * LCD_PLLSAIR * LCD_CLKDIV;       /* 根据需要使用的LCD时钟计算PLLSAIN参数，可取范围为50~432 */
@@ -88,16 +191,6 @@ void STD_LTDC_Init(void)
     RCC_LTDCCLKDivConfig(RCC_PLLSAIDivR_Div8);              /* LCD时钟分频设置，要和LCD_CLKDIV对应 */
     RCC_PLLSAICmd(ENABLE);                                  /* 使能PLLSAI时钟 */ 
     while(RCC_GetFlagStatus(RCC_FLAG_PLLSAIRDY) == RESET);	/* 等待时钟配置完成 */
-
-    uint16_t active_width = panels->active_width;
-    uint16_t active_height = panels->active_height;
-
-    uint32_t hsync_width = panels->hsync_width;
-    uint32_t hback_porch = panels->hback_porch;
-    uint32_t hfront_porch = panels->hfront_porch;
-    uint32_t vback_porch = panels->vback_porch;
-    uint32_t vsync_width = panels->vsync_width;
-    uint32_t vfront_porch = panels->vfront_porch;
 
 
     ltdc_init.LTDC_HSPolarity = LTDC_HSPolarity_AL; /* 低电平有效 */
@@ -122,19 +215,9 @@ void STD_LTDC_Init(void)
     LTDC_Cmd(ENABLE);
 }
 
-void STD_LTDC_LayerInit(void)
+void STD_LTDC_LayerInit(LTDC_Layer_TypeDef * layerx, uint8_t pixel_format, uint32_t start_address)
 {
-    LTDC_Layer_InitTypeDef ltdc_layer; 
-
-    uint16_t active_width = panels->active_width;
-    uint16_t active_height = panels->active_height;
-
-    // uint32_t hsync_width = panels->hsync_width;
-    uint32_t hback_porch = panels->hback_porch;
-    // uint32_t hfront_porch = panels->hfront_porch;
-    uint32_t vback_porch = panels->vback_porch;
-    // uint32_t vsync_width = panels->vsync_width;
-    // uint32_t vfront_porch = panels->vfront_porch;
+    LTDC_Layer_InitTypeDef ltdc_layer = {0}; 
 
     ltdc_layer.LTDC_HorizontalStart = hback_porch + 1;
     ltdc_layer.LTDC_HorizontalStop  = active_width + hback_porch;
@@ -143,7 +226,7 @@ void STD_LTDC_LayerInit(void)
     ltdc_layer.LTDC_CFBLineNumber   = active_height;
 
     /* 像素格式设置 */
-    ltdc_layer.LTDC_PixelFormat     = LCD_LAYER1_COLOR_MODE;
+    ltdc_layer.LTDC_PixelFormat     = pixel_format;
 
     /* 配置 layer1 的恒定透明度，最终写入 LTDC_LxCACR 寄存器  */
     /* 需要注意的是，这个参数是直接配置整个 layer1 的透明度，这里设置为255即不透明 */
@@ -155,13 +238,24 @@ void STD_LTDC_LayerInit(void)
     /* 如果 layer1 使用了透明色，则必须配置成 
     LTDC_BLENDING_FACTOR1_PAxCA 和 LTDC_BLENDING_FACTOR2_PAxCA，
     否则ARGB中的A通道不起作用 */
-    ltdc_layer.LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_CA;
-    ltdc_layer.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_CA;
+    if( pixel_format == LTDC_Pixelformat_ARGB8888   || 
+        pixel_format == LTDC_Pixelformat_ARGB1555   ||
+        pixel_format == LTDC_Pixelformat_ARGB4444 )
+    {
+        ltdc_layer.LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_PAxCA;
+        ltdc_layer.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_PAxCA;
+    }
+    else
+    {
+        ltdc_layer.LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_CA;
+        ltdc_layer.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_CA;
+    }
+
 
     /* layer1 的显存地址，本例程使用外部的SDRAM作为显存，起始地址0xD0000000，SDRAM大小为32M */
     /* layer1 显存大小等于 = LCD_Width * LCD_Width * BytesPerPixel_1（每个像素所占字节大小）*/
     /* 因为 SDRAM 大小为32M，用户设置的区域一定不能超过这个值 */
-    ltdc_layer.LTDC_CFBStartAdress = LCD_LAYER1_ADDRESS;
+    ltdc_layer.LTDC_CFBStartAdress = start_address;
 
     /* 配置 layer1 的初始默认颜色，包括A,R,G,B 的值 ，最终写入 LTDC_LxDCCR 寄存器 */
     ltdc_layer.LTDC_DefaultColorAlpha   = 0;
@@ -169,89 +263,48 @@ void STD_LTDC_LayerInit(void)
     ltdc_layer.LTDC_DefaultColorGreen   = 0;
     ltdc_layer.LTDC_DefaultColorBlue    = 0;
 
-#if (   LCD_LAYER1_COLOR_MODE == LCD_FORMAT_RGB565      ||\
-        LCD_LAYER1_COLOR_MODE == LCD_FORMAT_ARGB1555    ||\
-        LCD_LAYER1_COLOR_MODE == LCD_FORMAT_ARGB4444    )
-
+    if( pixel_format == LTDC_Pixelformat_RGB565     || 
+        pixel_format == LTDC_Pixelformat_ARGB1555   ||
+        pixel_format == LTDC_Pixelformat_ARGB4444 )
+    {
         /* 每行的像素占的总字节数 */
         ltdc_layer.LTDC_CFBLineLength = active_width * 2 + 3;
 
         /* 行间距，某像素的起始处到下一行的起始处的增量 */
         ltdc_layer.LTDC_CFBPitch = active_width * 2;
-
-#elif ( LCD_LAYER1_COLOR_MODE == LCD_FORMAT_RGB888      ||\
-        LCD_LAYER1_COLOR_MODE == LCD_FORMAT_ARGB8888    )
-
+    }
+    else if ( pixel_format == LTDC_Pixelformat_RGB888   || 
+              pixel_format == LTDC_Pixelformat_ARGB8888 )
+    {
         ltdc_layer.LTDC_CFBLineLength = active_width * 4 + 3;
-        ltdc_layer.LTDC_CFBPitch = active_width * 2;
+        ltdc_layer.LTDC_CFBPitch = active_width * 4;
         LTDC_DitherCmd(ENABLE);
-#else
+    }
+    else if ( pixel_format == LTDC_Pixelformat_L8 )
+    {
+        ltdc_layer.LTDC_CFBLineLength = active_width + 3;
+        ltdc_layer.LTDC_CFBPitch = active_width;
+    }
+    else if ( pixel_format == LTDC_Pixelformat_AL44 )
+    {
         ltdc_layer.LTDC_CFBLineLength = active_width * 2 + 3;
         ltdc_layer.LTDC_CFBPitch = active_width * 2;
-#endif
+    }
+    else if ( pixel_format == LTDC_Pixelformat_AL88 )
+    {
+        ltdc_layer.LTDC_CFBLineLength = active_width * 2 + 3;
+        ltdc_layer.LTDC_CFBPitch = active_width * 2;
+    }
+    else
+    {
+        /* 默认按 RGB565 来设置 */
+        ltdc_layer.LTDC_CFBLineLength = active_width * 2 + 3;
+        ltdc_layer.LTDC_CFBPitch = active_width * 2;
+    }
 
-        LTDC_LayerInit(LTDC_Layer1, &ltdc_layer);       //初始化层1
-        LTDC_LayerCmd(LTDC_Layer1, ENABLE);             //使能层1
-        LTDC_ReloadConfig(LTDC_IMReload);               //重新载入参数
-
-        layers[0].width = active_width;
-        layers[0].height = active_height;
-        layers[0].pixel_format = LCD_LAYER1_COLOR_MODE;
-        layers[0].pixel_size = LCD_LAYER1_PIXEL_BYTE;
-        layers[0].start_address = LCD_LAYER1_ADDRESS;
-        layers[0].rotated = LCD_ROTATED;    
-
-#if LCD_LAYER2_ENABLE
-
-        /* 设置 layer2 的层混合系数，最终写入 LTDC_LxBFCR 寄存器 */
-        /* 该参数用于设置 layer2 和 (layer0+背景）之间的颜色混合系数，计算公式为 ：
-           混合后的颜色 =  BF1 * layer2的颜色 + BF2 * (layer0+背景混合后的颜色） */
-        /* 如果 layer2 使用了透明色，则必须配置成 
-        LTDC_BLENDING_FACTOR1_PAxCA 和 LTDC_BLENDING_FACTOR2_PAxCA，
-        否则ARGB中的A通道不起作用 */
-        ltdc_layer.LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_PAxCA;
-        ltdc_layer.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_PAxCA;
-
-        /* layer2 的显存地址，本例程使用外部的SDRAM作为显存，起始地址0xD0000000，SDRAM大小为32M */
-        /* 由于 layer1 会占用一部分显存，因此设置 layer2 显存时，需要进行一定偏移 */  
-        ltdc_layer.LTDC_CFBStartAdress = LCD_LAYER2_ADDRESS;
-        ltdc_layer.LTDC_PixelFormat = LCD_LAYER2_COLOR_MODE;
-
-        #if (   LCD_LAYER2_COLOR_MODE == LCD_FORMAT_RGB565      ||\
-                LCD_LAYER2_COLOR_MODE == LCD_FORMAT_ARGB1555    ||\
-                LCD_LAYER2_COLOR_MODE == LCD_FORMAT_ARGB4444    )
-
-                ltdc_layer.LTDC_CFBLineLength = LCD_WIDTH * 2 + 3;
-                ltdc_layer.LTDC_CFBPitch = LCD_WIDTH  * 2;
-
-        #elif ( LCD_LAYER2_COLOR_MODE == LCD_FORMAT_RGB888      ||\
-                LCD_LAYER2_COLOR_MODE == LCD_FORMAT_ARGB8888    )
-
-                ltdc_layer.LTDC_CFBLineLength = LCD_WIDTH * 4 + 3;
-                ltdc_layer.LTDC_CFBPitch = LCD_WIDTH * 2;
-                LTDC_DitherCmd(ENABLE);
-        #else
-                ltdc_layer.LTDC_CFBLineLength = LCD_WIDTH * 2 + 3;
-                ltdc_layer.LTDC_CFBPitch = LCD_WIDTH  * 2;
-        #endif
-
-        LTDC_LayerInit(LTDC_Layer2, &ltdc_layer);   //初始化层2
-        LTDC_LayerCmd(LTDC_Layer2, ENABLE);         //使能层2
-        LTDC_ReloadConfig(LTDC_IMReload);           //重新载入参数
-
-        layer_info[1].direction = LCD_DIR_HOR;
-        layer_info[1].address = LCD_LAYER2_ADDRESS;
-        layer_info[1].color_mode = LCD_LAYER2_COLOR_MODE;
-        layer_info[1].pixel_byte = LCD_LAYER2_PIXEL_BYTE;
-
-        layers[1].width = layers[0].width;
-        layers[1].height = layers[0].height;
-        layers[1].pixel_format = LCD_LAYER2_COLOR_MODE;
-        layers[1].pixel_size = LCD_LAYER2_PIXEL_BYTE;
-        layers[1].start_address = LCD_LAYER2_ADDRESS;
-        layers[1].rotated = layers[0].rotated;
-
-#endif
+    LTDC_LayerInit(layer, &ltdc_layer);       
+    LTDC_LayerCmd(layer, ENABLE);             
+    LTDC_ReloadConfig(LTDC_IMReload);              
 
 }
 

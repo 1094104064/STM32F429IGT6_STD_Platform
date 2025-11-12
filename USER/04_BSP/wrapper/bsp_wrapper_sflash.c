@@ -63,7 +63,7 @@ void bsp_wrapper_sflash_link(struct sflash_wrapper * self, const char * const na
     sflash_wrappers[idx].user_data = user_data;
 
     if(sflash_wrappers[idx].name == NULL) {
-        pr_warn("This wrapper has no name and will be filled with a default name");
+//        pr_warn("This wrapper has no name and will be filled with a default name");
         sflash_wrappers[idx].name = "sflash_default";
     }
 }
@@ -73,12 +73,12 @@ bool bsp_wrapper_sflash_init(void)
     int ret = 0;
     struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
 
-    assert_null(self->pf_init);
-    assert_null(self->pf_get_device_id);
-    assert_null(self->pf_erase);
-    assert_null(self->pf_read);
-    assert_null(self->pf_write);
-    assert_null(self->pf_erase_chip);
+//    assert_null(self->pf_init);
+//    assert_null(self->pf_get_device_id);
+//    assert_null(self->pf_erase);
+//    assert_null(self->pf_read);
+//    assert_null(self->pf_write);
+//    assert_null(self->pf_erase_chip);
 
     if( self->pf_init   == NULL     || self->pf_get_device_id   == NULL ||
         self->pf_erase  == NULL     || self->pf_read            == NULL ||
@@ -89,11 +89,11 @@ bool bsp_wrapper_sflash_init(void)
     ret = self->pf_init(self);
 
     if(ret != 0) {
-        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
+//        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
         return false;
     }
 
-    pr_info("%s : initialized successfully", self->name);
+//    pr_info("%s : initialized successfully", self->name);
 
     return true;
 }
@@ -156,7 +156,7 @@ void bsp_wrapper_sflash_test(void)
     uint32_t address = 0x000000;
 
     bsp_wrapper_sflash_get_device_id(&chip_id);
-    pr_info("sflash chip id: 0x%X", chip_id);
+//    pr_info("sflash chip id: 0x%X", chip_id);
 
     memset(write_buf, 0xAA, sizeof(write_buf));
 
@@ -165,9 +165,9 @@ void bsp_wrapper_sflash_test(void)
     bsp_wrapper_sflash_read(address, read_buf, sizeof(read_buf));
 
     if (memcmp(write_buf, read_buf, sizeof(write_buf)) == 0) {
-        pr_info("sflash read/write test passed");
+//        pr_info("sflash read/write test passed");
     } else {
-        pr_info("sflash read/write test failed");
+//        pr_info("sflash read/write test failed");
     }
 
 }

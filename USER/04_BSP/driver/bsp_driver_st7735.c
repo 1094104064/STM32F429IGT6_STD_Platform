@@ -25,7 +25,16 @@
 /*********************
  *      DEFINES
  *********************/
+#define CS_HIGH(self)           ((self)->handle->pf_cs_high())
+#define CS_LOW(self)            ((self)->handle->pf_cs_low())
 
+#define DC_HIGH(self)           ((self)->handle->pf_dc_high())
+#define DC_LOW(self)            ((self)->handle->pf_dc_low())
+
+#define RST_HIGH(self)          ((self)->handle->pf_rst_high())
+#define RST_LOW(self)           ((self)->handle->pf_rst_low())
+
+#define DELAY_MS(self, x)       ((self)->handle->pf_delay_ms(x))
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
@@ -33,18 +42,19 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void st7735_write_data(struct st7735_driver * self, uint8_t byte);
-static void st7735_write_command(struct st7735_driver * self, uint8_t cmd);
-static bool st7735_init(struct st7735_driver * self);
-static void st7735_set_cursor(struct st7735_driver * self, uint16_t x, uint16_t y);
-static void st7735_set_window(struct st7735_driver * self, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
-static void st7735_put_pixel(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t color);
-static void st7735_fill_rect(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
-static void st7735_fill_screen(struct st7735_driver * self, uint16_t color);
-static void st7735_copy_buffer(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data);
-static void st7735_backlight_on(struct st7735_driver * self);
-static void st7735_backlight_off(struct st7735_driver * self);
-static void st7735_backlight_set(struct st7735_driver * self, uint8_t brightness);
+static void st7735_write_data       (st7735_driver_t * self, uint8_t byte);
+static void st7735_write_command    (st7735_driver_t * self, uint8_t cmd);
+static bool st7735_init             (st7735_driver_t * self);
+static void st7735_set_cursor       (st7735_driver_t * self, uint16_t x, uint16_t y);
+static void st7735_set_window       (st7735_driver_t * self, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+static void st7735_put_pixel        (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t color);
+static void st7735_fill_rect        (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+static void st7735_fill_screen      (st7735_driver_t * self, uint16_t color);
+static void st7735_copy_buffer      (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data);
+static void st7735_backlight_on     (st7735_driver_t * self);
+static void st7735_backlight_off    (st7735_driver_t * self);
+static void st7735_backlight_set    (st7735_driver_t * self, uint8_t brightness);
+static void st7735_rotated_set(st7735_driver_t * self, uint16_t rotated);
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -63,108 +73,96 @@ static const uint8_t st7735_nv_gamma_ctrl_params[] = {0x04, 0x16, 0x06, 0x0D, 0x
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_driver_st7735_link(    struct st7735_driver * self, 
-                                struct st7735_oper * oper,
-                                struct st7735_oper_info * info,
-                                struct st7735_oper_spi * spi,
-                                struct st7735_oper_ctrl * ctrl,
-                                struct st7735_oper_backlight * backlight)
+void bsp_driver_st7735_link(st7735_driver_t * drv, const st7735_handle_t * handle)
 {
-    st7735_assert_null(self);
-    st7735_assert_null(oper);
-    st7735_assert_null(info);
-    st7735_assert_null(spi);
-    st7735_assert_null(ctrl);
-    st7735_assert_null(backlight);
+    st7735_assert_null(drv);
+    st7735_assert_null(handle);
 
-    if(self == NULL || oper == NULL || info == NULL || spi == NULL || ctrl == NULL || backlight == NULL)
+    if (drv == NULL || handle == NULL) {
         return;
+    }
 
-    self->oper                  = oper;
-    self->oper->oper_info       = info;
-    self->oper->oper_spi        = spi;
-    self->oper->oper_ctrl       = ctrl;
-    self->oper->oper_backlight  = backlight;
+    drv->handle                 = handle;
 
-
-    self->pf_write_data         = st7735_write_data;
-    self->pf_write_command      = st7735_write_command;
-    self->pf_init               = st7735_init;
-    self->pf_set_cursor         = st7735_set_cursor;
-    self->pf_set_window         = st7735_set_window;
-    self->pf_put_pixel          = st7735_put_pixel;
-    self->pf_fill_rect          = st7735_fill_rect;
-    self->pf_fill_screen        = st7735_fill_screen;
-    self->pf_copy_buffer        = st7735_copy_buffer;
-    self->pf_backlight_on       = st7735_backlight_on;
-    self->pf_backlight_off      = st7735_backlight_off;
-    self->pf_backlight_set      = st7735_backlight_set;
+    drv->pf_write_data         = st7735_write_data;
+    drv->pf_write_command      = st7735_write_command;
+    drv->pf_init               = st7735_init;
+    drv->pf_set_cursor         = st7735_set_cursor;
+    drv->pf_set_window         = st7735_set_window;
+    drv->pf_put_pixel          = st7735_put_pixel;
+    drv->pf_fill_rect          = st7735_fill_rect;
+    drv->pf_fill_screen        = st7735_fill_screen;
+    drv->pf_copy_buffer        = st7735_copy_buffer;
+    drv->pf_backlight_on       = st7735_backlight_on;
+    drv->pf_backlight_off      = st7735_backlight_off;
+    drv->pf_backlight_set      = st7735_backlight_set;
+    drv->pf_rotated_set        = st7735_rotated_set;
 }
 
 /**********************
  *   STATIC FUNCTIONS
  **********************/
 
-static void st7735_write_data(struct st7735_driver * self, uint8_t byte)
+static void st7735_write_data(st7735_driver_t * self, uint8_t byte)
 {
-    self->oper->oper_spi->pf_transmit_8bit(byte);
+    self->handle->pf_spi_transmit_8bit(byte);
 }
 
-static void st7735_write_command(struct st7735_driver * self, uint8_t cmd)
+static void st7735_write_command(st7735_driver_t * self, uint8_t cmd)
 {
-    self->oper->oper_ctrl->pf_dc_low();
+    self->handle->pf_dc_low();
     st7735_write_data(self, cmd);
-    self->oper->oper_ctrl->pf_dc_high();
+    self->handle->pf_dc_high();
 }
 
-
-static bool st7735_init(struct st7735_driver * self)
+static bool st7735_init(st7735_driver_t * self)
 {
-    st7735_assert_null(self->oper->pf_delay_ms);
-    st7735_assert_null(self->oper->oper_ctrl->pf_cs_high);
-    st7735_assert_null(self->oper->oper_ctrl->pf_cs_low);
-    st7735_assert_null(self->oper->oper_ctrl->pf_dc_high);
-    st7735_assert_null(self->oper->oper_ctrl->pf_dc_low);
-    st7735_assert_null(self->oper->oper_ctrl->pf_rst_high);
-    st7735_assert_null(self->oper->oper_ctrl->pf_rst_low);
-    st7735_assert_null(self->oper->oper_spi->pf_transmit_8bit);
-    st7735_assert_null(self->oper->oper_spi->pf_transmit_16bit);
-    st7735_assert_null(self->oper->oper_spi->pf_transmit_dma_16bit);
-    st7735_assert_null(self->oper->oper_backlight->pf_on);
-    st7735_assert_null(self->oper->oper_backlight->pf_off);
-    st7735_assert_null(self->oper->oper_backlight->pf_set);
+    st7735_assert_null(self->handle->pf_delay_ms);
+    st7735_assert_null(self->handle->pf_cs_high);
+    st7735_assert_null(self->handle->pf_cs_low);
+    st7735_assert_null(self->handle->pf_dc_high);
+    st7735_assert_null(self->handle->pf_dc_low);
+    st7735_assert_null(self->handle->pf_rst_high);
+    st7735_assert_null(self->handle->pf_rst_low);
+    st7735_assert_null(self->handle->pf_spi_transmit_8bit);
+    st7735_assert_null(self->handle->pf_spi_transmit_16bit);
+    st7735_assert_null(self->handle->pf_spi_dma_transmit_16bit);
+    st7735_assert_null(self->handle->pf_backlight_on);
+    st7735_assert_null(self->handle->pf_backlight_off);
+    st7735_assert_null(self->handle->pf_backlight_set);
 
-    if(self->oper->pf_delay_ms                      == NULL ||
-       self->oper->oper_ctrl->pf_cs_high            == NULL ||
-       self->oper->oper_ctrl->pf_cs_low             == NULL ||
-       self->oper->oper_ctrl->pf_dc_high            == NULL ||
-       self->oper->oper_ctrl->pf_dc_low             == NULL ||
-       self->oper->oper_ctrl->pf_rst_high           == NULL ||
-       self->oper->oper_ctrl->pf_rst_low            == NULL ||
-       self->oper->oper_spi->pf_transmit_8bit       == NULL || 
-       self->oper->oper_spi->pf_transmit_16bit      == NULL ||
-       self->oper->oper_spi->pf_transmit_dma_16bit  == NULL ||
-       self->oper->oper_backlight->pf_on            == NULL ||
-       self->oper->oper_backlight->pf_off           == NULL ||
-       self->oper->oper_backlight->pf_set           == NULL) {
+    if(self->handle->pf_delay_ms                == NULL ||
+       self->handle->pf_cs_high                 == NULL ||
+       self->handle->pf_cs_low                  == NULL ||
+       self->handle->pf_dc_high                 == NULL ||
+       self->handle->pf_dc_low                  == NULL ||
+       self->handle->pf_rst_high                == NULL ||
+       self->handle->pf_rst_low                 == NULL ||
+       self->handle->pf_spi_transmit_8bit       == NULL || 
+       self->handle->pf_spi_transmit_16bit      == NULL ||
+       self->handle->pf_spi_dma_transmit_16bit  == NULL ||
+       self->handle->pf_backlight_on            == NULL ||
+       self->handle->pf_backlight_off           == NULL ||
+       self->handle->pf_backlight_set           == NULL) {
         return false;
     }
 
 
     uint32_t i = 0;
 
-    self->oper->oper_ctrl->pf_rst_low();
-    self->oper->pf_delay_ms(10);
-    self->oper->oper_ctrl->pf_rst_high();
-    self->oper->pf_delay_ms(120);
+    CS_HIGH(self);
+    DELAY_MS(self, 10);
 
-    self->oper->oper_ctrl->pf_cs_low();
+    RST_HIGH(self);
+    DELAY_MS(self, 120);
+
+    CS_LOW(self);
 
     st7735_write_command(self, 0x01); // Software reset
-    self->oper->pf_delay_ms(150);
+    self->handle->pf_delay_ms(150);
 
     st7735_write_command(self, 0x11); // Sleep out
-    self->oper->pf_delay_ms(500);
+    self->handle->pf_delay_ms(500);
 
     st7735_write_command(self, ST7735_FRAME_RATE_CTRL1);
     for(i = 0; i < sizeof(st7735_frame_rate_ctrl1_params) / sizeof(st7735_frame_rate_ctrl1_params[0]); i++)
@@ -218,37 +216,34 @@ static bool st7735_init(struct st7735_driver * self)
         st7735_write_data(self, st7735_nv_gamma_ctrl_params[i]);
 
     st7735_write_command(self, ST7735_MADCTL);
-    if(self->oper->oper_info->width > self->oper->oper_info->height) {
-        if(self->oper->oper_info->rotated) {
-            st7735_write_data(self, ST7735_ORIENTATION_LANDSCAPE_ROT180);
-        }
-        else {
-            st7735_write_data(self, ST7735_ORIENTATION_LANDSCAPE);
-        }
+
+    if(self->rotated == 0) {
+        st7735_write_data(self, ST7735_ORIENTATION_LANDSCAPE);
     }
-    else {
-        if(self->oper->oper_info->rotated) {
-            st7735_write_data(self, ST7735_ORIENTATION_PORTRAIT_ROT180);
-        }
-        else {
-            st7735_write_data(self, ST7735_ORIENTATION_PORTRAIT);
-        }
+    else if(self->rotated == 90) {
+        st7735_write_data(self, ST7735_ORIENTATION_PORTRAIT);
+    }
+    else if(self->rotated == 180) {
+        st7735_write_data(self, ST7735_ORIENTATION_LANDSCAPE_ROT180);
+    }
+    else if(self->rotated == 270) {
+        st7735_write_data(self, ST7735_ORIENTATION_PORTRAIT_ROT180);
     }
 
 
     st7735_write_command(self, ST7735_DISPLAY_ON); // Display on
-    self->oper->pf_delay_ms(100);
+    self->handle->pf_delay_ms(100);
 
-    self->oper->oper_ctrl->pf_cs_high();
+    self->handle->pf_cs_high();
 
     st7735_dbg("st7735 init successfully");
 
     return true;
 }
 
-static void st7735_set_cursor(struct st7735_driver * self, uint16_t x, uint16_t y)
+static void st7735_set_cursor(st7735_driver_t * self, uint16_t x, uint16_t y)
 {
-    self->oper->oper_ctrl->pf_cs_low();
+    self->handle->pf_cs_low();
 
     st7735_write_command(self, ST7735_CASET);
     st7735_write_data(self, x >> 8);
@@ -260,12 +255,12 @@ static void st7735_set_cursor(struct st7735_driver * self, uint16_t x, uint16_t 
 
     st7735_write_command(self, ST7735_WRITE_RAM);
 
-    self->oper->oper_ctrl->pf_cs_high();
+    self->handle->pf_cs_high();
 }
 
-static void st7735_set_window(struct st7735_driver * self, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+static void st7735_set_window(st7735_driver_t * self, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-    self->oper->oper_ctrl->pf_cs_low();
+    self->handle->pf_cs_low();
 
     st7735_write_command(self, ST7735_CASET);
     st7735_write_data(self, x1 >> 8);
@@ -281,32 +276,32 @@ static void st7735_set_window(struct st7735_driver * self, uint16_t x1, uint16_t
 
     st7735_write_command(self, ST7735_WRITE_RAM);
 
-    self->oper->oper_ctrl->pf_cs_high();
+    self->handle->pf_cs_high();
 }
 
-static void st7735_put_pixel(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t color)
+static void st7735_put_pixel(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t color)
 {
     st7735_set_cursor(self, x, y);
 
-    self->oper->oper_ctrl->pf_cs_low();
+    self->handle->pf_cs_low();
 
     st7735_write_data(self, color >> 8);
     st7735_write_data(self, color & 0xFF);
 
-    self->oper->oper_ctrl->pf_cs_high();
+    self->handle->pf_cs_high();
 }
 
-static void st7735_fill_rect(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
+static void st7735_fill_rect(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
 {
     uint32_t i = 0;
     uint32_t size = width * height;
 
     st7735_set_window(self, x, y, x + width - 1, y + height - 1);
 
-    self->oper->oper_ctrl->pf_cs_low();
+    self->handle->pf_cs_low();
 
-    if(self->oper->oper_spi->pf_transmit_16bit) {
-        self->oper->oper_spi->pf_transmit_16bit(color, size);
+    if(self->handle->pf_spi_transmit_16bit) {
+        self->handle->pf_spi_transmit_16bit(color, size);
     } 
     else {
         for(i = 0; i < size; i++) {
@@ -315,40 +310,44 @@ static void st7735_fill_rect(struct st7735_driver * self, uint16_t x, uint16_t y
         }
     }
 
-    self->oper->oper_ctrl->pf_cs_high();
+    self->handle->pf_cs_high();
 }
 
-static void st7735_fill_screen(struct st7735_driver * self, uint16_t color)
+static void st7735_fill_screen(st7735_driver_t * self, uint16_t color)
 {
-    st7735_fill_rect(self, 0, 0, self->oper->oper_info->width - 1, self->oper->oper_info->height - 1, color);
+    st7735_fill_rect(self, 0, 0, self->handle->width - 1, self->handle->height - 1, color);
 }
 
-static void st7735_copy_buffer(struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data)
+static void st7735_copy_buffer(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data)
 {
     st7735_set_window(self, x, y, x + width - 1, y + height - 1);
 
-    self->oper->oper_ctrl->pf_cs_low();
+    self->handle->pf_cs_low();
 
-    self->oper->oper_spi->pf_transmit_dma_16bit(data, width * height);
+    self->handle->pf_spi_dma_transmit_16bit(data, width * height);
 
-    self->oper->oper_ctrl->pf_cs_high();
+    self->handle->pf_cs_high();
 }
 
-static void st7735_backlight_on(struct st7735_driver * self)
+static void st7735_backlight_on(st7735_driver_t * self)
 {
-    self->oper->oper_backlight->pf_on();
+    self->handle->pf_backlight_on();
 }
 
-static void st7735_backlight_off(struct st7735_driver * self)
+static void st7735_backlight_off(st7735_driver_t * self)
 {
-    self->oper->oper_backlight->pf_off();
+    self->handle->pf_backlight_off();
 }
 
-static void st7735_backlight_set(struct st7735_driver * self, uint8_t brightness)
+static void st7735_backlight_set(st7735_driver_t * self, uint8_t brightness)
 {
-    self->oper->oper_backlight->pf_set(brightness);
+    self->handle->pf_backlight_set(brightness);
 }
 
+static void st7735_rotated_set(st7735_driver_t * self, uint16_t rotated)
+{
+    self->rotated = rotated;
+}
 
 /******************************* (END OF FILE) *********************************/
 

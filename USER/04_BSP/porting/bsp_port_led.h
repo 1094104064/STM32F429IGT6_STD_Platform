@@ -35,10 +35,6 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-static inline void bsp_port_led_init(void)
-{
-
-}
 
 static inline void bsp_port_blue_led_on(void)
 {

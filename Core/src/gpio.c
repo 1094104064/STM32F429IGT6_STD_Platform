@@ -91,9 +91,7 @@ void STD_GPIO_BspInit(void)
 {
     /* Configure the GPIO pins for the Bsp */
 
-    /* LED */
-    STD_GPIO_Init(GPIOD, GPIO_Pin_4, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, 0);
-    STD_GPIO_Init(GPIOI, GPIO_Pin_3, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, 0);
+
     
     /* Software I2C */
     STD_GPIO_Init(GPIOB, GPIO_Pin_6, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_OD, GPIO_PuPd_UP, 0);
@@ -102,8 +100,6 @@ void STD_GPIO_BspInit(void)
     /* Test Pin */
     STD_GPIO_Init(TEST_POINT_PORT, TEST_POINT_PIN, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_OD, GPIO_PuPd_UP, 0);
 
-    /* LCD Backlight */
-    STD_GPIO_Init(GPIOD, GPIO_Pin_13, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, 0);
 
     /* touchpad */
     STD_GPIO_Init(GT911_SDA_PORT, GT911_SDA_PIN, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_OD, GPIO_PuPd_UP, 0);

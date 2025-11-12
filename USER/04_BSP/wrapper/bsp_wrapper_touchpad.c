@@ -64,7 +64,7 @@ void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self, const char * cons
     touchpad_wrappers[idx].user_data = user_data;
 
     if(touchpad_wrappers[idx].name == NULL) {
-        pr_warn("This wrapper has no name and will be filled with a default name");
+//        pr_warn("This wrapper has no name and will be filled with a default name");
         touchpad_wrappers[idx].name = "touchpad_default";
     }
 }
@@ -74,11 +74,11 @@ bool bsp_wrapper_touchpad_init(void)
     int ret = 0;
     struct touchpad_wrapper * self = &touchpad_wrappers[current_touchpad_idx];
 
-    assert_null(self->pf_init);
-    assert_null(self->pf_reset);
-    assert_null(self->pf_is_pressed);
-    assert_null(self->pf_scan);
-    assert_null(self->pf_get_coordinates);
+//    assert_null(self->pf_init);
+//    assert_null(self->pf_reset);
+//    assert_null(self->pf_is_pressed);
+//    assert_null(self->pf_scan);
+//    assert_null(self->pf_get_coordinates);
 
     if( self->pf_init               == NULL || self->pf_reset   == NULL ||
         self->pf_is_pressed         == NULL || self->pf_scan    == NULL ||
@@ -89,11 +89,11 @@ bool bsp_wrapper_touchpad_init(void)
     ret = self->pf_init(self);
 
     if(ret != 0) {
-        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
+//        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
         return false;
     }
 
-    pr_info("%s : initialized successfully", self->name);
+//    pr_info("%s : initialized successfully", self->name);
 
     return true;
 }

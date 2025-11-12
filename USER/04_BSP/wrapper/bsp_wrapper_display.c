@@ -29,7 +29,27 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
+const struct display_wrapper wrp_display = 
+{
+    .obj_create         = bsp_wrapper_display_create,
+    .obj_delete         = bsp_wrapper_display_delete,
+    .find               = bsp_wrapper_display_find,
 
+    .init               = bsp_wrapper_display_init,
+    .backlight_on       = bsp_wrapper_display_backlight_on,
+    .backlight_off      = bsp_wrapper_display_backlight_off,
+    .draw_pixel         = bsp_wrapper_display_draw_pixel,
+    .fill_rect          = bsp_wrapper_display_fill_rect,
+    .fill_screen        = bsp_wrapper_display_fill_screen,
+    .draw_image         = bsp_wrapper_display_draw_image,
+    .draw_line          = bsp_wrapper_display_draw_line,
+    .draw_circle        = bsp_wrapper_display_draw_circle,
+    .draw_triangle      = bsp_wrapper_display_draw_triangle,
+    .draw_rect          = bsp_wrapper_display_draw_rect,
+    .draw_arc           = bsp_wrapper_display_draw_arc,
+    .draw_ellipse       = bsp_wrapper_display_draw_ellipse,
+    .draw_grad_rgb565   = bsp_wrapper_display_draw_grad_rgb565,
+};
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -37,99 +57,101 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static struct display_wrapper display_wrappers[DISPLAY_MAX_NUM];
-static uint8_t current_display_idx = 0;
+static display_obj_t gs_mempool[DISPLAY_MAX_NUM];
+static uint8_t gsuc_index = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 
-void bsp_wrapper_display_link(struct display_wrapper * self, const char * const name, void * const user_data)
+display_obj_t * bsp_wrapper_display_create(const display_ops_t * ops, const char * const name, void * const user_data)
 {
-    uint8_t idx = 0;
-
-    current_display_idx++;
- 
-    if(current_display_idx < DISPLAY_MAX_NUM) {
-        idx = current_display_idx;
-    }
-    else {
-        current_display_idx = 0;
+    if(gsuc_index >= DISPLAY_MAX_NUM) {
+        gsuc_index = 0;
     }
 
-    memset(&display_wrappers[idx], 0, sizeof(struct display_wrapper));
+    if(ops == NULL) return NULL;
 
-    display_wrappers[idx] = *self;
-    display_wrappers[idx].idx = idx;
-    display_wrappers[idx].name = name;
-    display_wrappers[idx].user_data = user_data;
+    if(bsp_wrapper_display_find(name) != NULL) return NULL;
 
-    if(display_wrappers[idx].name == NULL) {
-        pr_warn("This wrapper has no name and will be filled with a default name");
-        display_wrappers[idx].name = "display_default";
+    memset(&gs_mempool[gsuc_index], 0, sizeof(display_obj_t));
+
+    gs_mempool[gsuc_index].ops = ops;
+
+    gs_mempool[gsuc_index].ctx.idx       = gsuc_index;
+    gs_mempool[gsuc_index].ctx.user_data = user_data;
+    strncpy(gs_mempool[gsuc_index].ctx.name, name, sizeof(gs_mempool[gsuc_index].ctx.name) - 1);
+
+    gsuc_index++;
+
+    return &gs_mempool[gsuc_index - 1];
+}
+
+void bsp_wrapper_display_delete(const char * const name)
+{
+    display_obj_t * obj = bsp_wrapper_display_find(name);
+    if(obj != NULL) {
+        memset(obj, 0, sizeof(display_obj_t));
     }
 }
 
-bool bsp_wrapper_display_init(void)
+display_obj_t * bsp_wrapper_display_find(const char * const name)
 {
-    int ret = 0;
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
+    uint8_t i = 0;
 
-    assert_null(self->pf_init);
-    assert_null(self->pf_backlight_on);
-    assert_null(self->pf_backlight_off);
-    assert_null(self->pf_put_pixel);
-    assert_null(self->pf_fill_rect);
-    assert_null(self->pf_fill_screen);
-    assert_null(self->pf_copy_buffer);
+    for(i = 0; i < DISPLAY_MAX_NUM; i++) {
+        if(strncmp(gs_mempool[i].ctx.name, name, DISPLAY_NAME_MAX_LEN) == 0) {
+            return &gs_mempool[i];
+        }
+    }
 
-    if( self->pf_init           == NULL || self->pf_backlight_on    == NULL ||
-        self->pf_backlight_off  == NULL || self->pf_put_pixel       == NULL ||
-        self->pf_fill_rect      == NULL || self->pf_fill_screen     == NULL ||
-        self->pf_copy_buffer    == NULL ) {
+    return NULL;
+}
+
+bool bsp_wrapper_display_init(display_obj_t * obj)
+{
+    if( obj->ops->pf_init           == NULL || obj->ops->pf_backlight_on    == NULL ||
+        obj->ops->pf_backlight_off  == NULL || obj->ops->pf_put_pixel       == NULL ||
+        obj->ops->pf_fill_rect      == NULL || obj->ops->pf_fill_screen     == NULL ||
+        obj->ops->pf_copy_buffer    == NULL ) {
         return false;
     }
 
-    ret = self->pf_init(self);
+    int ret = obj->ops->pf_init();
 
     if(ret != 0) {
-        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
         return false;
     }
 
-    pr_info("%s : initialized successfully", self->name);
+    obj->ctx.is_initialized = true;
 
     return true;
 }
 
-void bsp_wrapper_display_backlight_on(void)
+void bsp_wrapper_display_backlight_on(display_obj_t * obj)
 {
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
-
-    self->pf_backlight_on(self);
+    if(obj->ops->pf_backlight_on)
+        obj->ops->pf_backlight_on();
 }
 
-void bsp_wrapper_display_backlight_off(void)
+void bsp_wrapper_display_backlight_off(display_obj_t * obj)
 {
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
-
-    self->pf_backlight_off(self);
+    if(obj->ops->pf_backlight_off)
+        obj->ops->pf_backlight_off();
 }
 
-void bsp_wrapper_display_draw_pixel(uint16_t x, uint16_t y, uint32_t color)
+void bsp_wrapper_display_draw_pixel(display_obj_t * obj, uint16_t x, uint16_t y, uint32_t color)
 {
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
-
-    self->pf_put_pixel(self, x, y, color);
+    if(obj->ops->pf_put_pixel)
+        obj->ops->pf_put_pixel(x, y, color);
 }
 
-void bsp_wrapper_display_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+void bsp_wrapper_display_fill_rect(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
-
-    self->pf_fill_rect(self, x, y, width, height, color);
+    if(obj->ops->pf_fill_rect)
+        obj->ops->pf_fill_rect(x, y, width, height, color);
 }
 
-void bsp_wrapper_display_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t color)
+void bsp_wrapper_display_draw_line(display_obj_t * obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t color)
 {
     int32_t dx = 0;
     int32_t dy = 0;
@@ -161,7 +183,7 @@ void bsp_wrapper_display_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16
     err = dx - dy;
     
     while(1) {
-        bsp_wrapper_display_draw_pixel(x1, y1, color);
+        bsp_wrapper_display_draw_pixel(obj, x1, y1, color);
         
         if(x1 == x2 && y1 == y2) {
             break;
@@ -183,15 +205,15 @@ void bsp_wrapper_display_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16
 
 }
 
-void bsp_wrapper_display_draw_circle(uint16_t x, uint16_t y, uint16_t radius, uint32_t color)
+void bsp_wrapper_display_draw_circle(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t radius, uint32_t color)
 {
 	int x_add = -radius, yadd = 0, err = 2 - 2 * radius, e2;
 	do {   
 
-		bsp_wrapper_display_draw_pixel(x - x_add, y + yadd, color);
-		bsp_wrapper_display_draw_pixel(x + x_add, y + yadd, color);
-		bsp_wrapper_display_draw_pixel(x + x_add, y - yadd, color);
-		bsp_wrapper_display_draw_pixel(x - x_add, y - yadd, color);
+		bsp_wrapper_display_draw_pixel(obj, x - x_add, y + yadd, color);
+		bsp_wrapper_display_draw_pixel(obj, x + x_add, y + yadd, color);
+		bsp_wrapper_display_draw_pixel(obj, x + x_add, y - yadd, color);
+		bsp_wrapper_display_draw_pixel(obj, x - x_add, y - yadd, color);
 
 		e2 = err;
 		if (e2 <= yadd) {
@@ -203,22 +225,22 @@ void bsp_wrapper_display_draw_circle(uint16_t x, uint16_t y, uint16_t radius, ui
     while (x_add <= 0);
 }
 
-void bsp_wrapper_display_draw_triangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint32_t color)
+void bsp_wrapper_display_draw_triangle(display_obj_t * obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint32_t color)
 {
-    bsp_wrapper_display_draw_line(x1, y1, x2, y2, color);
-    bsp_wrapper_display_draw_line(x2, y2, x3, y3, color);
-    bsp_wrapper_display_draw_line(x3, y3, x1, y1, color);
+    bsp_wrapper_display_draw_line(obj, x1, y1, x2, y2, color);
+    bsp_wrapper_display_draw_line(obj, x2, y2, x3, y3, color);
+    bsp_wrapper_display_draw_line(obj, x3, y3, x1, y1, color);
 }
 
-void bsp_wrapper_display_draw_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+void bsp_wrapper_display_draw_rect(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
-    bsp_wrapper_display_draw_line(x, y, x + width, y, color);
-    bsp_wrapper_display_draw_line(x + width, y, x + width, y + height, color);
-    bsp_wrapper_display_draw_line(x + width, y + height, x, y + height, color);
-    bsp_wrapper_display_draw_line(x, y + height, x, y, color);
+    bsp_wrapper_display_draw_line(obj, x, y, x + width, y, color);
+    bsp_wrapper_display_draw_line(obj, x + width, y, x + width, y + height, color);
+    bsp_wrapper_display_draw_line(obj, x + width, y + height, x, y + height, color);
+    bsp_wrapper_display_draw_line(obj, x, y + height, x, y, color);
 }
 
-void bsp_wrapper_display_draw_arc(uint16_t x0, uint16_t y0, uint16_t r, int32_t start_angle, int32_t end_angle, uint32_t color)
+void bsp_wrapper_display_draw_arc(display_obj_t * obj, uint16_t x0, uint16_t y0, uint16_t r, int32_t start_angle, int32_t end_angle, uint32_t color)
 {
     int32_t x = 0;
     int32_t y = r;
@@ -226,23 +248,23 @@ void bsp_wrapper_display_draw_arc(uint16_t x0, uint16_t y0, uint16_t r, int32_t 
     
     while(x <= y) {
         if(start_angle <= 45 && end_angle >= 45) {
-            bsp_wrapper_display_draw_pixel(x0 + x, y0 + y, color);
-            bsp_wrapper_display_draw_pixel(x0 - x, y0 + y, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 + x, y0 + y, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 - x, y0 + y, color);
         }
         
         if(start_angle <= 135 && end_angle >= 135) {
-            bsp_wrapper_display_draw_pixel(x0 + y, y0 + x, color);
-            bsp_wrapper_display_draw_pixel(x0 - y, y0 + x, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 + y, y0 + x, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 - y, y0 + x, color);
         }
         
         if(start_angle <= 225 && end_angle >= 225) {
-            bsp_wrapper_display_draw_pixel(x0 - x, y0 - y, color);
-            bsp_wrapper_display_draw_pixel(x0 + x, y0 - y, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 - x, y0 - y, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 + x, y0 - y, color);
         }
         
         if(start_angle <= 315 && end_angle >= 315) {
-            bsp_wrapper_display_draw_pixel(x0 - y, y0 - x, color);
-            bsp_wrapper_display_draw_pixel(x0 + y, y0 - x, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 - y, y0 - x, color);
+            bsp_wrapper_display_draw_pixel(obj, x0 + y, y0 - x, color);
         }
         
         if(d < 0) {
@@ -256,7 +278,7 @@ void bsp_wrapper_display_draw_arc(uint16_t x0, uint16_t y0, uint16_t r, int32_t 
     }
 }
 
-void bsp_wrapper_display_draw_ellipse(int32_t x, int32_t y, int32_t r1, int32_t r2, uint32_t color)
+void bsp_wrapper_display_draw_ellipse(display_obj_t * obj, int32_t x, int32_t y, int32_t r1, int32_t r2, uint32_t color)
 {
   int32_t x_add = -r1, y_add = 0, err = 2 - 2 * r1, e2;
   float K = 0, rad1 = 0, rad2 = 0;
@@ -269,10 +291,10 @@ void bsp_wrapper_display_draw_ellipse(int32_t x, int32_t y, int32_t r1, int32_t 
     do {
       K = (float)(rad1/rad2);
 
-		bsp_wrapper_display_draw_pixel(x - x_add, y + (uint16_t)(y_add / K), color);
-		bsp_wrapper_display_draw_pixel(x + x_add, y + (uint16_t)(y_add / K), color);
-		bsp_wrapper_display_draw_pixel(x + x_add, y - (uint16_t)(y_add / K), color);
-		bsp_wrapper_display_draw_pixel(x - x_add, y - (uint16_t)(y_add / K), color);
+		bsp_wrapper_display_draw_pixel(obj, x - x_add, y + (uint16_t)(y_add / K), color);
+		bsp_wrapper_display_draw_pixel(obj, x + x_add, y + (uint16_t)(y_add / K), color);
+		bsp_wrapper_display_draw_pixel(obj, x + x_add, y - (uint16_t)(y_add / K), color);
+		bsp_wrapper_display_draw_pixel(obj, x - x_add, y - (uint16_t)(y_add / K), color);
 
       e2 = err;
       if (e2 <= y_add) {
@@ -290,10 +312,10 @@ void bsp_wrapper_display_draw_ellipse(int32_t x, int32_t y, int32_t r1, int32_t 
     do { 
       K = (float)(rad2/rad1);
 
-		bsp_wrapper_display_draw_pixel(x - (uint16_t)(x_add / K), y + y_add, color);
-		bsp_wrapper_display_draw_pixel(x + (uint16_t)(x_add / K), y + y_add, color);
-		bsp_wrapper_display_draw_pixel(x + (uint16_t)(x_add / K), y - y_add, color);
-		bsp_wrapper_display_draw_pixel(x - (uint16_t)(x_add / K), y - y_add, color);
+		bsp_wrapper_display_draw_pixel(obj, x - (uint16_t)(x_add / K), y + y_add, color);
+		bsp_wrapper_display_draw_pixel(obj, x + (uint16_t)(x_add / K), y + y_add, color);
+		bsp_wrapper_display_draw_pixel(obj, x + (uint16_t)(x_add / K), y - y_add, color);
+		bsp_wrapper_display_draw_pixel(obj, x - (uint16_t)(x_add / K), y - y_add, color);
 
       e2 = err;
       if (e2 <= x_add) {
@@ -306,29 +328,26 @@ void bsp_wrapper_display_draw_ellipse(int32_t x, int32_t y, int32_t r1, int32_t 
   }
 }
 
-void bsp_wrapper_display_fill_screen(uint32_t color)
+void bsp_wrapper_display_fill_screen(display_obj_t * obj, uint32_t color)
 {
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
-
-    self->pf_fill_screen(self, color);
+    if( obj->ops->pf_fill_screen)
+        obj->ops->pf_fill_screen(color);
 }
 
-void bsp_wrapper_display_draw_image(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * image_data)
+void bsp_wrapper_display_draw_image(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * image_data)
 {
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
-
-    self->pf_copy_buffer(self, x, y, width, height, image_data);
+    if(obj->ops->pf_copy_buffer)
+        obj->ops->pf_copy_buffer(x, y, width, height, image_data);
 }
 
-void bsp_wrapper_display_draw_grad_rgb565(uint16_t grid_size)
+void bsp_wrapper_display_draw_grad_rgb565(display_obj_t * obj, uint16_t grid_size)
 {
     uint16_t x, y;
     uint32_t color;
     uint8_t grid_color;
-    struct display_wrapper * self = &display_wrappers[current_display_idx];
 
-    for(y = 0; y < self->height; y++) {
-        for(x = 0; x < self->width; x++) {
+    for(y = 0; y < obj->ctx.height; y++) {
+        for(x = 0; x < obj->ctx.width; x++) {
             grid_color = ((x / grid_size) + (y / grid_size)) % 3;
             if (grid_color == 0)
                 color = DISP_RGB565_RED; 
@@ -337,7 +356,7 @@ void bsp_wrapper_display_draw_grad_rgb565(uint16_t grid_size)
             else
                 color = DISP_RGB565_BLUE; 
 
-            bsp_wrapper_display_draw_pixel(x, y, color);
+            bsp_wrapper_display_draw_pixel(obj, x, y, color);
         }
     }
 }

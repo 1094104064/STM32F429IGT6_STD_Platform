@@ -19,9 +19,9 @@
  *********************/
 #include "bsp_adapter_display.h"
 #include "bsp_wrapper_display.h"
-#include "bsp_driver_lcd.h"
+#include "bsp_driver_fb.h"
 #include "bsp_driver_st7735.h"
-#include "bsp_port_lcd.h"
+#include "bsp_port_fb.h"
 #include "bsp_port_st7735.h"
 /**********************
  *      MACROS
@@ -38,255 +38,141 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static int bsp_adapter_display_init(struct display_wrapper * self);
-static void bsp_adapter_backlight_on(struct display_wrapper * self);
-static void bsp_adapter_backlight_off(struct display_wrapper * self);
-static void bsp_adapter_display_put_pixel(struct display_wrapper * self, uint16_t x, uint16_t y, uint32_t color);
-static void bsp_adapter_display_fill_rect(struct display_wrapper * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
-static void bsp_adapter_display_fill_screen(struct display_wrapper * self, uint32_t color);
-static void bsp_adapter_display_copy_buffer(struct display_wrapper * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+
 /**********************
  *  STATIC VARIABLES
  **********************/
-
-static const char * const display_lcd = "rgb-lcd";
-static const char * const display_st7735 = "st7735";
-
-static struct lcd_driver lcd_drv;
-static struct lcd_oper lcd_ops = {
-    .pf_layer_config        = bsp_port_lcd_layer_config,
-    .pf_backlight_on        = bsp_port_lcd_backlight_on,
-    .pf_backlight_off       = bsp_port_lcd_backlight_off,
-    .pf_put_pixel           = bsp_port_lcd_put_pixel,
-    .pf_fast_fill_rect      = bsp_port_lcd_fill_rectangle,
-    .pf_fast_fill_screen    = bsp_port_lcd_fill_screen,
-    .pf_copy_buffer         = bsp_port_lcd_copy_buffer,
-};
-
-struct lcd_layer lcd_fb = {0};
-
-static const struct lcd_panel simple_panel = {
-    .name           = "simple_panel",
-
-    .active_width   = 480,
-    .active_height  = 272,
-
-    .hsync_width    = LCD_DEFAULT_HSW,
-    .hfront_porch   = LCD_DEFAULT_HFP,
-    .hback_porch    = LCD_DEFAULT_HBP,
-    .vsync_width    = LCD_DEFAULT_VSW,
-    .vfront_porch   = LCD_DEFAULT_VFP,
-    .vback_porch    = LCD_DEFAULT_VBP,
-};
-
-const struct lcd_panel * panels = &simple_panel;
-
-static struct st7735_driver st7735_drv;
-static struct st7735_oper st7735_ops = {
-    .pf_delay_ms = bsp_port_st7735_delay_ms,
-};
-static struct st7735_oper_spi st7735_spi = {
-    .pf_transmit_8bit       = bsp_port_st7735_transmit_8bit,
-    .pf_transmit_16bit      = bsp_port_st7735_transmit_16bit,
-    .pf_transmit_dma_8bit   = bsp_port_st7735_transmit_dma_8bit,
-    .pf_transmit_dma_16bit  = bsp_port_st7735_transmit_dma_16bit,
-};
-static struct st7735_oper_ctrl st7735_ctrl = {
-    .pf_cs_high     = bsp_port_st7735_cs_high,
-    .pf_cs_low      = bsp_port_st7735_cs_low,
-    .pf_dc_high     = bsp_port_st7735_dc_high,
-    .pf_dc_low      = bsp_port_st7735_dc_low,
-    .pf_rst_high    = bsp_port_st7735_rst_high,
-    .pf_rst_low     = bsp_port_st7735_rst_low,
-};
-static struct st7735_oper_backlight st7735_backlight = {
-    .pf_on  = bsp_port_st7735_backlight_on,
-    .pf_off = bsp_port_st7735_backlight_off,
-    .pf_set = bsp_port_st7735_backlight_set,
-};
-static struct st7735_oper_info st7735_info = {
-    .width = 160,
-    .height = 128,
-    .rotated = 0,
-};
+static fb_driver_t fb0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 void bsp_adapter_display_register(void)
 {
-#if 0
-    struct display_wrapper lcd_wrap = {
-
-        .width              = simple_panel.active_width,
-        .height             = simple_panel.active_height,
-
-        .pf_init            = bsp_adapter_display_init,
-        .pf_backlight_on    = bsp_adapter_backlight_on,
-        .pf_backlight_off   = bsp_adapter_backlight_off,
-        .pf_put_pixel       = bsp_adapter_display_put_pixel,
-        .pf_fill_rect       = bsp_adapter_display_fill_rect,
-        .pf_fill_screen     = bsp_adapter_display_fill_screen,
-        .pf_copy_buffer     = bsp_adapter_display_copy_buffer,
+    static const display_ops_t fb_ops = {
+        0
     };
 
-    bsp_wrapper_display_link(&lcd_wrap, display_lcd, NULL);
-#endif
 
-    struct display_wrapper st7735_wrap = {
-
-        .width      = st7735_info.width,
-        .height     = st7735_info.height,
-
-        .pf_init            = bsp_adapter_display_init,
-        .pf_backlight_on    = bsp_adapter_backlight_on,
-        .pf_backlight_off   = bsp_adapter_backlight_off,
-        .pf_put_pixel       = bsp_adapter_display_put_pixel,
-        .pf_fill_rect       = bsp_adapter_display_fill_rect,
-        .pf_fill_screen     = bsp_adapter_display_fill_screen,
-        .pf_copy_buffer     = bsp_adapter_display_copy_buffer,
+    static const display_ops_t st7735_ops = {
+        0
     };
-
-    bsp_wrapper_display_link(&st7735_wrap, display_st7735, NULL);
-
 }
 
 /**********************
  *   STATIC FUNCTIONS
  **********************/
 
-static int bsp_adapter_display_init(struct display_wrapper * self)
+static int fb0_init(void)
 {
-    if(self->name == display_lcd) {
-        bsp_driver_lcd_link(&lcd_drv, &lcd_ops, panels, &lcd_fb);
+//    static const fb_handle_t fb0_handle = {
 
-        if( lcd_drv.pf_init          == NULL || lcd_drv.pf_backlight_on == NULL ||
-            lcd_drv.pf_backlight_off == NULL || lcd_drv.pf_put_pixel    == NULL ||
-            lcd_drv.pf_fill_rect     == NULL || lcd_drv.pf_fill_screen  == NULL ||
-            lcd_drv.pf_copy_buffer   == NULL ) {
-            return 1;
-        }
+//        .active_width       = FB_DEFAULT_WIDTH,
+//        .active_height      = FB_DEFAULT_HEIGHT,
 
-        if(lcd_drv.pf_init(&lcd_drv) == false) {
-            return 2;
-        }
+//        .hsync_width        = FB_DEFAULT_HSW,
+//        .hback_porch        = FB_DEFAULT_HBP,
+//        .hfront_porch       = FB_DEFAULT_HFP,
+//        .vback_porch        = FB_DEFAULT_VBP,
+//        .vsync_width        = FB_DEFAULT_VSW,
+//        .vfront_porch       = FB_DEFAULT_VFP,
 
-        pr_info("\r\n\tname \t: %s\r\n"
-                "\tWidth \t: %d\r\n"
-                "\tHeight \t: %d\r\n"
-                "\tHSW \t: %d\r\n"
-                "\tHFP \t: %d\r\n"
-                "\tHBP \t: %d\r\n"
-                "\tVSW \t: %d\r\n"
-                "\tVFP \t: %d\r\n"
-                "\tVBP \t: %d",
-                panels->name,
-                panels->active_width,
-                panels->active_height,
-                panels->hsync_width,
-                panels->hfront_porch,
-                panels->hback_porch,
-                panels->vsync_width,
-                panels->vfront_porch,
-                panels->vback_porch);
+//        .pf_timing_set      = bsp_port_fb_timing_set,
+//        .pf_resolution_set  = bsp_port_fb_resolution_set,
+//        .pf_pixel_info_get  = bsp_port_fb_pixel_info_get,
+//        .pf_color_mode_set  = bsp_port_fb_rgb565_set,
+//        .pf_layer_set       = bsp_port_fb_layer0_set,
 
-    }
-    else if(self->name == display_st7735) {
-        bsp_driver_st7735_link( &st7735_drv, 
-                                &st7735_ops, 
-                                &st7735_info, 
-                                &st7735_spi, 
-                                &st7735_ctrl, 
-                                &st7735_backlight   );
-        
-        if(st7735_drv.pf_init           == NULL || st7735_drv.pf_backlight_on   == NULL ||
-           st7735_drv.pf_backlight_off  == NULL || st7735_drv.pf_put_pixel      == NULL ||
-           st7735_drv.pf_fill_rect      == NULL || st7735_drv.pf_fill_screen    == NULL ||
-           st7735_drv.pf_copy_buffer    == NULL ) {
-            return 1;
-        }
+//        .pf_init            = bsp_port_fb_init,
+//        .pf_backlight_on    = bsp_port_fb_backlight_on,
+//        .pf_backlight_off   = bsp_port_fb_backlight_off,
+//        .pf_fill_rect       = bsp_port_lcd_fill_rectangle,
+//        .pf_fill_screen     = bsp_port_lcd_fill_screen,
+//        .pf_copy_buffer     = bsp_port_lcd_copy_buffer,
+//        .pf_gpu_ready       = bsp_port_fb_gpu_ready,
+//    };
 
-        if(st7735_drv.pf_init(&st7735_drv) == false) {
-            return 2;
-        }
+//    bsp_driver_fb_link(&fb0, &fb0_handle);
+
+//    fb0.pf_set_start_addr(&fb0, 0xD0000000);
+//    fb0.pf_set_rotated(&fb0, DISP_ROT_0);
+//    
+//    return 0;
+}
+
+static void fb0_backlight_on(void)
+{
+    fb0.pf_backlight_on(&fb0);
+}
+
+static void fb0_backlight_off(void)
+{
+    fb0.pf_backlight_off(&fb0);
+}
+
+static void fb0_put_pixel(uint16_t x, uint16_t y, uint32_t color)
+{
+    fb0.pf_put_pixel(&fb0, x, y, color);
+}
+
+static void fb0_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+{
+    fb0.handle->pf_gpu_ready( fb0.pixel_format, 
+                              fb0.pixel_size, 
+                              fb0.rotated, 
+                              fb0.handle->active_width, 
+                              fb0.handle->active_height, 
+                              fb0.start_address );
+
+    fb0.pf_fill_rect(&fb0, x, y, width, height, color);
+}
+
+static void fb0_fill_screen(uint32_t color)
+{
+    fb0.handle->pf_gpu_ready( fb0.pixel_format, 
+                              fb0.pixel_size, 
+                              fb0.rotated, 
+                              fb0.handle->active_width, 
+                              fb0.handle->active_height, 
+                              fb0.start_address );
+
+    fb0.pf_fill_screen(&fb0, color);
+}
+
+static void fb0_copy_buffer(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
+{
+    fb0.handle->pf_gpu_ready( fb0.pixel_format, 
+                              fb0.pixel_size, 
+                              fb0.rotated, 
+                              fb0.handle->active_width, 
+                              fb0.handle->active_height, 
+                              fb0.start_address );
+
+    fb0.pf_copy_buffer(&fb0, x, y, width, height, data);
+}
 
 
-
-    }
-
-
+static int st7735_init(void)
+{
     return 0;
 }
 
-static void bsp_adapter_backlight_on(struct display_wrapper * self)
+static void st7735_backlight_on(void)
 {
-    if(self->name == display_lcd) {
-        lcd_drv.pf_backlight_on(&lcd_drv);
-    }
-    else if(self->name == display_st7735) {
-        st7735_drv.pf_backlight_on(&st7735_drv);
-    } else {
-        pr_error("Unsupported display type: %s", self->name);
-    }
 }
-
-static void bsp_adapter_backlight_off(struct display_wrapper * self)
+static void st7735_backlight_off(void)
 {
-    if(self->name == display_lcd) {
-        lcd_drv.pf_backlight_off(&lcd_drv);
-    }
-    else if(self->name == display_st7735) {
-        st7735_drv.pf_backlight_off(&st7735_drv);
-    } else {
-        pr_error("Unsupported display type: %s", self->name);
-    }
 }
-
-static void bsp_adapter_display_put_pixel(struct display_wrapper * self, uint16_t x, uint16_t y, uint32_t color)
+static void st7735_put_pixel(uint16_t x, uint16_t y, uint32_t color)
 {
-    if(self->name == display_lcd) {
-        lcd_drv.pf_put_pixel(&lcd_drv, x, y, color);
-    }
-    else if(self->name == display_st7735) {
-        st7735_drv.pf_put_pixel(&st7735_drv, x, y, (uint16_t)color);
-    } else {
-        pr_error("Unsupported display type: %s", self->name);
-    }
 }
-
-static void bsp_adapter_display_fill_rect(struct display_wrapper * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+static void st7735_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
-    if(self->name == display_lcd) {
-        lcd_drv.pf_fill_rect(&lcd_drv, x, y, width, height, color);
-    }
-    else if(self->name == display_st7735) {
-        st7735_drv.pf_fill_rect(&st7735_drv, x, y, width, height, (uint16_t)color);
-    } else {
-        pr_error("Unsupported display type: %s", self->name);
-    }
 }
-
-static void bsp_adapter_display_fill_screen(struct display_wrapper * self, uint32_t color)
+static void st7735_fill_screen(uint32_t color)
 {
-    if(self->name == display_lcd) {
-        lcd_drv.pf_fill_screen(&lcd_drv, color);
-    }
-    else if(self->name == display_st7735) {
-        st7735_drv.pf_fill_screen(&st7735_drv, (uint16_t)color);
-    } else {
-        pr_error("Unsupported display type: %s", self->name);
-    }
 }
-
-static void bsp_adapter_display_copy_buffer(struct display_wrapper * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
+static void st7735_copy_buffer(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
 {
-    if(self->name == display_lcd) {
-        lcd_drv.pf_copy_buffer(&lcd_drv, x, y, width, height, data);
-    }
-    else if(self->name == display_st7735) {
-        st7735_drv.pf_copy_buffer(&st7735_drv, x, y, width, height, (uint16_t *)data);
-    } else {
-        pr_error("Unsupported display type: %s", self->name);
-    }
 }
 
 

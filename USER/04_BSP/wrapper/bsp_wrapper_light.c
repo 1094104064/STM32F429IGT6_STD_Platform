@@ -29,7 +29,16 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
+const struct light_wrapper wrp_light = 
+{
+    .obj_create = bsp_wrapper_light_obj_create,
+    .obj_delete = bsp_wrapper_light_obj_delete,
+    .find       = bsp_wrapper_light_find,
 
+    .init       = bsp_wrapper_light_init,
+    .on         = bsp_wrapper_light_on,
+    .off        = bsp_wrapper_light_off,
+};
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -37,92 +46,88 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static struct light_wrapper light_wrappers[LIGHT_MAX_NUM];
-static uint8_t current_light_idx = 0;
+static light_obj_t gs_mempool[LIGHT_MAX_NUM];
+static uint8_t gsuc_index = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_wrapper_light_link(struct light_wrapper * self, const char * const name, void * const user_data)
+light_obj_t * bsp_wrapper_light_obj_create(const light_ops_t * ops, const char * const name, void * const user_data)
 {
-    uint8_t idx = 0;
-
-    current_light_idx++;
-
-    if(current_light_idx < LIGHT_MAX_NUM) {
-        idx = current_light_idx;
-    }
-    else {
-        current_light_idx = 0;
+    if(gsuc_index >= LIGHT_MAX_NUM) {
+        gsuc_index = 0;
     }
 
-    memset(&light_wrappers[idx], 0, sizeof(struct light_wrapper));
+    if(ops == NULL) return NULL;
 
-    light_wrappers[idx] = *self;
-    light_wrappers[idx].idx = idx;
-    light_wrappers[idx].name = name;
-    light_wrappers[idx].user_data = user_data;
+    if(bsp_wrapper_light_find(name) != NULL) return NULL;
 
-    if(light_wrappers[idx].name == NULL) {
-        pr_warn("This wrapper has no name and will be filled with a default name");
-        light_wrappers[idx].name = "light_default";
+    memset(&gs_mempool[gsuc_index], 0, sizeof(light_obj_t));
+
+    gs_mempool[gsuc_index].ops = ops;
+
+    gs_mempool[gsuc_index].ctx.idx       = gsuc_index;
+    gs_mempool[gsuc_index].ctx.user_data = user_data;
+    strncpy(gs_mempool[gsuc_index].ctx.name, name, sizeof(gs_mempool[gsuc_index].ctx.name) - 1);
+
+    gsuc_index++;
+
+    return &gs_mempool[gsuc_index - 1];
+}
+
+void bsp_wrapper_light_obj_delete(const char * const name)
+{
+    light_obj_t * obj = bsp_wrapper_light_find(name);
+
+    if(obj != NULL) {
+        memset(obj, 0, sizeof(light_obj_t));
     }
 }
 
-bool bsp_wrapper_light_init(void)
+light_obj_t * bsp_wrapper_light_find(const char * const name)
 {
-    int ret = 0;
-    struct light_wrapper * self = &light_wrappers[current_light_idx];
+    uint8_t i = 0;
 
-    assert_null(self->pf_init);
-    assert_null(self->pf_on);
-    assert_null(self->pf_off);
+    if(name == NULL) return NULL;
 
-    if( self->pf_init == NULL || self->pf_on == NULL ||
-        self->pf_off == NULL) {
+    for(i = 0; i < sizeof(gs_mempool) / sizeof(gs_mempool[0]); i++ ) {
+        if(strncmp(gs_mempool[i].ctx.name, name, LIGHT_NAME_MAX_LEN) == 0) {
+            return &gs_mempool[i];
+        }
+    }
+    return NULL;
+}
+
+bool bsp_wrapper_light_init(light_obj_t * obj)
+{
+    if( obj->ops->pf_init == NULL || obj->ops->pf_on == NULL ||
+        obj->ops->pf_off == NULL) {
         return false;
     }
 
-    ret = self->pf_init(self);
+    if(obj->ctx.is_initialized == true) return true;
+
+    int ret = 0;
+
+    if(obj->ops->pf_init)
+        ret = obj->ops->pf_init();
         
     if(ret != 0) {
-        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
         return false;
     }
-
-    pr_info("%s : initialized successfully", self->name);
 
     return true;
 }
 
-void bsp_wrapper_light_deinit(void)
+void bsp_wrapper_light_on(light_obj_t * obj)
 {
-    struct light_wrapper * self = &light_wrappers[current_light_idx];
-
-    memset(self, 0, sizeof(struct light_wrapper));
+    if(obj->ops->pf_on)
+        obj->ops->pf_on();
 }
 
-void bsp_wrapper_light_set_operation_object(const char * name)
+void bsp_wrapper_light_off(light_obj_t * obj)
 {
-    for(uint32_t i = 0; i < ARRAY_SIZE(light_wrappers); i++) {
-        if(strcmp(light_wrappers[i].name, name) == 0) {
-            current_light_idx = i;
-            break;
-        }
-    }
-}
-
-void bsp_wrapper_light_on(void)
-{
-    struct light_wrapper * self = &light_wrappers[current_light_idx];
-
-    self->pf_on(self);
-}
-
-void bsp_wrapper_light_off(void)
-{
-    struct light_wrapper * self = &light_wrappers[current_light_idx];
-
-    self->pf_off(self);
+    if(obj->ops->pf_off)
+        obj->ops->pf_off();
 }
 
 /**********************

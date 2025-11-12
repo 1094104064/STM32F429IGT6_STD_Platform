@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    bsp_adapter_delay.h
-  * @author  Jamin
-  * @brief   Header file of bsp_adapter_delay module.
+  * @file    memory_manager.h
+  * @author  
+  * @brief   Header file of memory_manager module.
   *
   ******************************************************************************
   **/
-
-#ifndef _BSP_ADAPTER_DELAY_H
-#define _BSP_ADAPTER_DELAY_H
+  
+#ifndef _MEMORY_MANAGER_H
+#define _MEMORY_MANAGER_H
 
 
 #ifdef __cplusplus
@@ -19,10 +19,8 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "user_conf.h"
-#include "bsp_wrapper_delay.h"
-#include "bsp_driver_delay.h"
-#include "bsp_port_delay.h"
+#include <stdint.h>
+#include <string.h>
 /*********************
  *      DEFINES
  *********************/
@@ -34,10 +32,16 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-delay_wrapper_t * bsp_adapter_delay_register(const char * const name, void * const user_data);
+
+void mm_init(void);
+void mm_deinit(void);
+void * mm_alloc(size_t size);
+
 /**********************
  *      MACROS
  **********************/
+
+
 
 
 
@@ -45,8 +49,9 @@ delay_wrapper_t * bsp_adapter_delay_register(const char * const name, void * con
 }
 #endif
 
-#endif /*_BSP_ADAPTER_DELAY_H*/
+#endif /*_MEMORY_MANAGER_H*/
 
 
 /******************************* (END OF FILE) *********************************/
+
 

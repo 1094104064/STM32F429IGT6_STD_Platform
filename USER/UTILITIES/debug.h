@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    user_conf.h
-  * @author  Jamin
-  * @brief   Header file of user_conf module.
+  * @file    debug.h
+  * @author  
+  * @brief   Header file of debug module.
   *
   ******************************************************************************
   **/
   
-#ifndef _USER_CONF_H
-#define _USER_CONF_H
+#ifndef _DEBUG_H
+#define _DEBUG_H
 
 
 #ifdef __cplusplus
@@ -19,28 +19,33 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <stdint.h>
+#include <stdarg.h>
 #include <stdbool.h>
 /*********************
  *      DEFINES
  *********************/
-#define PLATFORM_VERSION "1.1.1"
+
 /**********************
  *      TYPEDEFS
  **********************/
+ 
+/**********************
+*  GLOBAL PROTOTYPES
+ **********************/
+void    debug_init(uint32_t baudrate);
+void    debug_putc(char c);
+int     debug_puts(const char *fmt, ...);
+
 
 /**********************
  *      MACROS
  **********************/
-
 #define LOG_ENABLE  1
 
 
 #if LOG_ENABLE
-    #define pr_log(fmt, ...)        printf(fmt, ##__VA_ARGS__)
+    #define pr_log(fmt, ...)        debug_puts(fmt, ##__VA_ARGS__)
 #else
     #define pr_log(fmt, ...)        do {} while (0)
 #endif
@@ -92,30 +97,15 @@ extern "C" {
     #define pr_fatal(fmt, ...)      do {} while (0)
 #endif
 
-#if LOG_ENABLE
-    #define assert_msg(expr, msg)                                           \
-        do {                                                                \
-            if((expr)) {                                                    \
-                pr_fatal("Asserted at expression: %s (%s)", #expr, msg);    \
-                while(1);                                                   \
-            }                                                               \
-        } while(0)                                                          
-#else
-    #define assert_msg(expr, msg)  do{}while(0)
-#endif
-
-#define assert_null(p) assert_msg(p == NULL, "NULL pointer")
-
-#define BSP_MAX_NAME_LEN    16
-
-
+#define pr_user(fmt, ...)           pr_log("[User] [%s:%d] " fmt"\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*_USER_CONF_H*/
+#endif /*_DEBUG_H*/
 
 
 /******************************* (END OF FILE) *********************************/
+
 

@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    bsp_port_delay.h
+  * @file    bsp_adapter_led.h
   * @author  Jamin
-  * @brief   Header file of bsp_port_delay module.
+  * @brief   Header file of bsp_adapter_led module.
   *
   ******************************************************************************
   **/
 
-#ifndef _BSP_PORT_DELAY_H
-#define _BSP_PORT_DELAY_H
+#ifndef _BSP_ADAPTER_LED_H
+#define _BSP_ADAPTER_LED_H
 
 
 #ifdef __cplusplus
@@ -19,8 +19,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "systick.h"
-#include "dwt.h"
+#include "bsp_wrapper_light.h"
 /*********************
  *      DEFINES
  *********************/
@@ -32,26 +31,8 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-
-static inline void bsp_port_delay_us(uint32_t us)
-{
-    uint32_t start = DWT->CYCCNT;
-    uint32_t delay = us * (SystemCoreClock / 1000000);
-    while ((DWT->CYCCNT - start) < delay);
-}
-
-static inline void bsp_port_delay_ms(uint32_t ms)
-{
-    uint32_t start = STD_SYSTICK_Get();
-    while (STD_SYSTICK_Get() - start < ms);
-}
-
-static inline void bsp_port_delay_sec(uint32_t sec)
-{
-    uint32_t start = STD_SYSTICK_Get();
-    while (STD_SYSTICK_Get() - start < sec * 1000);
-}
-
+extern const light_ops_t blue_led_ops;
+extern const light_ops_t yellow_led_ops;
 /**********************
  *      MACROS
  **********************/
@@ -62,7 +43,7 @@ static inline void bsp_port_delay_sec(uint32_t sec)
 }
 #endif
 
-#endif /*_BSP_PORT_SYSTICK_H*/
+#endif /*_BSP_ADAPTER_LED_H*/
 
 
 /******************************* (END OF FILE) *********************************/

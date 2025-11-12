@@ -47,48 +47,40 @@ extern "C" {
  *      TYPEDEFS
  **********************/
 
-struct st7735_oper_info {
+typedef struct st7735_handle st7735_handle_t;
+typedef struct st7735_driver st7735_driver_t;
+
+struct st7735_handle
+{
     uint16_t    width;
     uint16_t    height;
-    uint8_t     rotated;
-};
 
-struct st7735_oper_spi {
-    void (* pf_transmit_8bit)       (uint8_t data);
-    void (* pf_transmit_16bit)      (uint16_t data, uint32_t size);
-    void (* pf_transmit_dma_8bit)   (uint8_t * buf, uint32_t size);
-    void (* pf_transmit_dma_16bit)  (uint16_t * buf, uint32_t size);
-};
+    void (* pf_spi_transmit_8bit)       (uint8_t data);
+    void (* pf_spi_transmit_16bit)      (uint16_t data, uint32_t size);
+    void (* pf_spi_dma_transmit_8bit)   (uint8_t * buf, uint32_t size);
+    void (* pf_spi_dma_transmit_16bit)  (uint16_t * buf, uint32_t size);
 
-
-struct st7735_oper_ctrl {
     void (* pf_cs_high) (void);
     void (* pf_cs_low)  (void);
     void (* pf_dc_high) (void);
     void (* pf_dc_low)  (void);
     void (* pf_rst_high)(void);
     void (* pf_rst_low) (void);
-};
 
-struct st7735_oper_backlight {
-    void (* pf_on)  (void);
-    void (* pf_off) (void);
-    void (* pf_set) (uint8_t brightness);
-};
-
-
-struct st7735_oper {
-    struct st7735_oper_info *       oper_info;
-    struct st7735_oper_spi *        oper_spi;
-    struct st7735_oper_ctrl *       oper_ctrl;
-    struct st7735_oper_backlight *  oper_backlight;
+    void (* pf_backlight_on)  (void);
+    void (* pf_backlight_off) (void);
+    void (* pf_backlight_set) (uint8_t brightness);
 
     void (* pf_delay_ms)(uint32_t ms);
 };
 
-struct st7735_driver {
 
-    struct st7735_oper * oper;
+
+struct st7735_driver 
+{
+    const struct st7735_handle * handle;
+
+    uint8_t     rotated;
 
     void (* pf_write_data)      (struct st7735_driver * self, uint8_t byte);
     void (* pf_write_command)   (struct st7735_driver * self, uint8_t cmd);
@@ -103,17 +95,14 @@ struct st7735_driver {
     void (* pf_backlight_on)    (struct st7735_driver * self);
     void (* pf_backlight_off)   (struct st7735_driver * self);
     void (* pf_backlight_set)   (struct st7735_driver * self, uint8_t brightness);
+
+    void (* pf_rotated_set)     (struct st7735_driver * self, uint16_t rotated);
 };
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_driver_st7735_link(    struct st7735_driver * self, 
-                                struct st7735_oper * oper,
-                                struct st7735_oper_info * info,
-                                struct st7735_oper_spi * spi,
-                                struct st7735_oper_ctrl * ctrl,
-                                struct st7735_oper_backlight * backlight);
+void bsp_driver_st7735_link(st7735_driver_t * drv, const st7735_handle_t * handle);
 /**********************
  *      MACROS
  **********************/

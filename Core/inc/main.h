@@ -50,10 +50,12 @@ extern "C" {
 #include "task.h"
 #endif
 
-#include "bsp_adapter_delay.h"
-#include "bsp_wrapper_delay.h"
+#include "systick.h"
+#include "delay.h"
+#include "debug.h"
+#include "memory_manager.h"
 
-#include "bsp_adapter_light.h"
+#include "bsp_adapter_led.h"
 #include "bsp_wrapper_light.h"
 
 #include "bsp_adapter_display.h"
@@ -65,15 +67,7 @@ extern "C" {
 #include "bsp_adapter_sflash.h"
 #include "bsp_wrapper_sflash.h"
 
-#include "usart.h"
-#include "systick.h"
-#include "gpio.h"
-#include "fmc.h"
-#include "ltdc.h"
-#include "spi.h"
-#include "dwt.h"
-#include "dma.h"
-#include "dma2d.h"
+
 
 
 /*********************

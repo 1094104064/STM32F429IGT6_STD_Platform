@@ -19,35 +19,65 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "user_conf.h"
-#include "user_macros.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
 /*********************
  *      DEFINES
  *********************/
-#define LIGHT_MAX_NUM 2
+#define LIGHT_MAX_NUM       2
+#define LIGHT_NAME_MAX_LEN  16
 /**********************
  *      TYPEDEFS
  **********************/
+typedef struct light_object light_obj_t;
+typedef struct light_ops light_ops_t;
+typedef struct light_ctx light_ctx_t;
 
-struct light_wrapper {
-    int8_t          idx;
-    void *          user_data;
-    const char *    name;
-
-    int  (* pf_init)(struct light_wrapper * self);
-    void (* pf_on)  (struct light_wrapper * self);
-    void (* pf_off) (struct light_wrapper * self);
+struct light_ops
+{
+    int  (* pf_init)(void);
+    void (* pf_on)  (void);
+    void (* pf_off) (void);
 };
+
+struct light_ctx
+{
+    uint8_t         idx;
+    void *          user_data;
+    char            name[LIGHT_NAME_MAX_LEN];
+    bool            is_initialized;
+};
+
+struct light_object {
+    const light_ops_t * ops;
+    light_ctx_t         ctx;
+};
+
+
+
+struct light_wrapper
+{
+    light_obj_t *   (* obj_create)  (const light_ops_t * ops, const char * const name, void * const user_data);
+    void            (* obj_delete)  (const char * const name);
+    light_obj_t *   (* find)        (const char * const name);
+    
+    bool            (* init)        (light_obj_t * obj);
+    void            (* on)          (light_obj_t * obj);
+    void            (* off)         (light_obj_t * obj);
+};
+
+extern const struct light_wrapper wrp_light;
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_wrapper_light_link(struct light_wrapper * self, const char * const name, void * const user_data);
-bool bsp_wrapper_light_init(void);
-void bsp_wrapper_light_deinit(void);
-void bsp_wrapper_light_set_operation_object(const char * name);
-void bsp_wrapper_light_on(void);
-void bsp_wrapper_light_off(void);
+light_obj_t *   bsp_wrapper_light_obj_create    (const light_ops_t * ops, const char * const name, void * const user_data);
+void            bsp_wrapper_light_obj_delete    (const char * const name);
+light_obj_t *   bsp_wrapper_light_find          (const char * const name);
+bool            bsp_wrapper_light_init          (light_obj_t * obj);
+void            bsp_wrapper_light_on            (light_obj_t * obj);
+void            bsp_wrapper_light_off           (light_obj_t * obj);
 /**********************
  *      MACROS
  **********************/

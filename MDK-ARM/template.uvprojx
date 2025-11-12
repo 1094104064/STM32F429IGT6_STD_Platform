@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F429_439xx,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\porting;..\USER\05_MSP\cluster;..\USER\05_MSP\emulator</IncludePath>
+              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\hal;..\USER\05_MSP\cluster;..\USER\05_MSP\emulator;..\USER\UTILITIES;..\USER\02_MID\tlsf</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1658,11 +1658,6 @@
           <GroupName>04_BSP/Wrapper</GroupName>
           <Files>
             <File>
-              <FileName>bsp_wrapper_delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\wrapper\bsp_wrapper_delay.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_wrapper_light.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\04_BSP\wrapper\bsp_wrapper_light.c</FilePath>
@@ -1688,29 +1683,29 @@
           <GroupName>04_BSP/Adapter</GroupName>
           <Files>
             <File>
-              <FileName>bsp_adapter_delay.c</FileName>
+              <FileName>bsp_adapter_led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_delay.c</FilePath>
+              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_led.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_adapter_light.c</FileName>
+              <FileName>bsp_adapter_lcd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_light.c</FilePath>
+              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_lcd.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_adapter_display.c</FileName>
+              <FileName>bsp_adapter_st7735.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_display.c</FilePath>
+              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_st7735.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_adapter_touchpad.c</FileName>
+              <FileName>bsp_adapter_w25q64.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_touchpad.c</FilePath>
+              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_w25q64.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_adapter_sflash.c</FileName>
+              <FileName>bsp_adapter_gt911.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_sflash.c</FilePath>
+              <FilePath>..\USER\04_BSP\adapter\bsp_adapter_gt911.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1718,19 +1713,14 @@
           <GroupName>04_BSP/Driver</GroupName>
           <Files>
             <File>
-              <FileName>bsp_driver_delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\driver\bsp_driver_delay.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_driver_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\04_BSP\driver\bsp_driver_led.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_driver_lcd.c</FileName>
+              <FileName>bsp_driver_fb.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\driver\bsp_driver_lcd.c</FilePath>
+              <FilePath>..\USER\04_BSP\driver\bsp_driver_fb.c</FilePath>
             </File>
             <File>
               <FileName>bsp_driver_st7735.c</FileName>
@@ -1750,37 +1740,32 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>04_BSP/Porting</GroupName>
+          <GroupName>04_BSP/HAL</GroupName>
           <Files>
             <File>
-              <FileName>bsp_port_delay.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\04_BSP\porting\bsp_port_delay.h</FilePath>
+              <FileName>bsp_hal_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\04_BSP\hal\bsp_hal_led.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_port_led.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\04_BSP\porting\bsp_port_led.h</FilePath>
+              <FileName>bsp_hal_lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\04_BSP\hal\bsp_hal_lcd.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_port_lcd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\04_BSP\porting\bsp_port_lcd.h</FilePath>
+              <FileName>bsp_hal_st7735.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\04_BSP\hal\bsp_hal_st7735.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_port_st7735.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\04_BSP\porting\bsp_port_st7735.h</FilePath>
+              <FileName>bsp_hal_gt911.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\04_BSP\hal\bsp_hal_gt911.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_port_gt911.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\04_BSP\porting\bsp_port_gt911.h</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_port_w25q64.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\04_BSP\porting\bsp_port_w25q64.h</FilePath>
+              <FileName>bsp_hal_w25q64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\04_BSP\hal\bsp_hal_w25q64.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1815,12 +1800,37 @@
             <File>
               <FileName>user_conf.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\user_conf.h</FilePath>
+              <FilePath>..\USER\UTILITIES\user_conf.h</FilePath>
             </File>
             <File>
               <FileName>user_macros.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\user_macros.h</FilePath>
+              <FilePath>..\USER\UTILITIES\user_macros.h</FilePath>
+            </File>
+            <File>
+              <FileName>templ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\UTILITIES\templ.c</FilePath>
+            </File>
+            <File>
+              <FileName>assert.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\UTILITIES\assert.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\UTILITIES\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\UTILITIES\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>memory_manager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\UTILITIES\memory_manager.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2177,6 +2187,85 @@
               <FileName>stm32f4xx_wwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_wwdg.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>02_MID/tlsf</GroupName>
+          <GroupOption>
+            <CommonProperty>
+              <UseCPPCompiler>0</UseCPPCompiler>
+              <RVCTCodeConst>0</RVCTCodeConst>
+              <RVCTZI>0</RVCTZI>
+              <RVCTOtherData>0</RVCTOtherData>
+              <ModuleSelection>0</ModuleSelection>
+              <IncludeInBuild>2</IncludeInBuild>
+              <AlwaysBuild>2</AlwaysBuild>
+              <GenerateAssemblyFile>2</GenerateAssemblyFile>
+              <AssembleAssemblyFile>2</AssembleAssemblyFile>
+              <PublicsOnly>2</PublicsOnly>
+              <StopOnExitCode>11</StopOnExitCode>
+              <CustomArgument></CustomArgument>
+              <IncludeLibraryModules></IncludeLibraryModules>
+              <ComprImg>1</ComprImg>
+            </CommonProperty>
+            <GroupArmAds>
+              <Cads>
+                <interw>2</interw>
+                <Optim>0</Optim>
+                <oTime>2</oTime>
+                <SplitLS>2</SplitLS>
+                <OneElfS>2</OneElfS>
+                <Strict>2</Strict>
+                <EnumInt>2</EnumInt>
+                <PlainCh>2</PlainCh>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <wLevel>1</wLevel>
+                <uThumb>2</uThumb>
+                <uSurpInc>2</uSurpInc>
+                <uC99>2</uC99>
+                <uGnu>2</uGnu>
+                <useXO>2</useXO>
+                <v6Lang>0</v6Lang>
+                <v6LangP>0</v6LangP>
+                <vShortEn>2</vShortEn>
+                <vShortWch>2</vShortWch>
+                <v6Lto>2</v6Lto>
+                <v6WtE>2</v6WtE>
+                <v6Rtti>2</v6Rtti>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Cads>
+              <Aads>
+                <interw>2</interw>
+                <Ropi>2</Ropi>
+                <Rwpi>2</Rwpi>
+                <thumb>2</thumb>
+                <SplitLS>2</SplitLS>
+                <SwStkChk>2</SwStkChk>
+                <NoWarn>2</NoWarn>
+                <uSurpInc>2</uSurpInc>
+                <useXO>2</useXO>
+                <ClangAsOpt>0</ClangAsOpt>
+                <VariousControls>
+                  <MiscControls></MiscControls>
+                  <Define></Define>
+                  <Undefine></Undefine>
+                  <IncludePath></IncludePath>
+                </VariousControls>
+              </Aads>
+            </GroupArmAds>
+          </GroupOption>
+          <Files>
+            <File>
+              <FileName>tlsf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\tlsf\tlsf.c</FilePath>
             </File>
           </Files>
         </Group>

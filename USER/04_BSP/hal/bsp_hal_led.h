@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    bsp_adapter_light.h
-  * @author  Jamin
-  * @brief   Header file of bsp_adapter_light module.
+  * @file    bsp_hal_led.h
+  * @author  
+  * @brief   Header file of bsp_hal_led module.
   *
   ******************************************************************************
   **/
-
-#ifndef _BSP_ADAPTER_LIGHT_H
-#define _BSP_ADAPTER_LIGHT_H
+  
+#ifndef _BSP_HAL_LED_H
+#define _BSP_HAL_LED_H
 
 
 #ifdef __cplusplus
@@ -19,7 +19,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "user_conf.h"
+
 /*********************
  *      DEFINES
  *********************/
@@ -31,10 +31,17 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_adapter_light_register(void);
+void bsp_hal_led1_init(void);
+void bsp_hal_led1_on(void);
+void bsp_hal_led1_off(void);
+void bsp_hal_led2_init(void);
+void bsp_hal_led2_on(void);
+void bsp_hal_led2_off(void);
 /**********************
  *      MACROS
  **********************/
+
+
 
 
 
@@ -42,8 +49,9 @@ void bsp_adapter_light_register(void);
 }
 #endif
 
-#endif /*_BSP_ADAPTER_LIGHT_H*/
+#endif /*_BSP_HAL_LED_H*/
 
 
 /******************************* (END OF FILE) *********************************/
+
 

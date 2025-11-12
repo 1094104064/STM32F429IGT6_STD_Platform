@@ -50,24 +50,29 @@ extern "C" {
  *      TYPEDEFS
  **********************/
 
-struct led_oper {
+typedef struct led_handle led_handle_t;
+typedef struct led_driver led_driver_t;
 
-    void (* pf_on)(void);
-    void (* pf_off)(void);
+struct led_handle 
+{
+    void (* pf_hal_init)(void);
+    void (* pf_on)  (void);
+    void (* pf_off) (void);
 };
 
-struct led_driver {
-    struct led_oper * oper;
+struct led_driver 
+{
+    const led_handle_t * handle;
 
-    bool (* pf_init)(struct led_driver * self);
-    void (* pf_on)(struct led_driver * self);
-    void (* pf_off)(struct led_driver * self);
+    bool (* pf_init)    (led_driver_t * self);
+    void (* pf_on)      (led_driver_t * self);
+    void (* pf_off)     (led_driver_t * self);
 };
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_driver_led_link(struct led_driver * self, struct led_oper * oper);
+void bsp_driver_led_link(led_driver_t * drv, const led_handle_t * handle);
 /**********************
  *      MACROS
  **********************/

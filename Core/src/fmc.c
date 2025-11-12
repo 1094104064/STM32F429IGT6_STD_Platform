@@ -199,8 +199,7 @@ int8_t STD_FMC_SDRAM_Benchmark(void)
 
     for(i = 0; i < size / 2; i++) {
         read_data_16b = *(volatile uint16_t*)(addr + 2 * i );       
-        if(read_data_16b != (uint16_t)i) {   
-            printf("16b read error\r\n");                       
+        if(read_data_16b != (uint16_t)i) {                       
             return -1;
         }
     }
@@ -211,13 +210,13 @@ int8_t STD_FMC_SDRAM_Benchmark(void)
 
     for (i = 0; i < 255; i++) {
         read_data_8b = *(volatile uint8_t*)(addr + i);
-        if(read_data_8b != (uint8_t)i) {  
-            printf("8b read error\r\n");                     
+        if(read_data_8b != (uint8_t)i) {                      
             return -2;	                                
         }
     }
 
-    printf("sdram benchmark success\r\n");
+    memset((uint8_t *)SDRAM_BASE_ADDR, 0, SDRAM_SIZE);
+
     return 0;
 }
 
@@ -278,12 +277,11 @@ void STD_FMC_SDRAM_WriteSpeedTest(void)
     pBuf = (uint32_t *)SDRAM_BASE_ADDR;
     for (i = 0; i < 1024 * 1024 * 4; i++) {
         if(*pBuf++ != j++) {
-            printf("SDRAM Write Error j = %d\r\n", j);
             break;
         }
     }
 
-    printf("SDRAM Write Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
+    //pr_log("SDRAM Write Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
 }
 
 void STD_FMC_SDRAM_ReadSpeedTest(void)
@@ -340,7 +338,7 @@ void STD_FMC_SDRAM_ReadSpeedTest(void)
     /* 记下结束时间 */
     end = STD_SYSTICK_Get();
 
-    printf("SDRAM Read Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
+    //printf("SDRAM Read Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
 }
 
 /**********************

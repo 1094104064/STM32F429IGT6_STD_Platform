@@ -118,22 +118,7 @@ extern "C" {
 #define LTDC_DE_PINSOURCE     GPIO_PinSource10
 
 
- enum {
-    LCD_FORMAT_ARGB8888        = 0,
-    LCD_FORMAT_RGB888          = 1,
-    LCD_FORMAT_RGB565          = 2,
-    LCD_FORMAT_ARGB1555        = 3,
-    LCD_FORMAT_ARGB4444        = 4,
-};
 
-enum {
-    LCD_ROT_0                = 0,
-    LCD_ROT_90               = 90,
-    LCD_ROT_180              = 180,
-    LCD_ROT_270              = 270,
-};
-
-#define LCD_ROTATED LCD_ROT_0
 
 // 1. 设置LTDC时钟，这里设置为10MHz，即刷新率在60帧左右，过高或者过低都会造成闪烁 
 // 2. 这里为了方便计算数值应在3-18之间，单位为MHz，具体设置时钟的代码在 LCD_Init()
@@ -143,53 +128,7 @@ enum {
 // 6. 10M的时钟，刷新率在60Hz左右
 #define LCD_CLK (10)
 
-#define LCD_DEFAULT_HBP  (43)
-#define LCD_DEFAULT_VBP  (12)
-#define LCD_DEFAULT_HSW  (1)
-#define LCD_DEFAULT_VSW  (1)
-#define LCD_DEFAULT_HFP  (8)
-#define LCD_DEFAULT_VFP  (8)
 
-#define LCD_DEFAULT_WIDTH   (480)
-#define LCD_DEFAULT_HEIGHT  (272)
-
-
-/* layer 1 */
-#define LCD_LAYER1_ADDRESS      (0xD0000000)
-#define LCD_LAYER1_COLOR_MODE   (LCD_FORMAT_RGB565)
-
-#if (   LCD_LAYER1_COLOR_MODE == LCD_FORMAT_RGB565 ||\
-        LCD_LAYER1_COLOR_MODE == LCD_FORMAT_ARGB1555 ||\
-        LCD_LAYER1_COLOR_MODE == LCD_FORMAT_ARGB4444    )
-
-    #define LCD_LAYER1_PIXEL_BYTE  (2)
-
-#elif ( LCD_LAYER1_COLOR_MODE == LCD_FORMAT_RGB888  )
-
-    #define LCD_LAYER1_PIXEL_BYTE  (3)
-
-#else
-    #define LCD_LAYER1_PIXEL_BYTE  (4)
-#endif
-
-
-/* layer 2 */
-#define LCD_LAYER2_ENABLE       (0)
-#define LCD_LAYER2_ADDRESS      (0xD0000000 + LCD_WIDTH * LCD_HEIGHT * LCD_LAYER1_PIXEL_BYTE)
-#define LCD_LAYER2_COLOR_MODE   (LCD_FORMAT_RGB565)
-
-#if (   LCD_LAYER2_COLOR_MODE == LCD_FORMAT_RGB565 ||\
-        LCD_LAYER2_COLOR_MODE == LCD_FORMAT_ARGB1555 ||\
-        LCD_LAYER2_COLOR_MODE == LCD_FORMAT_ARGB4444    )
-
-    #define LCD_LAYER2_PIXEL_BYTE  (2)
-
-#elif ( LCD_LAYER2_COLOR_MODE == LCD_FORMAT_RGB888  )
-
-    #define LCD_LAYER2_PIXEL_BYTE  (3)
-#else
-    #define LCD_LAYER2_PIXEL_BYTE  (4)
-#endif
 
 /**********************
  *      TYPEDEFS
@@ -198,8 +137,21 @@ enum {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
+void STD_LTDC_TimingInit(uint32_t hsw, uint32_t hbp, uint32_t hfp, uint32_t vsw, uint32_t vbp, uint32_t vfp);
+void STD_LTDC_ResolutionInit(uint16_t width, uint16_t height);
+void STD_LTDC_PixelInfoExport(uint8_t * p_format, uint8_t * p_size);
+void STD_LTDC_SetARGB8888(void);
+void STD_LTDC_SetRGB888(void);
+void STD_LTDC_SetRGB565(void);
+void STD_LTDC_SetARGB1555(void);
+void STD_LTDC_SetARGB4444(void);
+void STD_LTDC_SetL8(void);
+void STD_LTDC_SetAL44(void);
+void STD_LTDC_SetAL88(void);
+void STD_LTDC_SetLayer0(uint32_t address);
+void STD_LTDC_SetLayer1(uint32_t address);
 void STD_LTDC_Init(void);
-void STD_LTDC_LayerInit(void);
+void STD_LTDC_LayerInit(LTDC_Layer_TypeDef * layerx, uint8_t pixel_format, uint32_t start_address);
 /**********************
  *      MACROS
  **********************/

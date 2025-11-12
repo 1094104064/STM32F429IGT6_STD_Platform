@@ -61,7 +61,7 @@ static struct i2c_gpio i2c_clusters[I2C_MAX] = {
 void msp_cluster_i2c_start(uint8_t cluster)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return;
     }
     I2C_LOCK();
@@ -71,7 +71,7 @@ void msp_cluster_i2c_start(uint8_t cluster)
 void msp_cluster_i2c_stop(uint8_t cluster)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return;
     }
 
@@ -82,7 +82,7 @@ void msp_cluster_i2c_stop(uint8_t cluster)
 void msp_cluster_i2c_write_byte(uint8_t cluster, uint8_t data)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return;
     }
 
@@ -92,7 +92,7 @@ void msp_cluster_i2c_write_byte(uint8_t cluster, uint8_t data)
 uint8_t msp_cluster_i2c_read_byte(uint8_t cluster)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return 0;
     }
 
@@ -102,7 +102,7 @@ uint8_t msp_cluster_i2c_read_byte(uint8_t cluster)
 uint8_t msp_cluster_i2c_wait_ack(uint8_t cluster)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return 1;
     }
 
@@ -112,7 +112,7 @@ uint8_t msp_cluster_i2c_wait_ack(uint8_t cluster)
 void msp_cluster_i2c_generate_ack(uint8_t cluster)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return;
     }
 
@@ -122,7 +122,7 @@ void msp_cluster_i2c_generate_ack(uint8_t cluster)
 void msp_cluster_i2c_generate_nack(uint8_t cluster)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return;
     }
 
@@ -132,28 +132,28 @@ void msp_cluster_i2c_generate_nack(uint8_t cluster)
 void msp_cluster_i2c_write(uint8_t cluster, uint8_t dev_addr, uint8_t reg_addr, uint8_t * src, uint16_t len)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return;
     }
 
     int ret = msp_emul_i2c_write(&i2c_clusters[cluster], dev_addr, reg_addr, src, len);
 
     if(ret !=0 ) {
-        pr_error("i2c failed to write, error code: %d", ret);
+//        pr_error("i2c failed to write, error code: %d", ret);
     }
 }
 
 void msp_cluster_i2c_read(uint8_t cluster, uint8_t dev_addr, uint8_t reg_addr, uint8_t * dst, uint16_t len)
 {
     if (cluster >= I2C_MAX) {
-        pr_error("i2c cluster out of range");
+//        pr_error("i2c cluster out of range");
         return;
     }
 
     int ret = msp_emul_i2c_read(&i2c_clusters[cluster], dev_addr, reg_addr, dst, len);
 
     if(ret != 0) {
-        pr_error("i2c failed to read, error code: %d", ret);
+//        pr_error("i2c failed to read, error code: %d", ret);
     }
 }
 

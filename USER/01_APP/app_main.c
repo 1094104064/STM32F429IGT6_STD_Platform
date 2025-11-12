@@ -29,13 +29,12 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
-delay_wrapper_t * gp_delay;
+light_obj_t * g_blue_led;
+light_obj_t * g_yellow_led;
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void _core_init(void);
-static void _bsp_init(void);
-static void _middleware_init(void);
+
 
 #if OS_ENABLE
 static void _task_init(void * pvParameters);
@@ -52,89 +51,18 @@ static void _task_init(void * pvParameters);
 
 void app_main(void)
 {
-    _core_init();
-    _bsp_init();
-    _middleware_init();
+    delay_init();
+    debug_init(230400);
+    mm_init();
 
-    static uint32_t ElapsTick;
+    g_blue_led = wrp_light.obj_create(&blue_led_ops, "Blue LED", NULL);
+    g_yellow_led = wrp_light.obj_create(&yellow_led_ops, "Yellow LED", NULL);
 
-#if OS_ENABLE
-    static TaskHandle_t StartupTaskHandle = {0};
+    wrp_light.init(g_blue_led);
+    wrp_light.init(g_yellow_led);
 
-    xTaskCreate(_task_init, "task_init", 512, &ElapsTick, tskIDLE_PRIORITY + 1, &StartupTaskHandle);
-    vTaskStartScheduler();
-#else
-
-    for(;;) {
-
-        ElapsTick = STD_SYSTICK_Get();
-
-        pr_info("ElapsTick = %d", ElapsTick);
-
-    }
-
-#endif
-}
-
-
-
-/**********************
- *   STATIC FUNCTIONS
- **********************/
-static void _core_init(void)
-{
-    /* Initialize core components here */
-    STD_DWT_Init();
-    STD_USART1_Init();
-    STD_USART1_NVIC_Init();
-    
-    STD_SYSTICK_Init();
-
-    STD_GPIO_BspInit();
-
-    STD_DMA_ClockCmd(DMA1, ENABLE);
-    STD_DMA_ClockCmd(DMA2, ENABLE);
-    STD_DMA2D_ClockCmd(ENABLE);
-
-    STD_FMC_SDRAM_Init();
-    // STD_LTDC_Init();
-    // STD_LTDC_LayerInit();
-
-    STD_SPI1_Init();
-    STD_SPI3_Init();
-}
-
-static void _bsp_init(void)
-{
-    /* Initialize BSP components here */
-
-    gp_delay = bsp_adapter_delay_register("delay", NULL);
-    assert_null(gp_delay);
-
-    bsp_adapter_light_register();
-    bsp_wrapper_light_set_operation_object("blue_led");
-    bsp_wrapper_light_init();
-    bsp_wrapper_light_set_operation_object("yellow_led");
-    bsp_wrapper_light_init();
-
-    bsp_adapter_display_register();
-    bsp_wrapper_display_init();
-    bsp_wrapper_display_backlight_on();
-    // bsp_wrapper_display_fill_rect(0, 0, 100, 150, DISP_RGB565_ORANGE);
-    // bsp_wrapper_display_fill_screen(DISP_RGB565_PURPLE);
-    bsp_wrapper_display_draw_grad_rgb565(10);
-
-    bsp_adapter_touchpad_register();
-    bsp_wrapper_touchpad_init();
-
-    bsp_adapter_sflash_register();
-    bsp_wrapper_sflash_init();
-
-}
-
-static void _middleware_init(void)
-{
-    /* Initialize middleware components here */
+    int * ptr = mm_alloc(512);
+    pr_info("ptr = %x", ptr);
 
 #if ELOG_ENABLE
     elog_init();
@@ -155,9 +83,58 @@ static void _middleware_init(void)
         lv_demo_benchmark();
     #endif
 #endif
+    
+    
+    static uint32_t ElapsTick;
 
+#if OS_ENABLE
+    static TaskHandle_t StartupTaskHandle = {0};
 
+    xTaskCreate(_task_init, "task_init", 512, &ElapsTick, tskIDLE_PRIORITY + 1, &StartupTaskHandle);
+    vTaskStartScheduler();
+#else
+
+    for(;;) {
+
+        ElapsTick = STD_SYSTICK_Get();
+
+        pr_info("ElapsTick = %d", ElapsTick);
+
+        delay_s(2);
+    }
+
+#endif
 }
+
+
+
+/**********************
+ *   STATIC FUNCTIONS
+ **********************/
+static void _core_init(void)
+{
+    /* Initialize core components here */
+    
+//    STD_USART1_Init();
+//    STD_USART1_NVIC_Init();
+//    
+//    
+
+//    STD_GPIO_BspInit();
+
+//    STD_DMA_ClockCmd(DMA1, ENABLE);
+//    STD_DMA_ClockCmd(DMA2, ENABLE);
+//    STD_DMA2D_ClockCmd(ENABLE);
+
+//    STD_FMC_SDRAM_Init();
+//    // STD_LTDC_Init();
+//    // STD_LTDC_LayerInit();
+
+//    STD_SPI1_Init();
+//    STD_SPI3_Init();
+}
+
+
 
 #if OS_ENABLE
 static void _task_init(void * pvParameters)
