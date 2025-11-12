@@ -1718,9 +1718,9 @@
               <FilePath>..\USER\04_BSP\driver\bsp_driver_led.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_driver_fb.c</FileName>
+              <FileName>bsp_driver_lcd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\driver\bsp_driver_fb.c</FilePath>
+              <FilePath>..\USER\04_BSP\driver\bsp_driver_lcd.c</FilePath>
             </File>
             <File>
               <FileName>bsp_driver_st7735.c</FileName>

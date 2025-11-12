@@ -48,6 +48,9 @@ const struct display_wrapper wrp_display =
     .draw_rect          = bsp_wrapper_display_draw_rect,
     .draw_arc           = bsp_wrapper_display_draw_arc,
     .draw_ellipse       = bsp_wrapper_display_draw_ellipse,
+    .get_width          = bsp_wrapper_display_get_width,
+    .get_height         = bsp_wrapper_display_get_height,
+    .get_framebuffer    = bsp_wrapper_display_get_framebuffer,
     .draw_grad_rgb565   = bsp_wrapper_display_draw_grad_rgb565,
 };
 /**********************
@@ -339,6 +342,28 @@ void bsp_wrapper_display_draw_image(display_obj_t * obj, uint16_t x, uint16_t y,
     if(obj->ops->pf_copy_buffer)
         obj->ops->pf_copy_buffer(x, y, width, height, image_data);
 }
+
+uint16_t bsp_wrapper_display_get_width(display_obj_t * obj)
+{
+    if(obj->ops->pf_get_width)
+        return obj->ops->pf_get_width();
+    return 0;
+}
+
+uint16_t bsp_wrapper_display_get_height(display_obj_t * obj)
+{
+    if(obj->ops->pf_get_height)
+        return obj->ops->pf_get_height();
+    return 0;
+}
+
+uint32_t bsp_wrapper_display_get_framebuffer(display_obj_t * obj)
+{
+    if(obj->ops->pf_get_framebuffer)
+        return obj->ops->pf_get_framebuffer();
+    return 0;
+}
+
 
 void bsp_wrapper_display_draw_grad_rgb565(display_obj_t * obj, uint16_t grid_size)
 {

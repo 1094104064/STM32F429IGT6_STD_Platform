@@ -79,13 +79,16 @@ typedef struct display_ctx display_ctx_t;
 
 struct display_ops
 {
-    int  (* pf_init)            (void);
-    void (* pf_backlight_on)    (void);
-    void (* pf_backlight_off)   (void);
-    void (* pf_put_pixel)       (uint16_t x, uint16_t y, uint32_t color);
-    void (* pf_fill_rect)       (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
-    void (* pf_fill_screen)     (uint32_t color);
-    void (* pf_copy_buffer)     (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+    int      (* pf_init)            (void);
+    void     (* pf_backlight_on)    (void);
+    void     (* pf_backlight_off)   (void);
+    void     (* pf_put_pixel)       (uint16_t x, uint16_t y, uint32_t color);
+    void     (* pf_fill_rect)       (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
+    void     (* pf_fill_screen)     (uint32_t color);
+    void     (* pf_copy_buffer)     (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+    uint16_t (* pf_get_width)       (void);
+    uint16_t (* pf_get_height)      (void);
+    uint32_t (* pf_get_framebuffer) (void);
 };
 
 struct display_ctx
@@ -106,24 +109,27 @@ struct display_object {
 struct display_wrapper 
 {
     display_obj_t * (* obj_create)          (const display_ops_t * ops, const char * const name, void * const user_data);
-    void (* obj_delete)                     (const char * const name);
+    void            (* obj_delete)          (const char * const name);
     display_obj_t * (* find)                (const char * const name);
 
-    bool (* init)               (display_obj_t * obj);
-    void (* backlight_on)       (display_obj_t * obj);
-    void (* backlight_off)      (display_obj_t * obj);
-    void (* backlight_set)      (display_obj_t * obj, uint8_t brightness);
-    void (* draw_pixel)         (display_obj_t * obj, uint16_t x, uint16_t y, uint32_t color);
-    void (* fill_rect)          (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
-    void (* fill_screen)        (display_obj_t * obj, uint32_t color);
-    void (* draw_image)         (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
-    void (* draw_line)          (display_obj_t * obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t color);
-    void (* draw_circle)        (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t radius, uint32_t color);
-    void (* draw_triangle)      (display_obj_t * obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint32_t color);
-    void (* draw_rect)          (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
-    void (* draw_arc)           (display_obj_t * obj, uint16_t x0, uint16_t y0, uint16_t r, int32_t start_angle, int32_t end_angle, uint32_t color);
-    void (* draw_ellipse)       (display_obj_t * obj, int32_t x, int32_t y, int32_t r1, int32_t r2, uint32_t color);
-    void (* draw_grad_rgb565)   (display_obj_t * obj, uint16_t grid_size);
+    bool            (* init)                (display_obj_t * obj);
+    void            (* backlight_on)        (display_obj_t * obj);
+    void            (* backlight_off)       (display_obj_t * obj);
+    void            (* backlight_set)       (display_obj_t * obj, uint8_t brightness);
+    void            (* draw_pixel)          (display_obj_t * obj, uint16_t x, uint16_t y, uint32_t color);
+    void            (* fill_rect)           (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
+    void            (* fill_screen)         (display_obj_t * obj, uint32_t color);
+    void            (* draw_image)          (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+    void            (* draw_line)           (display_obj_t * obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t color);
+    void            (* draw_circle)         (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t radius, uint32_t color);
+    void            (* draw_triangle)       (display_obj_t * obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint32_t color);
+    void            (* draw_rect)           (display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
+    void            (* draw_arc)            (display_obj_t * obj, uint16_t x0, uint16_t y0, uint16_t r, int32_t start_angle, int32_t end_angle, uint32_t color);
+    void            (* draw_ellipse)        (display_obj_t * obj, int32_t x, int32_t y, int32_t r1, int32_t r2, uint32_t color);
+    uint16_t        (* get_width)           (void);
+    uint16_t        (* get_height)          (void);
+    uint32_t        (* get_framebuffer)     (void);
+    void            (* draw_grad_rgb565)    (display_obj_t * obj, uint16_t grid_size);
 };
 
 extern const struct display_wrapper wrp_display;
@@ -147,6 +153,9 @@ void            bsp_wrapper_display_draw_arc        (display_obj_t *obj, uint16_
 void            bsp_wrapper_display_draw_ellipse    (display_obj_t *obj, int32_t x, int32_t y, int32_t r1, int32_t r2, uint32_t color);
 void            bsp_wrapper_display_fill_screen     (display_obj_t *obj, uint32_t color);
 void            bsp_wrapper_display_draw_image      (display_obj_t *obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t *image_data);
+uint16_t        bsp_wrapper_display_get_width       (display_obj_t * obj);
+uint16_t        bsp_wrapper_display_get_height      (display_obj_t * obj);
+uint32_t        bsp_wrapper_display_get_framebuffer (display_obj_t * obj);
 void            bsp_wrapper_display_draw_grad_rgb565(display_obj_t *obj, uint16_t grid_size);
 /**********************
  *      MACROS

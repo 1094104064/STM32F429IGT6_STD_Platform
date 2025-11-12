@@ -61,8 +61,7 @@ void app_main(void)
     wrp_light.init(g_blue_led);
     wrp_light.init(g_yellow_led);
 
-    int * ptr = mm_alloc(512);
-    pr_info("ptr = %x", ptr);
+    // bsp_hal_lcd_simple_panel_init();
 
 #if ELOG_ENABLE
     elog_init();

@@ -1,6 +1,6 @@
 Dependencies for Project 'template', Target 'Platform': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
-F (..\USER\01_APP\app_main.c)(0x691461AF)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\app_main.o --depend .\objects\app_main.d)
+F (..\USER\01_APP\app_main.c)(0x6914690B)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\app_main.o --depend .\objects\app_main.d)
 I (..\Core\inc\main.h)(0x69146162)
 I (D:\MDK539\ARM\ARMCC\include\stdlib.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
@@ -56,7 +56,7 @@ I (..\USER\UTILITIES\memory_manager.h)(0x69146144)
 I (..\USER\04_BSP\adapter\bsp_adapter_led.h)(0x691424C6)
 I (..\USER\04_BSP\wrapper\bsp_wrapper_light.h)(0x69142588)
 I (..\USER\04_BSP\adapter\bsp_adapter_display.h)(0x68E6477D)
-I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69145379)
+I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69149D60)
 I (..\USER\04_BSP\adapter\bsp_adapter_touchpad.h)(0x68BAB37A)
 I (..\USER\04_BSP\wrapper\bsp_wrapper_touchpad.h)(0x68BEDBC8)
 I (..\USER\04_BSP\adapter\bsp_adapter_sflash.h)(0x68B83E48)
@@ -10765,7 +10765,7 @@ I (..\USER\02_MID\LVGL\src/extra/widgets/colorwheel/lv_colorwheel.h)(0x68B83E48)
 I (..\USER\02_MID\LVGL\src/extra/widgets/led/lv_led.h)(0x68B83E48)
 I (..\USER\02_MID\LVGL\src/extra/widgets/imgbtn/lv_imgbtn.h)(0x68B83E48)
 I (..\USER\02_MID\LVGL\src/extra/widgets/span/lv_span.h)(0x68B83E48)
-I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69145379)
+I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69149D60)
 F (..\USER\02_MID\LVGL\examples\porting\lv_port_fs_template.c)(0x68B83E48)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\lv_port_fs_template.o --depend .\objects\lv_port_fs_template.d)
 F (..\USER\02_MID\LVGL\examples\porting\lv_port_indev_template.c)(0x68B83E48)(--c99 -c --cpu Cortex-M4.fp.sp -g -W -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\lv_port_indev_template.o --depend .\objects\lv_port_indev_template.d)
 I (..\USER\02_MID\LVGL\examples\porting\lv_port_indev_template.h)(0x68B83E48)
@@ -12866,8 +12866,8 @@ I (..\USER\04_BSP\wrapper\bsp_wrapper_light.h)(0x69142588)
 I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdint.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdbool.h)(0x5E8E3CC2)
-F (..\USER\04_BSP\wrapper\bsp_wrapper_display.c)(0x6914505B)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_wrapper_display.o --depend .\objects\bsp_wrapper_display.d)
-I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69145379)
+F (..\USER\04_BSP\wrapper\bsp_wrapper_display.c)(0x69149D95)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_wrapper_display.o --depend .\objects\bsp_wrapper_display.d)
+I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69149D60)
 I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdint.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdbool.h)(0x5E8E3CC2)
@@ -12897,12 +12897,15 @@ I (..\USER\04_BSP\driver\bsp_driver_led.h)(0x69140C6B)
 I (D:\MDK539\ARM\ARMCC\include\stdlib.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
 I (..\USER\04_BSP\hal\bsp_hal_led.h)(0x69140C56)
-F (..\USER\04_BSP\adapter\bsp_adapter_lcd.c)(0x69145305)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_adapter_lcd.o --depend .\objects\bsp_adapter_lcd.d)
+F (..\USER\04_BSP\adapter\bsp_adapter_lcd.c)(0x69149BD2)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_adapter_lcd.o --depend .\objects\bsp_adapter_lcd.d)
 I (..\USER\04_BSP\adapter\bsp_adapter_lcd.h)(0x691451E7)
-I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69145379)
+I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69149D60)
 I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdint.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdbool.h)(0x5E8E3CC2)
+I (..\USER\04_BSP\driver\bsp_driver_lcd.h)(0x6914B8D1)
+I (D:\MDK539\ARM\ARMCC\include\stdlib.h)(0x5E8E3CC2)
+I (D:\MDK539\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
 I (..\USER\04_BSP\hal\bsp_hal_lcd.h)(0x691453EF)
 F (..\USER\04_BSP\adapter\bsp_adapter_st7735.c)(0x691350D2)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_adapter_st7735.o --depend .\objects\bsp_adapter_st7735.d)
 F (..\USER\04_BSP\adapter\bsp_adapter_w25q64.c)(0x691350D2)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_adapter_w25q64.o --depend .\objects\bsp_adapter_w25q64.d)
@@ -12914,8 +12917,8 @@ I (D:\MDK539\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdint.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdbool.h)(0x5E8E3CC2)
-F (..\USER\04_BSP\driver\bsp_driver_fb.c)(0x68E7CEF6)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_driver_fb.o --depend .\objects\bsp_driver_fb.d)
-I (..\USER\04_BSP\driver\bsp_driver_fb.h)(0x691455DA)
+F (..\USER\04_BSP\driver\bsp_driver_lcd.c)(0x6914BA77)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_driver_lcd.o --depend .\objects\bsp_driver_lcd.d)
+I (..\USER\04_BSP\driver\bsp_driver_lcd.h)(0x6914B8D1)
 I (D:\MDK539\ARM\ARMCC\include\stdlib.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
@@ -12982,7 +12985,7 @@ I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma2d.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fmc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_ltdc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sai.h)(0x68B83E48)
-F (..\USER\04_BSP\hal\bsp_hal_lcd.c)(0x691465F4)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_hal_lcd.o --depend .\objects\bsp_hal_lcd.d)
+F (..\USER\04_BSP\hal\bsp_hal_lcd.c)(0x69149E22)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_hal_lcd.o --depend .\objects\bsp_hal_lcd.d)
 I (..\USER\04_BSP\hal\bsp_hal_lcd.h)(0x691453EF)
 I (..\Core\inc\ltdc.h)(0x6914599B)
 I (..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x68B83E48)
@@ -13022,9 +13025,13 @@ I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma2d.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fmc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_ltdc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sai.h)(0x68B83E48)
-I (..\Core\inc\dma2d.h)(0x68E6979A)
+I (..\Core\inc\dma2d.h)(0x69147209)
 I (..\USER\UTILITIES\memory_manager.h)(0x69146144)
 I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
+I (..\USER\UTILITIES\debug.h)(0x69141BD7)
+I (D:\MDK539\ARM\ARMCC\include\stdarg.h)(0x5E8E3CC2)
+I (D:\MDK539\ARM\ARMCC\include\stdbool.h)(0x5E8E3CC2)
+I (..\Core\inc\gpio.h)(0x68BCFE07)
 F (..\USER\04_BSP\hal\bsp_hal_st7735.c)(0x69134261)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_hal_st7735.o --depend .\objects\bsp_hal_st7735.d)
 F (..\USER\04_BSP\hal\bsp_hal_gt911.c)(0x69136220)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_hal_gt911.o --depend .\objects\bsp_hal_gt911.d)
 F (..\USER\04_BSP\hal\bsp_hal_w25q64.c)(0x69134252)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\bsp_hal_w25q64.o --depend .\objects\bsp_hal_w25q64.d)
@@ -13307,7 +13314,7 @@ I (..\USER\UTILITIES\memory_manager.h)(0x69146144)
 I (..\USER\04_BSP\adapter\bsp_adapter_led.h)(0x691424C6)
 I (..\USER\04_BSP\wrapper\bsp_wrapper_light.h)(0x69142588)
 I (..\USER\04_BSP\adapter\bsp_adapter_display.h)(0x68E6477D)
-I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69145379)
+I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69149D60)
 I (..\USER\04_BSP\adapter\bsp_adapter_touchpad.h)(0x68BAB37A)
 I (..\USER\04_BSP\wrapper\bsp_wrapper_touchpad.h)(0x68BEDBC8)
 I (..\USER\04_BSP\adapter\bsp_adapter_sflash.h)(0x68B83E48)
@@ -13369,7 +13376,7 @@ I (..\USER\UTILITIES\memory_manager.h)(0x69146144)
 I (..\USER\04_BSP\adapter\bsp_adapter_led.h)(0x691424C6)
 I (..\USER\04_BSP\wrapper\bsp_wrapper_light.h)(0x69142588)
 I (..\USER\04_BSP\adapter\bsp_adapter_display.h)(0x68E6477D)
-I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69145379)
+I (..\USER\04_BSP\wrapper\bsp_wrapper_display.h)(0x69149D60)
 I (..\USER\04_BSP\adapter\bsp_adapter_touchpad.h)(0x68BAB37A)
 I (..\USER\04_BSP\wrapper\bsp_wrapper_touchpad.h)(0x68BEDBC8)
 I (..\USER\04_BSP\adapter\bsp_adapter_sflash.h)(0x68B83E48)
@@ -13621,7 +13628,7 @@ I (..\Core\inc\gpio.h)(0x68BCFE07)
 I (..\Core\inc\systick.h)(0x68B83E48)
 I (D:\MDK539\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
 I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
-F (..\Core\src\ltdc.c)(0x6914599F)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\ltdc.o --depend .\objects\ltdc.d)
+F (..\Core\src\ltdc.c)(0x69147252)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\ltdc.o --depend .\objects\ltdc.d)
 I (..\Core\inc\ltdc.h)(0x6914599B)
 I (..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x68B83E48)
 I (..\Libraries\CMSIS\Include\core_cm4.h)(0x68B83E48)
@@ -13661,12 +13668,6 @@ I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fmc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_ltdc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sai.h)(0x68B83E48)
 I (..\Core\inc\gpio.h)(0x68BCFE07)
-I (..\Core\inc\dma2d.h)(0x68E6979A)
-I (..\USER\04_BSP\driver\bsp_driver_fb.h)(0x691455DA)
-I (D:\MDK539\ARM\ARMCC\include\stdlib.h)(0x5E8E3CC2)
-I (D:\MDK539\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
-I (D:\MDK539\ARM\ARMCC\include\string.h)(0x5E8E3CC2)
-I (D:\MDK539\ARM\ARMCC\include\stdbool.h)(0x5E8E3CC2)
 F (..\Core\src\rtc.c)(0x68B83E48)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\rtc.o --depend .\objects\rtc.d)
 I (..\Core\inc\rtc.h)(0x68B83E48)
 I (..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x68B83E48)
@@ -13784,8 +13785,8 @@ I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma2d.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fmc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_ltdc.h)(0x68B83E48)
 I (..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sai.h)(0x68B83E48)
-F (..\Core\src\dma2d.c)(0x68E693D6)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\dma2d.o --depend .\objects\dma2d.d)
-I (..\Core\inc\dma2d.h)(0x68E6979A)
+F (..\Core\src\dma2d.c)(0x6914720C)(--c99 -c --cpu Cortex-M4.fp.sp -g -O2 --apcs=interwork --split_sections -I ..\Libraries\CMSIS\Device\ST\STM32F4xx\Include -I ..\Libraries\CMSIS\Include -I ..\Libraries\STM32F4xx_StdPeriph_Driver\inc -I ..\Core\inc -I ..\USER\01_APP -I ..\USER\02_MID\EasyLogger\inc -I ..\USER\02_MID\LVGL -I ..\USER\02_MID\LVGL\src -I ..\USER\02_MID\LVGL\examples\porting -I ..\USER\02_MID\LVGL\demos -I ..\USER\03_OS\FreeRTOS\include -I ..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F -I ..\USER\04_BSP\wrapper -I ..\USER\04_BSP\adapter -I ..\USER\04_BSP\driver -I ..\USER\04_BSP\hal -I ..\USER\05_MSP\cluster -I ..\USER\05_MSP\emulator -I ..\USER\UTILITIES -I ..\USER\02_MID\tlsf-ID:\MDK539\ARM\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -DSTM32F429xx -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx-o .\objects\dma2d.o --depend .\objects\dma2d.d)
+I (..\Core\inc\dma2d.h)(0x69147209)
 I (..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x68B83E48)
 I (..\Libraries\CMSIS\Include\core_cm4.h)(0x68B83E48)
 I (D:\MDK539\ARM\ARMCC\include\stdint.h)(0x5E8E3CC2)

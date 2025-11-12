@@ -19,8 +19,6 @@
  *********************/
 #include "ltdc.h"
 #include "gpio.h"
-#include "dma2d.h"
-#include "bsp_driver_fb.h"
 /**********************
  *      MACROS
  **********************/
@@ -32,8 +30,7 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/
-extern struct framebuffer_layer layers[2];
-extern const struct lcd_panel * panels;
+
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -41,7 +38,6 @@ extern const struct lcd_panel * panels;
 /**********************
  *  STATIC VARIABLES
  **********************/
-static bool ltdc_initialized = false;
 
 static uint16_t active_width;
 static uint16_t active_height;
@@ -53,12 +49,6 @@ static uint32_t vback_porch;
 static uint32_t vsync_width;
 static uint32_t vfront_porch;
 
-static uint8_t pixel_format;
-static uint8_t pixel_size;
-static uint8_t rotated;
-static uint32_t start_address;
-
-static LTDC_Layer_TypeDef * layer = LTDC_Layer1;
 
 /**********************
  *   GLOBAL FUNCTIONS
@@ -80,79 +70,9 @@ void STD_LTDC_ResolutionInit(uint16_t width, uint16_t height)
     active_height = height;
 }
 
-void STD_LTDC_PixelInfoExport(uint8_t * p_format, uint8_t * p_size)
-{
-    if(p_format) *p_format = pixel_format;
-    if(p_size)   *p_size = pixel_size;
-}
-
-
-void STD_LTDC_SetARGB8888(void)
-{
-    pixel_format = LTDC_Pixelformat_ARGB8888;
-    pixel_size = 4;
-}
-
-void STD_LTDC_SetRGB888(void)
-{
-    pixel_format = LTDC_Pixelformat_RGB888;
-    pixel_size = 3;
-}
-
-void STD_LTDC_SetRGB565(void)
-{
-    pixel_format = LTDC_Pixelformat_RGB565;
-    pixel_size = 2;
-}
-
-void STD_LTDC_SetARGB1555(void)
-{
-    pixel_format = LTDC_Pixelformat_ARGB1555;
-    pixel_size = 2;
-}
-
-void STD_LTDC_SetARGB4444(void)
-{
-    pixel_format = LTDC_Pixelformat_ARGB4444;
-    pixel_size = 2;
-}
-
-void STD_LTDC_SetL8(void)
-{
-    pixel_format = LTDC_Pixelformat_L8;
-    pixel_size = 1;
-}
-
-void STD_LTDC_SetAL44(void)
-{
-    pixel_format = LTDC_Pixelformat_AL44;
-    pixel_size = 2;
-}
-
-void STD_LTDC_SetAL88(void)
-{
-    pixel_format = LTDC_Pixelformat_AL88;
-    pixel_size = 2;
-}
-
-void STD_LTDC_SetLayer0(uint32_t address)
-{
-    layer = LTDC_Layer1;
-    start_address = address;
-}
-
-void STD_LTDC_SetLayer1(uint32_t address)
-{
-    layer = LTDC_Layer2;
-    start_address = address;
-}
 
 void STD_LTDC_Init(void)
 {
-    if(ltdc_initialized) {
-        return;
-    }
-
     STD_GPIO_Init(LTDC_R2_PORT, LTDC_R2_PIN, GPIO_Mode_AF, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, GPIO_AF_LTDC);
     STD_GPIO_Init(LTDC_R3_PORT, LTDC_R3_PIN, GPIO_Mode_AF, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, GPIO_AF_LTDC);
     STD_GPIO_Init(LTDC_R4_PORT, LTDC_R4_PIN, GPIO_Mode_AF, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, GPIO_AF_LTDC);
@@ -302,8 +222,8 @@ void STD_LTDC_LayerInit(LTDC_Layer_TypeDef * layerx, uint8_t pixel_format, uint3
         ltdc_layer.LTDC_CFBPitch = active_width * 2;
     }
 
-    LTDC_LayerInit(layer, &ltdc_layer);       
-    LTDC_LayerCmd(layer, ENABLE);             
+    LTDC_LayerInit(layerx, &ltdc_layer);       
+    LTDC_LayerCmd(layerx, ENABLE);             
     LTDC_ReloadConfig(LTDC_IMReload);              
 
 }

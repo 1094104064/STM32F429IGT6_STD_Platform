@@ -29,8 +29,7 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
-struct framebuffer_layer layers[2];
-static struct framebuffer_layer *active_layer = &layers[0];
+
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -40,7 +39,6 @@ static struct framebuffer_layer *active_layer = &layers[0];
  **********************/
 static uint8_t layer_pixel_format;
 static uint8_t layer_pixel_size;
-static uint16_t layer_rotated;
 static uint16_t layer_width;
 static uint16_t layer_height;
 static uint32_t layer_address;
@@ -48,24 +46,13 @@ static uint32_t layer_address;
  *   GLOBAL FUNCTIONS
  **********************/ 
 
-void STD_DMA2D_ClockCmd(FunctionalState NewState)
-{
-    if (NewState != DISABLE) {
-        /* Enable the DMA2D clock */
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2D, ENABLE);
-    }
-    else {
-        /* Disable the DMA2D clock */
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2D, DISABLE);
-    }
-}
 
-void STD_DMA2D_Ready( uint8_t pixel_format, uint8_t pixel_size, uint16_t rotated, 
+
+void STD_DMA2D_Ready( uint8_t pixel_format, uint8_t pixel_size, 
                       uint16_t width, uint16_t height, uint32_t address )
 {
     layer_pixel_format   = pixel_format;
     layer_pixel_size     = pixel_size;
-    layer_rotated        = rotated;
     layer_width          = width;
     layer_height         = height;
     layer_address        = address;
@@ -78,27 +65,11 @@ void STD_DMA2D_FillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t he
     DMA2D->OPFCCR = layer_pixel_format;                  /* 设置颜色格式 */
     DMA2D->OCOLR = color;                   /* 颜色 */
 
-    if (active_layer->rotated == 0) {
-        DMA2D->OOR = layer_width - width;
-        DMA2D->OMAR = layer_address + layer_pixel_size * (layer_width * y + x);
-        DMA2D->NLR = (width << 16) | (height);
-    }
-    else if(active_layer->rotated == 90) { 
-        DMA2D->OOR = layer_width - height;
-        DMA2D->OMAR = layer_address + layer_pixel_size * (y * layer_width + (layer_width - x - width - 50));
-        DMA2D->NLR = (height << 16) | width;
-    }
-    else if(active_layer->rotated == 180) {
-        DMA2D->OOR = layer_width - width;
-        DMA2D->OMAR = layer_address + layer_pixel_size * ((active_layer->height - y - height) * layer_width + 
-                    (layer_width - x - width));
-        DMA2D->NLR = (width << 16) | height;
-    }
-    else if(active_layer->rotated == 270) {
-        DMA2D->OOR = layer_width - height;
-        DMA2D->OMAR = layer_address + layer_pixel_size * ((active_layer->height - x - 1 - width) * layer_width + y);
-        DMA2D->NLR = (width) | (height << 16);
-    }
+
+    DMA2D->OOR = layer_width - width;
+    DMA2D->OMAR = layer_address + layer_pixel_size * (layer_width * y + x);
+    DMA2D->NLR = (width << 16) | (height);
+
 
     DMA2D->CR |= DMA2D_CR_START;
 
@@ -112,7 +83,7 @@ void STD_DMA2D_FillScreen(uint32_t color)
     DMA2D->OPFCCR = layer_pixel_format;                  /* 设置颜色格式 */
     DMA2D->OOR = 0;                                 /* 设置行偏移 */
     DMA2D->OMAR = layer_address;               /* 地址 */
-    DMA2D->NLR = (layer_width << 16) | (active_layer->height);  /* 设定长度和宽度 */
+    DMA2D->NLR = (layer_width << 16) | (layer_height);  /* 设定长度和宽度 */
     DMA2D->OCOLR = color;                   /* 颜色 */
 
 

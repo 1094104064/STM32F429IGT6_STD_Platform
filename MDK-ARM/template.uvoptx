@@ -258,7 +258,7 @@
 
   <Group>
     <GroupName>01_APP</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2666,7 +2666,7 @@
 
   <Group>
     <GroupName>04_BSP/Wrapper</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2722,7 +2722,7 @@
 
   <Group>
     <GroupName>04_BSP/Adapter</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2790,7 +2790,7 @@
 
   <Group>
     <GroupName>04_BSP/Driver</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2813,8 +2813,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\04_BSP\driver\bsp_driver_fb.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_driver_fb.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\04_BSP\driver\bsp_driver_lcd.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_driver_lcd.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2858,7 +2858,7 @@
 
   <Group>
     <GroupName>04_BSP/HAL</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2926,7 +2926,7 @@
 
   <Group>
     <GroupName>05_MSP/Cluster</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2978,7 +2978,7 @@
 
   <Group>
     <GroupName>UTILITIES</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

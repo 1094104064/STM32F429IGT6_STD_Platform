@@ -205,7 +205,7 @@
 ".\objects\bsp_adapter_w25q64.o"
 ".\objects\bsp_adapter_gt911.o"
 ".\objects\bsp_driver_led.o"
-".\objects\bsp_driver_fb.o"
+".\objects\bsp_driver_lcd.o"
 ".\objects\bsp_driver_st7735.o"
 ".\objects\bsp_driver_gt911.o"
 ".\objects\bsp_driver_w25q64.o"
