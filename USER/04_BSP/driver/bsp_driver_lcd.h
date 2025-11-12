@@ -57,12 +57,13 @@ struct lcd_handle
     void     (* pf_backlight_on)        (void);
     void     (* pf_backlight_off)       (void);
     void     (* pf_backlight_set)       (uint8_t brightness);
+    void     (* pf_put_pixel)           (uint16_t x, uint16_t y, uint32_t color, uint16_t rotated);
     void     (* pf_fill_rect)           (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
     void     (* pf_fill_screen)         (uint32_t color);
     void     (* pf_copy_buffer)         (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
     uint16_t (* pf_get_width)           (void);
     uint16_t (* pf_get_height)          (void);
-    uint32_t (* pf_get_start_addr)      (void);
+    uint32_t (* pf_get_framebuffer)     (void);
 };
 
 struct lcd_driver

@@ -76,7 +76,12 @@ void bsp_driver_lcd_link(lcd_driver_t * drv, const lcd_handle_t * handle)
 
 static bool lcd_init(lcd_driver_t * self)
 {
+    self->handle->pf_hal_init();
 
+    
+    self->width = self->handle->pf_get_width();
+    self->height = self->handle->pf_get_height();
+    self->framebuffer = self->handle->pf_get_framebuffer();
 }
 
 static void lcd_backlight_on(lcd_driver_t * self)
@@ -91,41 +96,7 @@ static void lcd_backlight_off(lcd_driver_t * self)
 
 static void lcd_put_pixel(lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color)
 {
-    uint16_t rotated        = self->rotated;
-    uint32_t pixel_pos      = 0;
-    uint32_t width          = self->width;
-    uint32_t height         = self->height;
-    // uint8_t pixel_size      = self->pixel_size;
-    uint32_t start_address  = self->framebuffer;
-
-    if(rotated == 0) {
-        pixel_pos = y * width + x;
-    }
-    else if(rotated == 90) {
-        pixel_pos = x * width + (width - 1 - y);
-    }
-    else if(rotated == 180) {
-        pixel_pos = (height - 1 - y) * width + 
-                    (width - 1 - x);
-    }
-    else if(rotated == 270) {
-        pixel_pos = (height - 1 - x) * width + y;
-    }
-
-
-    // if(pixel_size == 4) {
-    //     *(volatile uint32_t*)( start_address + 4 * pixel_pos ) = color ;
-    // }
-    // else if(pixel_size == 3) {
-    //     *(volatile uint16_t*)( start_address + 3 * pixel_pos ) = color;
-    //     *(volatile uint8_t*)( start_address + 3 * pixel_pos + 2 ) = color >> 16;
-    // }
-    // else if(pixel_size == 2) {
-    //     *(volatile uint16_t*)(start_address + 2 * pixel_pos ) = color;
-    // }
-    // else {
-
-    // }
+    self->handle->pf_put_pixel(x, y, color, self->rotated);
 }
 
 static void lcd_fill_rect(lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)

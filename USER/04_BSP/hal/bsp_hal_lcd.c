@@ -131,6 +131,46 @@ void bsp_hal_lcd_switch_layer(uint8_t layerx)
     }
 }
 
+void bsp_hal_lcd_put_pixel(uint16_t x, uint16_t y, uint32_t color, uint16_t rotated)
+{
+    uint32_t pixel_pos      = 0;
+    uint32_t width          = LCD_WIDTH;
+    uint32_t height         = LCD_HEIGHT;
+    uint8_t pixel_size      = act_layer->pixel_size;
+    uint32_t start_address  = act_layer->start_address;
+
+    if(rotated == 0) {
+        pixel_pos = y * width + x;
+    }
+    else if(rotated == 90) {
+        pixel_pos = x * width + (width - 1 - y);
+    }
+    else if(rotated == 180) {
+        pixel_pos = (height - 1 - y) * width + 
+                    (width - 1 - x);
+    }
+    else if(rotated == 270) {
+        pixel_pos = (height - 1 - x) * width + y;
+    }
+    else {
+        pixel_pos = y * width + x;
+    }
+
+    if(pixel_size == 4) {
+        *(volatile uint32_t*)( start_address + 4 * pixel_pos ) = color ;
+    }
+    else if(pixel_size == 3) {
+        *(volatile uint16_t*)( start_address + 3 * pixel_pos ) = color;
+        *(volatile uint8_t*)( start_address + 3 * pixel_pos + 2 ) = color >> 16;
+    }
+    else if(pixel_size == 2) {
+        *(volatile uint16_t*)(start_address + 2 * pixel_pos ) = color;
+    }
+    else {
+        *(volatile uint16_t*)(start_address + 2 * pixel_pos ) = color;
+    }
+}
+
 void bsp_hal_lcd_fill_rectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
     uint8_t pixel_format = act_layer->pixel_format;
@@ -161,7 +201,17 @@ void bsp_hal_lcd_copy_buffer(uint16_t x, uint16_t y, uint16_t width, uint16_t he
     STD_DMA2D_CopyBuffer(x, y, width, height, data);
 }
 
-uint32_t bsp_hal_lcd_get_address(void)
+uint16_t bsp_hal_lcd_get_width(void)
+{
+    return LCD_WIDTH;
+}
+
+uint16_t bsp_hal_lcd_get_height(void)
+{
+    return LCD_HEIGHT;
+}
+
+uint32_t bsp_hal_lcd_get_layer_address(void)
 {
     return act_layer->start_address;
 }
