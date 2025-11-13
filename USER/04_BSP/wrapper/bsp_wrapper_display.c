@@ -48,6 +48,7 @@ const struct display_wrapper wrp_display =
     .draw_rect          = bsp_wrapper_display_draw_rect,
     .draw_arc           = bsp_wrapper_display_draw_arc,
     .draw_ellipse       = bsp_wrapper_display_draw_ellipse,
+    .switch_framebuffer = bsp_wrapper_display_switch_framebuffer,
     .get_width          = bsp_wrapper_display_get_width,
     .get_height         = bsp_wrapper_display_get_height,
     .get_framebuffer    = bsp_wrapper_display_get_framebuffer,
@@ -112,14 +113,11 @@ display_obj_t * bsp_wrapper_display_find(const char * const name)
 
 bool bsp_wrapper_display_init(display_obj_t * obj)
 {
-    if( obj->ops->pf_init           == NULL || obj->ops->pf_backlight_on    == NULL ||
-        obj->ops->pf_backlight_off  == NULL || obj->ops->pf_put_pixel       == NULL ||
-        obj->ops->pf_fill_rect      == NULL || obj->ops->pf_fill_screen     == NULL ||
-        obj->ops->pf_copy_buffer    == NULL ) {
-        return false;
-    }
+    if(obj->ctx.is_initialized == true) return true;
 
-    int ret = obj->ops->pf_init();
+    int ret = 1;
+    if(obj->ops->pf_init)
+        obj->ops->pf_init();
 
     if(ret != 0) {
         return false;
@@ -343,6 +341,12 @@ void bsp_wrapper_display_draw_image(display_obj_t * obj, uint16_t x, uint16_t y,
         obj->ops->pf_copy_buffer(x, y, width, height, image_data);
 }
 
+void bsp_wrapper_display_switch_framebuffer(display_obj_t * obj, uint8_t layerx)
+{
+    if(obj->ops->pf_switch_framebuffer)
+        obj->ops->pf_switch_framebuffer(layerx);
+}
+
 uint16_t bsp_wrapper_display_get_width(display_obj_t * obj)
 {
     if(obj->ops->pf_get_width)
@@ -370,9 +374,11 @@ void bsp_wrapper_display_draw_grad_rgb565(display_obj_t * obj, uint16_t grid_siz
     uint16_t x, y;
     uint32_t color;
     uint8_t grid_color;
+    uint16_t width = bsp_wrapper_display_get_width(obj);
+    uint16_t height = bsp_wrapper_display_get_height(obj);
 
-    for(y = 0; y < obj->ctx.height; y++) {
-        for(x = 0; x < obj->ctx.width; x++) {
+    for(y = 0; y < height; y++) {
+        for(x = 0; x < width; x++) {
             grid_color = ((x / grid_size) + (y / grid_size)) % 3;
             if (grid_color == 0)
                 color = DISP_RGB565_RED; 

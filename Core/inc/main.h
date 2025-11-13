@@ -55,11 +55,13 @@ extern "C" {
 #include "debug.h"
 #include "memory_manager.h"
 
-#include "bsp_adapter_led.h"
-#include "bsp_wrapper_light.h"
 
-#include "bsp_adapter_display.h"
+#include "bsp_wrapper_light.h"
 #include "bsp_wrapper_display.h"
+
+#include "bsp_adapter_led.h"
+#include "bsp_adapter_lcd.h"
+
 
 #include "bsp_adapter_touchpad.h"
 #include "bsp_wrapper_touchpad.h"

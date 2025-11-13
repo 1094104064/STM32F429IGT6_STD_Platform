@@ -37,98 +37,100 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static struct touchpad_wrapper touchpad_wrappers[TOUCHPAD_MAX_NUM];
-static uint8_t current_touchpad_idx = 0;
+static touchpad_obj_t gs_mempool[TOUCHPAD_MAX_NUM];
+static uint8_t gsuc_index = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 
-void bsp_wrapper_touchpad_link(struct touchpad_wrapper * self, const char * const name, void * const user_data)
+touchpad_obj_t * bsp_wrapper_touchpad_obj_create(const touchpad_ops_t * ops, const char * const name, void * const user_data)
 {
-    uint8_t idx = 0;
-
-    current_touchpad_idx++;
-
-    if(current_touchpad_idx < TOUCHPAD_MAX_NUM) {
-        idx = current_touchpad_idx;
-    }
-    else {
-        current_touchpad_idx = 0;
+    if(gsuc_index >= TOUCHPAD_MAX_NUM) {
+        gsuc_index = 0;
     }
 
-    memset(&touchpad_wrappers[idx], 0, sizeof(struct touchpad_wrapper));
+    if(ops == NULL) return NULL;
 
-    touchpad_wrappers[idx] = *self;
-    touchpad_wrappers[idx].idx = idx;
-    touchpad_wrappers[idx].name = name;
-    touchpad_wrappers[idx].user_data = user_data;
+    if(bsp_wrapper_touchpad_find(name) != NULL) return NULL;
 
-    if(touchpad_wrappers[idx].name == NULL) {
-//        pr_warn("This wrapper has no name and will be filled with a default name");
-        touchpad_wrappers[idx].name = "touchpad_default";
+    memset(&gs_mempool[gsuc_index], 0, sizeof(touchpad_obj_t));
+
+    gs_mempool[gsuc_index].ops = ops;
+
+    gs_mempool[gsuc_index].ctx.idx       = gsuc_index;
+    gs_mempool[gsuc_index].ctx.user_data = user_data;
+    strncpy(gs_mempool[gsuc_index].ctx.name, name, sizeof(gs_mempool[gsuc_index].ctx.name) - 1);
+
+    gsuc_index++;
+
+    return &gs_mempool[gsuc_index - 1];
+}
+
+void bsp_wrapper_touchpad_obj_delete(const char * const name)
+{
+    touchpad_obj_t * obj = bsp_wrapper_touchpad_find(name);
+
+    if(obj != NULL) {
+        memset(obj, 0, sizeof(touchpad_obj_t));
     }
 }
 
-bool bsp_wrapper_touchpad_init(void)
+touchpad_obj_t * bsp_wrapper_touchpad_find(const char * const name)
 {
-    int ret = 0;
-    struct touchpad_wrapper * self = &touchpad_wrappers[current_touchpad_idx];
+    uint8_t i = 0;
 
-//    assert_null(self->pf_init);
-//    assert_null(self->pf_reset);
-//    assert_null(self->pf_is_pressed);
-//    assert_null(self->pf_scan);
-//    assert_null(self->pf_get_coordinates);
+    if(name == NULL) return NULL;
 
-    if( self->pf_init               == NULL || self->pf_reset   == NULL ||
-        self->pf_is_pressed         == NULL || self->pf_scan    == NULL ||
-        self->pf_get_coordinates    == NULL) {
-        return false;
+    for(i = 0; i < sizeof(gs_mempool) / sizeof(gs_mempool[0]); i++ ) {
+        if(strncmp(gs_mempool[i].ctx.name, name, TOUCHPAD_NAME_MAX_LEN) == 0) {
+            return &gs_mempool[i];
+        }
     }
+    return NULL;
+}
 
-    ret = self->pf_init(self);
+bool bsp_wrapper_touchpad_init(touchpad_obj_t * obj)
+{
+    if(obj->ctx.is_initialized == true) return true;
 
+    int ret = 1;
+
+    if(obj->ops->pf_init)
+        ret = obj->ops->pf_init();
+        
     if(ret != 0) {
-//        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
         return false;
     }
 
-//    pr_info("%s : initialized successfully", self->name);
+    obj->ctx.is_initialized = true;
 
     return true;
 }
 
-
-void bsp_wrapper_touchpad_reset(void)
+void bsp_wrapper_touchpad_reset(touchpad_obj_t * obj)
 {
-    struct touchpad_wrapper * self = &touchpad_wrappers[current_touchpad_idx];
-
-    self->pf_reset(self);
+    if(obj->ops->pf_reset)
+        obj->ops->pf_reset();
 }
 
-void bsp_wrapper_touchpad_scan(void)
+void bsp_wrapper_touchpad_scan(touchpad_obj_t * obj)
 {
-    struct touchpad_wrapper * self = &touchpad_wrappers[current_touchpad_idx];
-
-    self->pf_scan(self);
+    if(obj->ops->pf_scan)
+        obj->ops->pf_scan();
 }
 
-uint8_t bsp_wrapper_touchpad_is_pressed(void)
+bool bsp_wrapper_touchpad_is_pressed(touchpad_obj_t * obj)
 {
-    struct touchpad_wrapper * self = &touchpad_wrappers[current_touchpad_idx];
+    if(obj->ops->pf_is_pressed)
+        return obj->ops->pf_is_pressed();
 
-    return self->pf_is_pressed(self);
+    return false;
 }
 
-void bsp_wrapper_touchpad_get_coordinates(uint16_t * x, uint16_t * y, uint8_t num)
+void bsp_wrapper_touchpad_get_coordinates(touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t num)
 {
-    if(x == NULL || y == NULL) {
-        return;
-    }
-
-    struct touchpad_wrapper * self = &touchpad_wrappers[current_touchpad_idx];
-
-    self->pf_get_coordinates(self, x, y, num);
+    if(obj->ops->pf_get_coordinates)
+        obj->ops->pf_get_coordinates(x, y, num);
 }
 
 /**********************

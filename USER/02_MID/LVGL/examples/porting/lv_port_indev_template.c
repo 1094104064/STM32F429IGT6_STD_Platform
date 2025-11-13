@@ -192,7 +192,6 @@ static void touchpad_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
     static lv_coord_t last_x = 0;
     static lv_coord_t last_y = 0;
 
-    bsp_wrapper_touchpad_scan();
 
     /*Save the pressed coordinates and the state*/
     if(touchpad_is_pressed()) {
@@ -211,8 +210,7 @@ static void touchpad_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 /*Return true is the touchpad is pressed*/
 static bool touchpad_is_pressed(void)
 {
-    if(bsp_wrapper_touchpad_is_pressed())
-        return true;
+
 
     return false;
 }
@@ -220,7 +218,6 @@ static bool touchpad_is_pressed(void)
 /*Get the x and y coordinates if the touchpad is pressed*/
 static void touchpad_get_xy(lv_coord_t * x, lv_coord_t * y)
 {
-    bsp_wrapper_touchpad_get_coordinates((uint16_t *)x, (uint16_t *)y, 1);
 
     // static uint16_t coord_x[5], coord_y[5];
     // bsp_wrapper_touchpad_get_coordinates(coord_x, coord_y, 1);

@@ -31,6 +31,7 @@
  **********************/ 
 light_obj_t * g_blue_led;
 light_obj_t * g_yellow_led;
+display_obj_t * g_lcd;
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -61,7 +62,13 @@ void app_main(void)
     wrp_light.init(g_blue_led);
     wrp_light.init(g_yellow_led);
 
-    // bsp_hal_lcd_simple_panel_init();
+    g_lcd = wrp_display.obj_create(&lcd_ops, "simple lcd", NULL);
+    wrp_display.init(g_lcd);
+    pr_trace("width = %d", wrp_display.get_width(g_lcd));
+    pr_trace("height = %d", wrp_display.get_height(g_lcd));
+    pr_trace("framebuffer = %x", wrp_display.get_framebuffer(g_lcd));
+    wrp_display.backlight_on(g_lcd);
+    wrp_display.draw_grad_rgb565(g_lcd, 30);
 
 #if ELOG_ENABLE
     elog_init();

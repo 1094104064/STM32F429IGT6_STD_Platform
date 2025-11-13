@@ -32,7 +32,7 @@ extern "C" {
 *  GLOBAL PROTOTYPES
  **********************/
 
-
+extern const display_ops_t lcd_ops;
 
 
 /**********************

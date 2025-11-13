@@ -99,14 +99,9 @@ light_obj_t * bsp_wrapper_light_find(const char * const name)
 
 bool bsp_wrapper_light_init(light_obj_t * obj)
 {
-    if( obj->ops->pf_init == NULL || obj->ops->pf_on == NULL ||
-        obj->ops->pf_off == NULL) {
-        return false;
-    }
-
     if(obj->ctx.is_initialized == true) return true;
 
-    int ret = 0;
+    int ret = 1;
 
     if(obj->ops->pf_init)
         ret = obj->ops->pf_init();
@@ -114,6 +109,8 @@ bool bsp_wrapper_light_init(light_obj_t * obj)
     if(ret != 0) {
         return false;
     }
+
+    obj->ctx.is_initialized = true;
 
     return true;
 }

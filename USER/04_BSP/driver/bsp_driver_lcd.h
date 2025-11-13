@@ -61,6 +61,7 @@ struct lcd_handle
     void     (* pf_fill_rect)           (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
     void     (* pf_fill_screen)         (uint32_t color);
     void     (* pf_copy_buffer)         (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+    void     (* pf_switch_framebuffer)  (uint8_t layerx);
     uint16_t (* pf_get_width)           (void);
     uint16_t (* pf_get_height)          (void);
     uint32_t (* pf_get_framebuffer)     (void);
@@ -78,15 +79,16 @@ struct lcd_driver
     uint16_t        height;
     uint32_t        framebuffer;
 
-    bool (* pf_init)            (lcd_driver_t * self);
-    void (* pf_backlight_on)    (lcd_driver_t * self);
-    void (* pf_backlight_off)   (lcd_driver_t * self);
-    void (* pf_put_pixel)       (lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color);
-    void (* pf_fill_rect)       (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
-    void (* pf_fill_screen)     (lcd_driver_t * self, uint32_t color);
-    void (* pf_copy_buffer)     (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
-    void (* pf_set_start_addr)  (lcd_driver_t * self, uint32_t address);
-    void (* pf_set_rotated)     (lcd_driver_t * self, uint16_t rotated);
+    bool (* pf_init)                (lcd_driver_t * self);
+    void (* pf_backlight_on)        (lcd_driver_t * self);
+    void (* pf_backlight_off)       (lcd_driver_t * self);
+    void (* pf_backlight_set)       (lcd_driver_t * self, uint8_t brightness);
+    void (* pf_put_pixel)           (lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color);
+    void (* pf_fill_rect)           (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
+    void (* pf_fill_screen)         (lcd_driver_t * self, uint32_t color);
+    void (* pf_copy_buffer)         (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+    void (* pf_switch_framebuffer)  (lcd_driver_t * self, uint8_t layerx);
+    void (* pf_set_rotated)         (lcd_driver_t * self, uint16_t rotated);
 };
 
 /**********************
