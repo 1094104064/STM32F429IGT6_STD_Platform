@@ -48,48 +48,97 @@ extern "C" {
 /**********************
  *      TYPEDEFS
  **********************/
+typedef struct gt911_ctrl gt911_ctrl_t;
+typedef struct gt911_timebase gt911_timebase_t;
+typedef struct gt911_i2c gt911_i2c_t;
+typedef struct gt911_handle gt911_handle_t;
+typedef struct gt911_driver gt911_driver_t;
 
-struct gt911_oper_i2c {
-    void (* pf_write_reg)(uint8_t dev_addr, uint16_t reg_addr, uint8_t * src, uint16_t len);
-    void (* pf_read_reg)(uint8_t dev_addr, uint16_t reg_addr, uint8_t * dst, uint16_t len);
+typedef enum {
+    GT911_I2C_SOFTWARE,
+    GT911_I2C_HARDWARE
+} gt911_i2c_type_t;
+
+typedef enum {
+    GT911_PIN_LOW,
+    GT911_PIN_HIGH
+} gt911_pin_state_t;
+
+typedef enum {
+    GT911_PIN_INPUT,
+    GT911_PIN_OUTPUT
+} gt911_pin_mode_t;
+
+struct gt911_si2c
+{
+    void    (* pf_init)         (void);
+    void    (* pf_start)        (void);
+    void    (* pf_stop)         (void);
+    uint8_t (* pf_wait_ack)     (void);
+    void    (* pf_generate_ack) (void);
+    void    (* pf_generate_nack)(void);
+    uint8_t (* pf_read_byte)    (void);
+    void    (* pf_write_byte)   (uint8_t data);
 };
 
-struct gt911_oper_ctrl {
-    void (* pf_int_in)(void);
-    void (* pf_int_out)(void);
-    void (* pf_int_high)(void);
-    void (* pf_int_low)(void);
-    void (* pf_rst_high)(void);
-    void (* pf_rst_low)(void);
+struct gt911_hi2c
+{
+    void    (* pf_init)        (void);
+    bool    (* pf_start)       (void);
+    void    (* pf_stop)        (void);
+    bool    (* pf_send_addr)   (uint8_t addr);
+    uint8_t (* pf_read_byte)   (void);
+    bool    (* pf_write_byte)  (uint8_t data);
+    void    (* pf_ack_en)      (uint8_t new_state);
 };
 
-struct gt911_oper {
-    struct gt911_oper_i2c * oper_i2c;
-    struct gt911_oper_ctrl * oper_ctrl;
+struct gt911_ctrl
+{
+    void (* pf_write_int_pin) (gt911_pin_state_t pin_state);
+    void (* pf_write_rst_pin) (gt911_pin_state_t pin_state);
+    void (* pf_set_int_pin)   (gt911_pin_mode_t pin_mode);
+};
 
-    void (* pf_delay_ms)(uint32_t ms);
+struct gt911_timebase
+{
+    void (* pf_delay_ms)(uint32_t ticks);
+};
+
+
+struct gt911_i2c 
+{
+    gt911_i2c_type_t type;
+    union {
+        struct gt911_si2c si2c;
+        struct gt911_hi2c hi2c;
+    } connect;
+};
+
+
+struct gt911_handle 
+{
+    const gt911_i2c_t *  i2c;
+    const gt911_ctrl_t * ctrl;
+    const gt911_timebase_t * timebase;
 };
 
 struct gt911_driver {
-    struct gt911_oper * oper;
+    const gt911_handle_t * handle;
 
-    bool (* pf_init)(struct gt911_driver * self);
-    void (* pf_reset)(struct gt911_driver * self);
-    void (* pf_read_id)(struct gt911_driver * self, uint8_t * id);
-    void (* pf_read_resolution)(struct gt911_driver * self, uint16_t * width, uint16_t * height);
-    void (* pf_read_firmware_version)(struct gt911_driver * self, uint8_t * version);
-    void (* pf_scan)(struct gt911_driver * self);
-    uint8_t (* pf_is_pressed)(struct gt911_driver * self);
-    void (* pf_get_coordinates)(struct gt911_driver * self, uint16_t * x, uint16_t * y, uint8_t num);
+    bool (* pf_init)                    (gt911_driver_t * self);
+    void (* pf_reset)                   (gt911_driver_t * self);
+    void (* pf_get_id)                  (gt911_driver_t * self, uint8_t * id);
+    void (* pf_get_resolution)          (gt911_driver_t * self, uint16_t * width, uint16_t * height);
+    void (* pf_get_firmware_version)    (gt911_driver_t * self, uint8_t * version);
+    void (* pf_scan)                    (gt911_driver_t * self);
+    bool (* pf_is_pressed)              (gt911_driver_t * self);
+    void (* pf_get_coordinates)         (gt911_driver_t * self, uint16_t * x, uint16_t * y, uint8_t num);
 };
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_driver_gt911_link( struct gt911_driver * self, 
-                            struct gt911_oper * oper,
-                            struct gt911_oper_i2c * oper_i2c,
-                            struct gt911_oper_ctrl * oper_ctrl);
+
 /**********************
  *      MACROS
  **********************/

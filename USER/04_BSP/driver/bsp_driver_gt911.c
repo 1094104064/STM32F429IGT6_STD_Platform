@@ -25,7 +25,8 @@
 /*********************
  *      DEFINES
  *********************/
-struct gt911_information {
+struct gt911_touch 
+{
     uint8_t is_pressed;
     uint8_t touch_num;
     uint16_t x[GT911_TOUCH_MAX];
@@ -34,18 +35,20 @@ struct gt911_information {
 /**********************
  *   GLOBAL VARIABLES
  **********************/
-static volatile struct gt911_information gt911_info;
+static volatile struct gt911_touch touchpad;
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static bool gt911_init(struct gt911_driver * self);
-static void gt911_reset(struct gt911_driver * self);
-static void gt911_read_id(struct gt911_driver * self, uint8_t * id);
-static void gt911_read_resolution(struct gt911_driver * self, uint16_t * width, uint16_t * height);
-static void gt911_read_firmware_version(struct gt911_driver * self, uint8_t * version);
-static void gt911_scan(struct gt911_driver * self);
-static uint8_t gt911_is_pressed(struct gt911_driver * self);
-static void gt911_get_coordinates(struct gt911_driver * self, uint16_t * x, uint16_t * y, uint8_t num);
+static void     gt911_read_reg              (gt911_driver_t * self, uint8_t dev_addr, uint16_t reg_addr, uint8_t * dst, uint16_t len);
+static void     gt911_write_reg             (gt911_driver_t * self, uint8_t dev_addr, uint16_t reg_addr, uint8_t * src, uint16_t len);
+static bool     gt911_init                  (gt911_driver_t * self);
+static void     gt911_reset                 (gt911_driver_t * self);
+static void     gt911_get_id                (gt911_driver_t * self, uint8_t * id);
+static void     gt911_get_resolution        (gt911_driver_t * self, uint16_t * width, uint16_t * height);
+static void     gt911_get_firmware_version  (gt911_driver_t * self, uint8_t * version);
+static void     gt911_scan                  (gt911_driver_t * self);
+static uint8_t  gt911_is_pressed            (gt911_driver_t * self);
+static void     gt911_get_coordinates       (gt911_driver_t * self, uint16_t * x, uint16_t * y, uint8_t num);
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -53,69 +56,158 @@ static void gt911_get_coordinates(struct gt911_driver * self, uint16_t * x, uint
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_driver_gt911_link( struct gt911_driver * self, 
-                            struct gt911_oper * oper,
-                            struct gt911_oper_i2c * oper_i2c,
-                            struct gt911_oper_ctrl * oper_ctrl)
+void bsp_driver_gt911_link(gt911_driver_t * drv, const gt911_handle_t * handle)
 {
-    gt911_assert_null(self);
-    gt911_assert_null(oper);
-    gt911_assert_null(oper_i2c);
-    gt911_assert_null(oper_ctrl);
+    drv->handle = handle;
 
-    if(self == NULL || oper == NULL || oper_i2c == NULL || oper_ctrl == NULL) {
-        return;
-    }
-
-    self->oper                      = oper;
-    self->oper->oper_i2c            = oper_i2c;
-    self->oper->oper_ctrl           = oper_ctrl;
-
-    self->pf_init                   = gt911_init;
-    self->pf_reset                  = gt911_reset;
-    self->pf_read_id                = gt911_read_id;
-    self->pf_read_resolution        = gt911_read_resolution;
-    self->pf_read_firmware_version  = gt911_read_firmware_version;
-    self->pf_scan                   = gt911_scan;
-    self->pf_is_pressed             = gt911_is_pressed;
-    self->pf_get_coordinates        = gt911_get_coordinates;
+    drv->pf_init                    = gt911_init;
+    drv->pf_reset                   = gt911_reset;
+    drv->pf_get_id                  = gt911_get_id;
+    drv->pf_get_resolution          = gt911_get_resolution;
+    drv->pf_get_firmware_version    = gt911_get_firmware_version;
+    drv->pf_scan                    = gt911_scan;
+    drv->pf_is_pressed              = gt911_is_pressed;
+    drv->pf_get_coordinates         = gt911_get_coordinates;
 }
 
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-static bool gt911_init(struct gt911_driver * self)
+static void gt911_read_reg(gt911_driver_t * self, uint8_t dev_addr, uint16_t reg_addr, uint8_t * dst, uint16_t len)
 {
-    gt911_assert_null(self->oper->pf_delay_ms);
-    gt911_assert_null(self->oper->oper_ctrl->pf_int_high);
-    gt911_assert_null(self->oper->oper_ctrl->pf_int_low);
-    gt911_assert_null(self->oper->oper_ctrl->pf_int_in);
-    gt911_assert_null(self->oper->oper_ctrl->pf_int_out);
-    gt911_assert_null(self->oper->oper_ctrl->pf_rst_high);
-    gt911_assert_null(self->oper->oper_ctrl->pf_rst_low);
-    gt911_assert_null(self->oper->oper_i2c->pf_read_reg);
-    gt911_assert_null(self->oper->oper_i2c->pf_write_reg);
+    if(self->handle->i2c->type == GT911_I2C_HARDWARE) {
+        const struct gt911_hi2c * i2c = &self->handle->i2c->connect.hi2c;
+        bool ret = false;
 
-    if( self->oper->pf_delay_ms             == NULL ||
+        ret = i2c->pf_start();
 
-        self->oper->oper_ctrl->pf_int_high  == NULL || 
-        self->oper->oper_ctrl->pf_int_low   == NULL || 
-        self->oper->oper_ctrl->pf_int_in    == NULL ||
-        self->oper->oper_ctrl->pf_int_out   == NULL ||
-        self->oper->oper_ctrl->pf_rst_high  == NULL || 
-        self->oper->oper_ctrl->pf_rst_low   == NULL ||
+        ret = i2c->pf_send_addr(dev_addr);
 
-        self->oper->oper_i2c->pf_read_reg   == NULL ||
-        self->oper->oper_i2c->pf_write_reg  == NULL) {
+        ret = i2c->pf_write_byte(reg_addr >> 8);
 
-        return false;
+        ret = i2c->pf_write_byte(reg_addr & 0xFF);
+
+        ret = i2c->pf_start();
+
+        ret = i2c->pf_send_addr(dev_addr | 0x01);
+
+        for(uint16_t i = 0; i < len; i++) {
+            if(i == (len - 1)) {
+                i2c->pf_ack_en(false);
+                i2c->pf_stop();
+            }
+            dst[i] = i2c->pf_read_byte();
+        }
+        i2c->pf_ack_en(true);
     }
+    else if(self->handle->i2c->type == GT911_I2C_SOFTWARE) {
+        const struct gt911_si2c * i2c = &self->handle->i2c->connect.si2c; 
 
+        i2c->pf_start();
+
+        i2c->pf_write_byte(dev_addr);
+        if(i2c->pf_wait_ack()) {
+            i2c->pf_stop();
+            return;
+        }
+
+        i2c->pf_write_byte(reg_addr >> 8);
+        if(i2c->pf_wait_ack()) {
+            i2c->pf_stop();
+            return;
+        }
+
+        i2c->pf_write_byte(reg_addr & 0xFF);
+        if(i2c->pf_wait_ack()) {
+            i2c->pf_stop();
+            return;
+        }
+
+        i2c->pf_start();
+        i2c->pf_write_byte(dev_addr | 0x01);
+        if(i2c->pf_wait_ack()) {
+            i2c->pf_stop();
+            return;
+        }
+
+        for(uint16_t i = 0; i < len; i++) {
+            dst[i] = i2c->pf_read_byte();
+            if(i == (len - 1)) {
+                i2c->pf_generate_nack();
+            }
+            else {
+                i2c->pf_generate_ack();
+            }
+        }
+
+        i2c->pf_stop();
+    }
+}
+
+static void gt911_write_reg(gt911_driver_t * self, uint8_t dev_addr, uint16_t reg_addr, uint8_t * src, uint16_t len)
+{
+    if(self->handle->i2c->type == GT911_I2C_HARDWARE) {
+        const struct gt911_hi2c * i2c = &self->handle->i2c->connect.hi2c;
+        bool ret = false;
+
+        ret = i2c->pf_start();
+
+        ret = i2c->pf_send_addr(dev_addr);
+
+        ret = i2c->pf_write_byte(reg_addr >> 8);
+
+        ret = i2c->pf_write_byte(reg_addr & 0xFF);
+
+        for(uint16_t i = 0; i < len; i++) {
+            if(false == i2c->pf_write_byte(src[i])) {
+                i2c->pf_stop();
+                return;
+            }
+        }
+        i2c->pf_stop();
+    }
+    else if(self->handle->i2c->type == GT911_I2C_SOFTWARE) {
+        const struct gt911_si2c * i2c = &self->handle->i2c->connect.si2c; 
+
+        i2c->pf_start();
+
+        i2c->pf_write_byte(dev_addr);
+        if(i2c->pf_wait_ack()) {
+            i2c->pf_stop();
+            return;
+        }
+
+        i2c->pf_write_byte(reg_addr >> 8);
+        if(i2c->pf_wait_ack()) {
+            i2c->pf_stop();
+            return;
+        }
+
+        i2c->pf_write_byte(reg_addr & 0xFF);
+        if(i2c->pf_wait_ack()) {
+            i2c->pf_stop();
+            return;
+        }
+
+        for(uint16_t i = 0; i < len; i++) {
+            i2c->pf_write_byte(src[i]);
+            if(i2c->pf_wait_ack()) {
+                i2c->pf_stop();
+                return;
+            }
+        }
+
+        i2c->pf_stop();
+    }
+}
+
+static bool gt911_init(gt911_driver_t * self)
+{
     uint8_t info[16] = {0};
 
     gt911_reset(self);
 
-    self->oper->oper_i2c->pf_read_reg(GT911_DEV_ADD, GT911_ID_REG, info, 11);
+    gt911_read_reg(self, GT911_DEV_ADD, GT911_ID_REG, info, 11);
 
     if(info[0] == '9') {
         gt911_dbg("gt911 init successfully");
@@ -126,87 +218,86 @@ static bool gt911_init(struct gt911_driver * self)
     }
 }
 
-
-static void gt911_reset(struct gt911_driver * self)
+static void gt911_reset(gt911_driver_t * self)
 {
-    self->oper->oper_ctrl->pf_int_out();
-    self->oper->oper_ctrl->pf_int_low();
-    self->oper->oper_ctrl->pf_rst_high();
-    self->oper->pf_delay_ms(10);
+    self->handle->ctrl->pf_set_int_pin(GT911_PIN_OUTPUT);
+    self->handle->ctrl->pf_write_int_pin(GT911_PIN_LOW);
+    self->handle->ctrl->pf_write_rst_pin(GT911_PIN_HIGH);
+    self->handle->timebase->pf_delay_ms(10);
 
-    self->oper->oper_ctrl->pf_rst_low();
-    self->oper->pf_delay_ms(25);
-    self->oper->oper_ctrl->pf_rst_high();
-    self->oper->pf_delay_ms(120);
+    self->handle->ctrl->pf_write_rst_pin(GT911_PIN_LOW);
+    self->handle->timebase->pf_delay_ms(25);
+    self->handle->ctrl->pf_write_rst_pin(GT911_PIN_HIGH);
+    self->handle->timebase->pf_delay_ms(120);
 
-    self->oper->oper_ctrl->pf_int_in();
-    self->oper->pf_delay_ms(30);
+    self->handle->ctrl->pf_set_int_pin(GT911_PIN_INPUT);
+    self->handle->timebase->pf_delay_ms(30);
 }
 
-static void gt911_read_id(struct gt911_driver * self, uint8_t * id)
+static void gt911_get_id(gt911_driver_t * self, uint8_t * id)
 {
-    self->oper->oper_i2c->pf_read_reg(GT911_DEV_ADD, GT911_ID_REG, id, 1);
+    gt911_read_reg(self, GT911_DEV_ADD, GT911_ID_REG, id, 1);
 }
 
-static void gt911_read_resolution(struct gt911_driver * self, uint16_t * width, uint16_t * height)
+static void gt911_get_resolution(gt911_driver_t * self, uint16_t * width, uint16_t * height)
 {
     uint8_t data[4] = {0};
 
-    self->oper->oper_i2c->pf_read_reg(GT911_DEV_ADD, GT911_RES_REG, data, 4);
+    gt911_read_reg(self, GT911_DEV_ADD, GT911_RES_REG, data, 4);
 
     *width = (data[1] << 8) | data[0];
     *height = (data[3] << 8) | data[2];
 }
 
-static void gt911_read_firmware_version(struct gt911_driver * self, uint8_t * version)
+static void gt911_get_firmware_version(gt911_driver_t * self, uint8_t * version)
 {
-    self->oper->oper_i2c->pf_read_reg(GT911_DEV_ADD, GT911_FIRMWARE_REG, version, 4);
+    gt911_read_reg(self, GT911_DEV_ADD, GT911_FIRMWARE_REG, version, 4);
 }
 
-static void gt911_scan(struct gt911_driver * self)
+static void gt911_scan(gt911_driver_t * self)
 {
     uint8_t i = 0;
     uint8_t touch_data[2 + 8 * GT911_TOUCH_MAX] = {0};
     uint8_t write_data[2] = {0};
 
-    self->oper->oper_i2c->pf_read_reg(GT911_DEV_ADD, GT911_COORD_REG, touch_data, sizeof(touch_data));
-    self->oper->oper_i2c->pf_write_reg(GT911_DEV_ADD, GT911_CLEAR_REG, write_data, 1);
-    gt911_info.touch_num = touch_data[0] & 0x0F;
+    gt911_read_reg(self, GT911_DEV_ADD, GT911_COORD_REG, touch_data, sizeof(touch_data));
+    gt911_write_reg(self, GT911_DEV_ADD, GT911_CLEAR_REG, write_data, 1);
+    touchpad.touch_num = touch_data[0] & 0x0F;
 
-    if((gt911_info.touch_num >= 1) && (gt911_info.touch_num <= GT911_TOUCH_MAX)) {
-        gt911_info.is_pressed = 1;
+    if((touchpad.touch_num >= 1) && (touchpad.touch_num <= GT911_TOUCH_MAX)) {
+        touchpad.is_pressed = 1;
 
-        for(i = 0; i < gt911_info.touch_num; i++) {
+        for(i = 0; i < touchpad.touch_num; i++) {
             uint8_t * coord = &touch_data[2 + i * 8];
-            gt911_info.x[i] = (coord[1] << 8) | coord[0];
-            gt911_info.y[i] = (coord[3] << 8) | coord[2];
+            touchpad.x[i] = (coord[1] << 8) | coord[0];
+            touchpad.y[i] = (coord[3] << 8) | coord[2];
         }
 
-        for(i = gt911_info.touch_num; i < GT911_TOUCH_MAX; i++) {
-            gt911_info.x[i] = 0;
-            gt911_info.y[i] = 0;
+        for(i = touchpad.touch_num; i < GT911_TOUCH_MAX; i++) {
+            touchpad.x[i] = 0;
+            touchpad.y[i] = 0;
         }
 
     } 
     else {
-        gt911_info.is_pressed = 0;
+        touchpad.is_pressed = 0;
     }
 }
 
-static uint8_t gt911_is_pressed(struct gt911_driver * self)
+static uint8_t gt911_is_pressed(gt911_driver_t * self)
 {
-    return gt911_info.is_pressed;
+    return touchpad.is_pressed;
 }
 
-static void gt911_get_coordinates(struct gt911_driver * self, uint16_t * x, uint16_t * y, uint8_t num)
+static void gt911_get_coordinates(gt911_driver_t * self, uint16_t * x, uint16_t * y, uint8_t num)
 {
     if(self == NULL || x == NULL || y == NULL) {
         return;
     }
 
     for(uint8_t i = 0; i < num; i++) {
-        x[i] = gt911_info.x[i];
-        y[i] = gt911_info.y[i];
+        x[i] = touchpad.x[i];
+        y[i] = touchpad.y[i];
     }
 }
 
