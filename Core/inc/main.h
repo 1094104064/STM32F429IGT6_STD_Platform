@@ -63,7 +63,7 @@ extern "C" {
 #include "bsp_adapter_lcd.h"
 
 
-#include "bsp_adapter_touchpad.h"
+
 #include "bsp_wrapper_touchpad.h"
 
 #include "bsp_adapter_sflash.h"

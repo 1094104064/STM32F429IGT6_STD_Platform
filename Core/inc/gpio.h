@@ -48,14 +48,7 @@ void STD_GPIO_BspInit(void);
 #define TEST_POINT_PORT         GPIOA
 #define TEST_POINT_PIN          GPIO_Pin_12
 
-#define GT911_SDA_PORT          GPIOH
-#define GT911_SDA_PIN           GPIO_Pin_5
-#define GT911_SCL_PORT          GPIOH
-#define GT911_SCL_PIN           GPIO_Pin_4
-#define GT911_INT_PORT          GPIOI
-#define GT911_INT_PIN           GPIO_Pin_11
-#define GT911_RST_PORT          GPIOC
-#define GT911_RST_PIN           GPIO_Pin_13
+
 
 #define SENSOR_SDA_PORT         GPIOB
 #define SENSOR_SDA_PIN          GPIO_Pin_7

@@ -39,20 +39,7 @@
  *  STATIC VARIABLES
  **********************/
 
-static struct i2c_gpio i2c_clusters[I2C_MAX] = {
-    [I2C_SENSOR] = {
-        .sda_port   = SENSOR_SDA_PORT,
-        .sda_pin    = SENSOR_SDA_PIN,
-        .scl_port   = SENSOR_SCL_PORT,
-        .scl_pin    = SENSOR_SCL_PIN
-    },
-    [I2C_GT911] = {
-        .sda_port   = GT911_SDA_PORT,
-        .sda_pin    = GT911_SDA_PIN,
-        .scl_port   = GT911_SCL_PORT,
-        .scl_pin    = GT911_SCL_PIN
-    }
-};
+static struct i2c_gpio i2c_clusters[I2C_MAX];
 
 /**********************
  *   GLOBAL FUNCTIONS

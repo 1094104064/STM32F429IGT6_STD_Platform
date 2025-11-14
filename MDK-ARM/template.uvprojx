@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F429_439xx,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\hal;..\USER\05_MSP\cluster;..\USER\05_MSP\emulator;..\USER\UTILITIES;..\USER\02_MID\tlsf</IncludePath>
+              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\hal;..\USER\05_MSP\cluster;..\USER\05_MSP\emulator;..\USER\UTILITIES;..\USER\02_MID\tlsf;..\USER\05_PERIPH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1791,6 +1791,31 @@
               <FileName>msp_emul_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\05_MSP\emulator\msp_emul_i2c.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>05_PERIPH</GroupName>
+          <Files>
+            <File>
+              <FileName>platform_device.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\05_PERIPH\platform_device.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\05_PERIPH\dev_service.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_pin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\05_PERIPH\dev_pin.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_si2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\05_PERIPH\dev_si2c.c</FilePath>
             </File>
           </Files>
         </Group>

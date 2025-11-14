@@ -138,7 +138,7 @@ struct gt911_driver {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-
+void bsp_driver_gt911_link(gt911_driver_t * drv, const gt911_handle_t * handle);
 /**********************
  *      MACROS
  **********************/
