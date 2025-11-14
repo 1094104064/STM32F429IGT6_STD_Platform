@@ -122,7 +122,18 @@ struct platform_device_desc
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-
+int platform_device_register(plaf_dev_t * dev,
+                             const char * path,
+                             int type,
+                             int flags,
+                             plaf_dev_ops_t * ops,
+                             plaf_dev_drv_t * drv);
+int platform_device_isr     (plaf_dev_t * dev, int event, void * args);
+int platform_device_open    (const char * path, int flags);
+int platform_device_close   (int desc);
+int platform_device_read    (int desc, void * buf, size_t count);
+int platform_device_write   (int desc, const void * buf, size_t count);
+int platform_device_ioctl   (int desc, int cmd, void * args);
 /**
 * @brief This function initialize a double list.
 *

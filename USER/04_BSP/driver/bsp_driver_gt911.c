@@ -27,7 +27,7 @@
  *********************/
 struct gt911_touch 
 {
-    uint8_t is_pressed;
+    bool is_pressed;
     uint8_t touch_num;
     uint16_t x[GT911_TOUCH_MAX];
     uint16_t y[GT911_TOUCH_MAX];
@@ -47,7 +47,7 @@ static void     gt911_get_id                (gt911_driver_t * self, uint8_t * id
 static void     gt911_get_resolution        (gt911_driver_t * self, uint16_t * width, uint16_t * height);
 static void     gt911_get_firmware_version  (gt911_driver_t * self, uint8_t * version);
 static void     gt911_scan                  (gt911_driver_t * self);
-static uint8_t  gt911_is_pressed            (gt911_driver_t * self);
+static bool     gt911_is_pressed            (gt911_driver_t * self);
 static void     gt911_get_coordinates       (gt911_driver_t * self, uint16_t * x, uint16_t * y, uint8_t num);
 /**********************
  *  STATIC VARIABLES
@@ -265,7 +265,7 @@ static void gt911_scan(gt911_driver_t * self)
     touchpad.touch_num = touch_data[0] & 0x0F;
 
     if((touchpad.touch_num >= 1) && (touchpad.touch_num <= GT911_TOUCH_MAX)) {
-        touchpad.is_pressed = 1;
+        touchpad.is_pressed = true;
 
         for(i = 0; i < touchpad.touch_num; i++) {
             uint8_t * coord = &touch_data[2 + i * 8];
@@ -280,11 +280,11 @@ static void gt911_scan(gt911_driver_t * self)
 
     } 
     else {
-        touchpad.is_pressed = 0;
+        touchpad.is_pressed = false;
     }
 }
 
-static uint8_t gt911_is_pressed(gt911_driver_t * self)
+static bool gt911_is_pressed(gt911_driver_t * self)
 {
     return touchpad.is_pressed;
 }

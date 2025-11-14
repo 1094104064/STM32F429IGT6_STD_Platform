@@ -70,7 +70,6 @@ static plaf_dev_desc_t desc_map[DEV_DESC_NUM] = {0};          /**< Device descri
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-
 /**
  * @brief This function register a device.
  *

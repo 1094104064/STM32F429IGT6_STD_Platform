@@ -73,7 +73,7 @@ void bsp_hal_gt911_si2c_stop(void)
 
 uint8_t bsp_hal_gt911_si2c_wait_ack(void)
 {
-
+    return 0;
 }
 
 void bsp_hal_gt911_si2c_generate_ack(void)
@@ -88,7 +88,7 @@ void bsp_hal_gt911_si2c_generate_nack(void)
 
 uint8_t bsp_hal_gt911_si2c_read_byte(void)
 {
-
+    return 0;
 }
 
 void bsp_hal_gt911_si2c_write_byte(uint8_t data)

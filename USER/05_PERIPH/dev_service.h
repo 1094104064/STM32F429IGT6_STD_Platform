@@ -137,7 +137,13 @@ void dev_service_interrupt_enable(void);
  */
 #define DEV_BIT_SET(value, mask)         ((value) |= (mask))
 
-
+/**
+ * @brief This macro function clears a value.
+ *
+ * @param value The value to clear.
+ * @param mask The mask to clear.
+ */
+#define DEV_BIT_CLR(value, mask)         ((value) &= ~(mask))
 
 
 
