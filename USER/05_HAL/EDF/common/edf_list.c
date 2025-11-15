@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   *
-  * @file    dev_service.c
+  * @file    edf_list.c
   * @author  
   * @brief   
   *
@@ -17,7 +17,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "dev_service.h"
+#include "edf_list.h"
 /**********************
  *      MACROS
  **********************/
@@ -41,25 +41,10 @@
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-/**
- * @brief This function disable the interrupt.
- */
-void dev_service_interrupt_disable(void)
-{
 
-}
-
-/**
- * @brief This function enable the interrupt.
- */
-void dev_service_interrupt_enable(void)
-{
-
-}
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
 
 
 
