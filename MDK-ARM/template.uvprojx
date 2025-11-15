@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F429_439xx,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\hal;..\USER\05_MSP\cluster;..\USER\05_MSP\emulator;..\USER\UTILITIES;..\USER\02_MID\tlsf;..\USER\05_HAL\EDF\widget;..\USER\05_HAL\EDF\common;..\USER\05_HAL\EDF\core;..\USER\05_HAL\EDF\port</IncludePath>
+              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\02_MID\tlsf;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\linker;..\USER\05_HAL\EDF\widget;..\USER\05_HAL\EDF\common;..\USER\05_HAL\EDF\core;..\USER\05_HAL\EDF\port;..\USER\UTILITIES</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1822,29 +1822,29 @@
           <GroupName>04_BSP/Linker</GroupName>
           <Files>
             <File>
-              <FileName>bsp_hal_led.c</FileName>
+              <FileName>bsp_linker_led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\hal\bsp_hal_led.c</FilePath>
+              <FilePath>..\USER\04_BSP\linker\bsp_linker_led.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_hal_lcd.c</FileName>
+              <FileName>bsp_linker_lcd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\hal\bsp_hal_lcd.c</FilePath>
+              <FilePath>..\USER\04_BSP\linker\bsp_linker_lcd.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_hal_st7735.c</FileName>
+              <FileName>bsp_linker_st7735.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\hal\bsp_hal_st7735.c</FilePath>
+              <FilePath>..\USER\04_BSP\linker\bsp_linker_st7735.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_hal_gt911.c</FileName>
+              <FileName>bsp_linker_gt911.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\hal\bsp_hal_gt911.c</FilePath>
+              <FilePath>..\USER\04_BSP\linker\bsp_linker_gt911.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_hal_w25q64.c</FileName>
+              <FileName>bsp_linker_w25q64.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER\04_BSP\hal\bsp_hal_w25q64.c</FilePath>
+              <FilePath>..\USER\04_BSP\linker\bsp_linker_w25q64.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -19,7 +19,7 @@
  *********************/
 #include "bsp_adapter_lcd.h"
 #include "bsp_driver_lcd.h"
-#include "bsp_hal_lcd.h"
+#include "bsp_linker_lcd.h"
 /**********************
  *      MACROS
  **********************/
@@ -50,18 +50,18 @@ static lcd_driver_t gs_lcd_driver;
 static int ops_lcd_init(void)
 {
     static const lcd_handle_t simple_panel_handle = {
-        .pf_hal_init            = bsp_hal_lcd_simple_panel_init,
-        .pf_backlight_on        = bsp_hal_lcd_backlight_on,
-        .pf_backlight_off       = bsp_hal_lcd_backlight_off,
-        .pf_backlight_set       = bsp_hal_lcd_backlight_set,
-        .pf_put_pixel           = bsp_hal_lcd_put_pixel,
-        .pf_fill_rect           = bsp_hal_lcd_fill_rectangle,
-        .pf_fill_screen         = bsp_hal_lcd_fill_screen,
-        .pf_copy_buffer         = bsp_hal_lcd_copy_buffer,
-        .pf_switch_framebuffer  = bsp_hal_lcd_switch_layer,
-        .pf_get_width           = bsp_hal_lcd_get_width,
-        .pf_get_height          = bsp_hal_lcd_get_height,
-        .pf_get_framebuffer     = bsp_hal_lcd_get_layer_address,
+        .pf_hal_init            = bsp_linker_lcd_simple_panel_init,
+        .pf_backlight_on        = bsp_linker_lcd_backlight_on,
+        .pf_backlight_off       = bsp_linker_lcd_backlight_off,
+        .pf_backlight_set       = bsp_linker_lcd_backlight_set,
+        .pf_put_pixel           = bsp_linker_lcd_put_pixel,
+        .pf_fill_rect           = bsp_linker_lcd_fill_rectangle,
+        .pf_fill_screen         = bsp_linker_lcd_fill_screen,
+        .pf_copy_buffer         = bsp_linker_lcd_copy_buffer,
+        .pf_switch_framebuffer  = bsp_linker_lcd_switch_layer,
+        .pf_get_width           = bsp_linker_lcd_get_width,
+        .pf_get_height          = bsp_linker_lcd_get_height,
+        .pf_get_framebuffer     = bsp_linker_lcd_get_layer_address,
     };
 
     bsp_driver_lcd_link(&gs_lcd_driver, &simple_panel_handle);

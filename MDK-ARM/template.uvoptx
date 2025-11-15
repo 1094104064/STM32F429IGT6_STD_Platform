@@ -258,7 +258,7 @@
 
   <Group>
     <GroupName>01_APP</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2742,7 +2742,7 @@
 
   <Group>
     <GroupName>04_BSP/Adapter</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2889,8 +2889,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\04_BSP\hal\bsp_hal_led.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_hal_led.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\04_BSP\linker\bsp_linker_led.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_linker_led.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2901,8 +2901,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\04_BSP\hal\bsp_hal_lcd.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_hal_lcd.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\04_BSP\linker\bsp_linker_lcd.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_linker_lcd.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2913,8 +2913,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\04_BSP\hal\bsp_hal_st7735.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_hal_st7735.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\04_BSP\linker\bsp_linker_st7735.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_linker_st7735.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2925,8 +2925,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\04_BSP\hal\bsp_hal_gt911.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_hal_gt911.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\04_BSP\linker\bsp_linker_gt911.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_linker_gt911.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -2937,8 +2937,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\04_BSP\hal\bsp_hal_w25q64.c</PathWithFileName>
-      <FilenameWithoutPath>bsp_hal_w25q64.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\04_BSP\linker\bsp_linker_w25q64.c</PathWithFileName>
+      <FilenameWithoutPath>bsp_linker_w25q64.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

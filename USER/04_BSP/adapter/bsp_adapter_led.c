@@ -20,7 +20,7 @@
 #include "bsp_adapter_led.h"
 #include "bsp_wrapper_light.h"
 #include "bsp_driver_led.h"
-#include "bsp_hal_led.h"
+#include "bsp_linker_led.h"
 /**********************
  *      MACROS
  **********************/
@@ -56,9 +56,9 @@ static led_driver_t gs_led2_driver;
 static int ops_led1_init(void)
 {
     static const led_handle_t blue_led_handle = {
-        .pf_hal_init    = bsp_hal_led1_init,
-        .pf_on          = bsp_hal_led1_on,
-        .pf_off         = bsp_hal_led1_off,
+        .pf_hal_init    = bsp_linker_led1_init,
+        .pf_on          = bsp_linker_led1_on,
+        .pf_off         = bsp_linker_led1_off,
     };
 
     bsp_driver_led_link(&gs_led1_driver, &blue_led_handle);
@@ -89,9 +89,9 @@ const light_ops_t blue_led_ops = {
 static int ops_led2_init(void)
 {
    static const led_handle_t yellow_led_handle = {
-       .pf_hal_init    = bsp_hal_led2_init,
-       .pf_on          = bsp_hal_led2_on,
-       .pf_off         = bsp_hal_led2_off,
+       .pf_hal_init    = bsp_linker_led2_init,
+       .pf_on          = bsp_linker_led2_on,
+       .pf_off         = bsp_linker_led2_off,
    };
 
    bsp_driver_led_link(&gs_led2_driver, &yellow_led_handle);

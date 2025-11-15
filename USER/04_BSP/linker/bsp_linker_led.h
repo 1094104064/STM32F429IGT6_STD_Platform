@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    bsp_hal_led.h
+  * @file    bsp_linker_led.h
   * @author  
-  * @brief   Header file of bsp_hal_led module.
+  * @brief   Header file of bsp_linker_led module.
   *
   ******************************************************************************
   **/
   
-#ifndef _BSP_HAL_LED_H
-#define _BSP_HAL_LED_H
+#ifndef _BSP_LINKER_LED_H
+#define _BSP_LINKER_LED_H
 
 
 #ifdef __cplusplus
@@ -31,12 +31,12 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_hal_led1_init(void);
-void bsp_hal_led1_on(void);
-void bsp_hal_led1_off(void);
-void bsp_hal_led2_init(void);
-void bsp_hal_led2_on(void);
-void bsp_hal_led2_off(void);
+void bsp_linker_led1_init(void);
+void bsp_linker_led1_on(void);
+void bsp_linker_led1_off(void);
+void bsp_linker_led2_init(void);
+void bsp_linker_led2_on(void);
+void bsp_linker_led2_off(void);
 /**********************
  *      MACROS
  **********************/
@@ -49,7 +49,7 @@ void bsp_hal_led2_off(void);
 }
 #endif
 
-#endif /*_BSP_HAL_LED_H*/
+#endif /*_BSP_LINKER_LED_H*/
 
 
 /******************************* (END OF FILE) *********************************/

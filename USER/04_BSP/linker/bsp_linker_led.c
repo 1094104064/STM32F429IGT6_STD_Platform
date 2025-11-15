@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   *
-  * @file    bsp_hal_led.c
+  * @file    bsp_linker_led.c
   * @author  
   * @brief   
   *
@@ -17,7 +17,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "bsp_hal_led.h"
+#include "bsp_linker_led.h"
 #include "gpio.h"
 /**********************
  *      MACROS
@@ -46,32 +46,32 @@
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_hal_led1_init(void)
+void bsp_linker_led1_init(void)
 {
     STD_GPIO_Init(BLUE_LED_PORT, BLUE_LED_PIN, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, 0);
 }
 
-void bsp_hal_led1_on(void)
+void bsp_linker_led1_on(void)
 {
     GPIO_ResetBits(BLUE_LED_PORT, BLUE_LED_PIN);
 }
 
-void bsp_hal_led1_off(void)
+void bsp_linker_led1_off(void)
 {
     GPIO_SetBits(BLUE_LED_PORT, BLUE_LED_PIN);
 }
 
-void bsp_hal_led2_init(void)
+void bsp_linker_led2_init(void)
 {
     STD_GPIO_Init(YELLOW_LED_PORT, YELLOW_LED_PIN, GPIO_Mode_OUT, GPIO_Speed_100MHz, GPIO_OType_PP, GPIO_PuPd_UP, 0);
 }
 
-void bsp_hal_led2_on(void)
+void bsp_linker_led2_on(void)
 {
     GPIO_ResetBits(YELLOW_LED_PORT, YELLOW_LED_PIN);
 }
 
-void bsp_hal_led2_off(void)
+void bsp_linker_led2_off(void)
 {
     GPIO_SetBits(YELLOW_LED_PORT, YELLOW_LED_PIN);
 }

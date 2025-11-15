@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   *
-  * @file    bsp_hal_lcd.c
+  * @file    bsp_linker_lcd.c
   * @author  
   * @brief   
   *
@@ -17,7 +17,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "bsp_hal_lcd.h"
+#include "bsp_linker_lcd.h"
 #include "ltdc.h"
 #include "dma2d.h"
 #include "memory_manager.h"
@@ -68,7 +68,7 @@ static struct lcd_layer * act_layer = &layers[1];
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-void bsp_hal_lcd_simple_panel_init(void)
+void bsp_linker_lcd_simple_panel_init(void)
 {
     uint32_t start_address = (uint32_t)mm_alloc(LCD_WIDTH * LCD_HEIGHT * 2);
     STD_LTDC_TimingInit(LCD_HSW, LCD_HBP, LCD_HFP, LCD_VSW, LCD_VBP, LCD_VFP);
@@ -97,22 +97,22 @@ void bsp_hal_lcd_simple_panel_init(void)
 
 }
 
-void bsp_hal_lcd_backlight_on(void)
+void bsp_linker_lcd_backlight_on(void)
 {
     GPIO_SetBits(LCD_BL_PORT, LCD_BL_PIN);
 }
 
-void bsp_hal_lcd_backlight_off(void)
+void bsp_linker_lcd_backlight_off(void)
 {
     GPIO_ResetBits(LCD_BL_PORT, LCD_BL_PIN);
 }
 
-void bsp_hal_lcd_backlight_set(uint8_t brightness)
+void bsp_linker_lcd_backlight_set(uint8_t brightness)
 {
 
 }
 
-void bsp_hal_lcd_switch_layer(uint8_t layerx)
+void bsp_linker_lcd_switch_layer(uint8_t layerx)
 {
     if(layerx > 2) return;
 
@@ -131,7 +131,7 @@ void bsp_hal_lcd_switch_layer(uint8_t layerx)
     }
 }
 
-void bsp_hal_lcd_put_pixel(uint16_t x, uint16_t y, uint32_t color, uint16_t rotated)
+void bsp_linker_lcd_put_pixel(uint16_t x, uint16_t y, uint32_t color, uint16_t rotated)
 {
     uint32_t pixel_pos      = 0;
     uint32_t width          = LCD_WIDTH;
@@ -171,7 +171,7 @@ void bsp_hal_lcd_put_pixel(uint16_t x, uint16_t y, uint32_t color, uint16_t rota
     }
 }
 
-void bsp_hal_lcd_fill_rectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+void bsp_linker_lcd_fill_rectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
     uint8_t pixel_format = act_layer->pixel_format;
     uint8_t pixel_size = act_layer->pixel_size;
@@ -181,7 +181,7 @@ void bsp_hal_lcd_fill_rectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t
     STD_DMA2D_FillRectangle(x, y, width, height, color);
 }
 
-void bsp_hal_lcd_fill_screen(uint32_t color)
+void bsp_linker_lcd_fill_screen(uint32_t color)
 {
     uint8_t pixel_format    = act_layer->pixel_format;
     uint8_t pixel_size      = act_layer->pixel_size;
@@ -191,7 +191,7 @@ void bsp_hal_lcd_fill_screen(uint32_t color)
     STD_DMA2D_FillScreen(color);
 }
 
-void bsp_hal_lcd_copy_buffer(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
+void bsp_linker_lcd_copy_buffer(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
 {
     uint8_t pixel_format = act_layer->pixel_format;
     uint8_t pixel_size = act_layer->pixel_size;
@@ -201,17 +201,17 @@ void bsp_hal_lcd_copy_buffer(uint16_t x, uint16_t y, uint16_t width, uint16_t he
     STD_DMA2D_CopyBuffer(x, y, width, height, data);
 }
 
-uint16_t bsp_hal_lcd_get_width(void)
+uint16_t bsp_linker_lcd_get_width(void)
 {
     return LCD_WIDTH;
 }
 
-uint16_t bsp_hal_lcd_get_height(void)
+uint16_t bsp_linker_lcd_get_height(void)
 {
     return LCD_HEIGHT;
 }
 
-uint32_t bsp_hal_lcd_get_layer_address(void)
+uint32_t bsp_linker_lcd_get_layer_address(void)
 {
     return act_layer->start_address;
 }
