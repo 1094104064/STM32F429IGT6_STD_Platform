@@ -19,7 +19,9 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "user_conf.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 /*********************
  *      DEFINES
  *********************/

@@ -187,10 +187,11 @@ EDF_INLINE int pin_get_mode(edf_pin_t *pin, int number, edf_pin_config_t *config
 
 static int pin_close(edf_device_t *dev)
 {
+#ifdef EDF_USING_PIN_AUTO_DISABLE
     edf_pin_t *pin = (edf_pin_t *)dev;
     edf_pin_ops_t *ops = (edf_pin_ops_t *)dev->drv->ops;
 
-#ifdef EDF_USING_PIN_AUTO_DISABLE
+
     /* Disable all pins */
     for (size_t i = 0; i < (sizeof(pin->pins) * 2); i++)
     {

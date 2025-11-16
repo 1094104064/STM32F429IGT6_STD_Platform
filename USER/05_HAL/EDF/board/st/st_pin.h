@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    edf_fast_pin.h
+  * @file    st_pin.h
   * @author  
-  * @brief   Header file of edf_fast_pin module.
+  * @brief   Header file of st_pin module.
   *
   ******************************************************************************
   **/
   
-#ifndef _EDF_FAST_PIN_H
-#define _EDF_FAST_PIN_H
+#ifndef _ST_PIN_H
+#define _ST_PIN_H
 
 
 #ifdef __cplusplus
@@ -34,12 +34,11 @@ extern "C" {
 
 
 
-
 /**********************
  *      MACROS
  **********************/
 
- 
+
 
 
 
@@ -47,7 +46,7 @@ extern "C" {
 }
 #endif
 
-#endif /*_EDF_FAST_PIN_H*/
+#endif /*_ST_PIN_H*/
 
 
 /******************************* (END OF FILE) *********************************/

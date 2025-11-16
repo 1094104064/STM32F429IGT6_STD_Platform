@@ -131,10 +131,18 @@ struct edf_device
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-
-
-
-
+int edf_dev_register(edf_device_t *dev,
+                    const char *path,
+                    int type,
+                    int flags,
+                    edf_dev_ops_t *ops,
+                    edf_drv_t *drv);
+int edf_dev_isr(edf_device_t *dev, int event, void *args);
+int edf_dev_open(const char *path, int flags);
+int edf_dev_close(int desc);
+ssize_t edf_dev_read(int desc, void *buf, size_t count);
+ssize_t edf_dev_write(int desc, const void *buf, size_t count);
+int edf_dev_ioctl(int desc, int cmd, void *args);
 /**********************
  *      MACROS
  **********************/

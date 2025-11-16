@@ -34,21 +34,17 @@ extern "C" {
 #include "user_macros.h"
 #include "user_conf.h"
 
-#if ELOG_ENABLE
-#include "elog.h"
-#endif
 
-#if LVGL_ENABLE
+#include "elog.h"
+
 #include "lvgl.h"
 #include "lv_port_disp_template.h"
 #include "lv_port_indev_template.h"
 #include "lv_demos.h"
-#endif
 
-#if OS_ENABLE
 #include "FreeRTOS.h"
 #include "task.h"
-#endif
+
 
 #include "systick.h"
 #include "delay.h"

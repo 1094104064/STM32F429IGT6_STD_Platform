@@ -222,6 +222,7 @@ int8_t STD_FMC_SDRAM_Benchmark(void)
 
 void STD_FMC_SDRAM_WriteSpeedTest(void)
 {
+#if 0
     uint32_t start, end;
     uint32_t * pBuf;
     uint32_t i, j;
@@ -281,11 +282,13 @@ void STD_FMC_SDRAM_WriteSpeedTest(void)
         }
     }
 
-    //pr_log("SDRAM Write Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
+    pr_info("SDRAM Write Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
+#endif    
 }
 
 void STD_FMC_SDRAM_ReadSpeedTest(void)
 {
+#if 0
     uint32_t start, end;
     uint32_t i;
     uint32_t * pBuf;
@@ -338,7 +341,8 @@ void STD_FMC_SDRAM_ReadSpeedTest(void)
     /* 记下结束时间 */
     end = STD_SYSTICK_Get();
 
-    //printf("SDRAM Read Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
+    pr_info("SDRAM Read Time: %d ms, Speed: %d MB/s\r\n", (end - start), (SDRAM_SIZE / 1024 / 1024 * 1000) / (end - start));
+#endif    
 }
 
 /**********************

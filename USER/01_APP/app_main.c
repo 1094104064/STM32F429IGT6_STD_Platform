@@ -36,19 +36,66 @@ display_obj_t * g_lcd;
  *  STATIC PROTOTYPES
  **********************/
 
-
-#if OS_ENABLE
-static void _task_init(void * pvParameters);
-#endif
 /**********************
  *  STATIC VARIABLES
  **********************/
-
+static uint32_t ElapsTick;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
+static void InitMiddleware(void)
+{
+#ifdef USING_ELOG
+    elog_init();
+    elog_set_fmt(ELOG_LVL_DEBUG, ELOG_FMT_LVL | ELOG_FMT_TIME | ELOG_FMT_DIR | ELOG_FMT_FUNC | ELOG_FMT_LINE);
+    elog_start();
+#endif
 
+#ifdef USING_LVGL
+    lv_init();
+    
+    #ifdef USING_LVGL_DISP
+        lv_port_disp_init();
+    #endif
+    
+    #ifdef USING_LVGL_INDEV
+        lv_port_indev_init();
+    #endif
 
+    #ifdef USING_LVGL_DEMO_WIDGETS
+        lv_demo_widgets();
+    #endif
+
+    #ifdef USING_LVGL_DEMO_BENCHMARK
+        lv_demo_benchmark();
+    #endif
+#endif
+}
+
+#ifdef USING_FREERTOS
+static void StartUpTask(void * pvParameters)
+{
+    for(;;) {
+
+        ElapsTick = xTaskGetTickCount();
+
+        pr_info("ElapsTick = %d", *(uint32_t *)ElapsTick);
+
+        vTaskDelay(2000);
+    }   
+    
+}
+#endif
+
+static void InitFreeRTOS(void)
+{
+#ifdef USING_FREERTOS
+    static TaskHandle_t StartupTaskHandle = {0};
+
+    xTaskCreate(StartUpTask, "start-up task", 512, NULL, tskIDLE_PRIORITY + 1, &StartupTaskHandle);
+    vTaskStartScheduler();
+#endif
+}
 
 void app_main(void)
 {
@@ -70,35 +117,8 @@ void app_main(void)
     wrp_display.backlight_on(g_lcd);
     wrp_display.draw_grad_rgb565(g_lcd, 30);
 
-#if ELOG_ENABLE
-    elog_init();
-    elog_set_fmt(ELOG_LVL_DEBUG, ELOG_FMT_LVL | ELOG_FMT_TIME | ELOG_FMT_DIR | ELOG_FMT_FUNC | ELOG_FMT_LINE);
-    elog_start();
-#endif
-
-#if LVGL_ENABLE
-    lv_init();
-    lv_port_disp_init();
-    // lv_port_indev_init();
-
-    #if LV_USE_DEMO_WIDGETS
-        lv_demo_widgets();
-    #endif
-
-    #if LV_USE_DEMO_BENCHMARK
-        lv_demo_benchmark();
-    #endif
-#endif
-    
-    
-    static uint32_t ElapsTick;
-
-#if OS_ENABLE
-    static TaskHandle_t StartupTaskHandle = {0};
-
-    xTaskCreate(_task_init, "task_init", 512, &ElapsTick, tskIDLE_PRIORITY + 1, &StartupTaskHandle);
-    vTaskStartScheduler();
-#else
+    InitMiddleware();
+    InitFreeRTOS();
 
     for(;;) {
 
@@ -109,7 +129,6 @@ void app_main(void)
         delay_s(2);
     }
 
-#endif
 }
 
 
@@ -117,46 +136,8 @@ void app_main(void)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-static void _core_init(void)
-{
-    /* Initialize core components here */
-    
-//    STD_USART1_Init();
-//    STD_USART1_NVIC_Init();
-//    
-//    
-
-//    STD_GPIO_BspInit();
-
-//    STD_DMA_ClockCmd(DMA1, ENABLE);
-//    STD_DMA_ClockCmd(DMA2, ENABLE);
-//    STD_DMA2D_ClockCmd(ENABLE);
-
-//    STD_FMC_SDRAM_Init();
-//    // STD_LTDC_Init();
-//    // STD_LTDC_LayerInit();
-
-//    STD_SPI1_Init();
-//    STD_SPI3_Init();
-}
 
 
-
-#if OS_ENABLE
-static void _task_init(void * pvParameters)
-{
-    /* Initialize tasks here */
-    for(;;) {
-
-        *(uint32_t *)pvParameters = xTaskGetTickCount();
-
-        pr_info("ElapsTick = %d", *(uint32_t *)pvParameters);
-
-        vTaskDelay(2000);
-    }
-
-}
-#endif
 
 /******************************* (END OF FILE) *********************************/
 

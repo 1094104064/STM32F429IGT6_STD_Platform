@@ -17,43 +17,66 @@ extern "C" {
 #endif
 
 /*********************
- *      INCLUDES
- *********************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
-/*********************
  *      DEFINES
  *********************/
+#define CFG_USE_LOG                 1
+ 
+#define CFG_USE_ELOG                0
+ 
+#define CFG_USE_FREERTOS            0
 
-/**********************
- *      TYPEDEFS
- **********************/
+#define CFG_USE_LVGL                0
+#define CFG_USE_LVGL_DISP           1
+#define CFG_USE_LVGL_INDEV          1
+#define CFG_USE_LVGL_BENCHMARK      1
+#define CFG_USE_LVGL_WIDGETS        2
+#define CFG_USE_LVGL_DEMO           0
+
+#define CFG_USE_FATFS               0
 
 /**********************
  *      MACROS
  **********************/
+#if CFG_USE_LOG
+    #define USING_LOG
+#endif
+ 
+#if CFG_USE_ELOG
+    #define USING_ELOG
+#endif
+ 
+#if CFG_USE_FREERTOS
+    #define USING_FREERTOS
+#endif
 
+#if CFG_USE_LVGL
+    #define USING_LVGL
+    
+    #if CFG_USE_LVGL_DISP
+        #define USING_LVGL_DISP
+    #endif
+    
+    #if CFG_USE_LVGL_INDEV
+        #define USING_LVGL_INDEV
+    #endif
+    
+    #if CFG_USE_LVGL_DEMO == 1
+        #define USING_LVGL_DEMO_BENCHMARK
+    #elif CFG_USE_LVGL_DEMO == 2
+        #define USING_LVGL_DEMO_WIDGETS
+    #else
+        #define NO_USING_LVGL_DEMO
+    #endif
+    
+#endif
 
-//#if LOG_ENABLE
-//    #define assert_msg(expr, msg)                                           \
-//        do {                                                                \
-//            if((expr)) {                                                    \
-//                pr_fatal("Asserted at expression: %s (%s)", #expr, msg);    \
-//                while(1);                                                   \
-//            }                                                               \
-//        } while(0)                                                          
-//#else
-//    #define assert_msg(expr, msg)  do{}while(0)
-//#endif
-
-//#define assert_null(p) assert_msg(p == NULL, "NULL pointer")
-
-
-
-
+#if CFG_USE_FATFS
+    #define USING_FATFS
+#endif
+/**********************
+ *      TYPEDEFS
+ **********************/
+ 
 
 #ifdef __cplusplus
 }

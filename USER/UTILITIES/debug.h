@@ -22,6 +22,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include "user_conf.h"
 /*********************
  *      DEFINES
  *********************/
@@ -41,8 +42,11 @@ int     debug_puts(const char *fmt, ...);
 /**********************
  *      MACROS
  **********************/
-#define LOG_ENABLE  1
-
+#ifdef USING_LOG
+    #define LOG_ENABLE  1
+#else
+    #define LOG_ENABLE  0
+#endif
 
 #if LOG_ENABLE
     #define pr_log(fmt, ...)        debug_puts(fmt, ##__VA_ARGS__)
@@ -98,6 +102,21 @@ int     debug_puts(const char *fmt, ...);
 #endif
 
 #define pr_user(fmt, ...)           pr_log("[User] [%s:%d] " fmt"\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+//#if LOG_ENABLE
+//    #define assert_msg(expr, msg)                                           \
+//        do {                                                                \
+//            if((expr)) {                                                    \
+//                pr_fatal("Asserted at expression: %s (%s)", #expr, msg);    \
+//                while(1);                                                   \
+//            }                                                               \
+//        } while(0)                                                          
+//#else
+//    #define assert_msg(expr, msg)  do{}while(0)
+//#endif
+
+//#define assert_null(p) assert_msg(p == NULL, "NULL pointer")
+
 
 #ifdef __cplusplus
 }

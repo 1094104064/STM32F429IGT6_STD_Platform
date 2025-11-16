@@ -41,8 +41,8 @@
  *  STATIC VARIABLES
  **********************/
 static tlsf_t tlsf;
-static uint32_t cur_used;
-static uint32_t max_used;
+//static uint32_t cur_used;
+//static uint32_t max_used;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
