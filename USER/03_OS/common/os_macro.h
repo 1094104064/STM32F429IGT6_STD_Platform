@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    template.h
+  * @file    os_macro.h
   * @author  
-  * @brief   Header file of template module.
+  * @brief   Header file of os_macro module.
   *
   ******************************************************************************
   **/
   
-#ifndef _TEMPLATE_H
-#define _TEMPLATE_H
+#ifndef _OS_MACRO_H
+#define _OS_MACRO_H
 
 
 #ifdef __cplusplus
@@ -23,20 +23,14 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#define OS_SUCCESS      1
+#define OS_FAIL         0
 
-/**********************
- *      TYPEDEFS
- **********************/
- 
-/**********************
-*  GLOBAL PROTOTYPES
- **********************/
+#define OS_TRUE         1
+#define OS_FALSE        0
 
+#define OS_NULL         ((void *)0)
 
-
-/**********************
- *      MACROS
- **********************/
 
 
 
@@ -45,7 +39,7 @@ extern "C" {
 }
 #endif
 
-#endif /*_TEMPLATE_H*/
+#endif /*_OS_MACRO_H*/
 
 
 /******************************* (END OF FILE) *********************************/

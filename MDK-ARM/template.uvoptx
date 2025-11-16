@@ -2570,7 +2570,7 @@
 
   <Group>
     <GroupName>03_OS/FreeRTOS</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -4033,18 +4033,6 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\03_OS\osal\osal_task.c</PathWithFileName>
-      <FilenameWithoutPath>osal_task.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>23</GroupNumber>
-      <FileNumber>301</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
       <PathWithFileName>..\USER\03_OS\osal\osal_timer.c</PathWithFileName>
       <FilenameWithoutPath>osal_timer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -4058,6 +4046,18 @@
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>24</GroupNumber>
+      <FileNumber>301</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\USER\03_OS\implementation\os_impl_thread.c</PathWithFileName>
+      <FilenameWithoutPath>os_impl_thread.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
     <File>
       <GroupNumber>24</GroupNumber>
       <FileNumber>302</FileNumber>
@@ -4113,20 +4113,28 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\03_OS\implementation\os_impl_task.c</PathWithFileName>
-      <FilenameWithoutPath>os_impl_task.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\03_OS\implementation\os_impl_timer.c</PathWithFileName>
+      <FilenameWithoutPath>os_impl_timer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
+  </Group>
+
+  <Group>
+    <GroupName>03_OS/Common</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>24</GroupNumber>
+      <GroupNumber>25</GroupNumber>
       <FileNumber>307</FileNumber>
-      <FileType>1</FileType>
+      <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\USER\03_OS\implementation\os_impl_timer.c</PathWithFileName>
-      <FilenameWithoutPath>os_impl_timer.c</FilenameWithoutPath>
+      <PathWithFileName>..\USER\03_OS\common\os_macro.h</PathWithFileName>
+      <FilenameWithoutPath>os_macro.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

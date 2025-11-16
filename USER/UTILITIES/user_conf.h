@@ -23,7 +23,7 @@ extern "C" {
  
 #define CFG_USE_ELOG                0
  
-#define CFG_USE_FREERTOS            0
+#define CFG_USE_FREERTOS            1
 
 #define CFG_USE_LVGL                0
 #define CFG_USE_LVGL_DISP           1

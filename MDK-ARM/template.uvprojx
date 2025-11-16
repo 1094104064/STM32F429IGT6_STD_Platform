@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F429_439xx,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\02_MID\tlsf;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\linker;..\USER\05_HAL\EDF\widget;..\USER\05_HAL\EDF\board\st;..\USER\05_HAL\EDF\common;..\USER\05_HAL\EDF\core;..\USER\05_HAL\EDF\port;..\USER\UTILITIES;..\USER\03_OS\osal;..\USER\03_OS\implementation</IncludePath>
+              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\02_MID\tlsf;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\linker;..\USER\05_HAL\EDF\widget;..\USER\05_HAL\EDF\board\st;..\USER\05_HAL\EDF\common;..\USER\05_HAL\EDF\core;..\USER\05_HAL\EDF\port;..\USER\UTILITIES;..\USER\03_OS\osal;..\USER\03_OS\implementation;..\USER\03_OS\common</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2368,11 +2368,6 @@
               <FilePath>..\USER\03_OS\osal\osal_sema.c</FilePath>
             </File>
             <File>
-              <FileName>osal_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\03_OS\osal\osal_task.c</FilePath>
-            </File>
-            <File>
               <FileName>osal_timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\03_OS\osal\osal_timer.c</FilePath>
@@ -2382,6 +2377,11 @@
         <Group>
           <GroupName>03_OS/Implementation</GroupName>
           <Files>
+            <File>
+              <FileName>os_impl_thread.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\03_OS\implementation\os_impl_thread.c</FilePath>
+            </File>
             <File>
               <FileName>os_impl_heap.c</FileName>
               <FileType>1</FileType>
@@ -2403,14 +2403,19 @@
               <FilePath>..\USER\03_OS\implementation\os_impl_sema.c</FilePath>
             </File>
             <File>
-              <FileName>os_impl_task.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\03_OS\implementation\os_impl_task.c</FilePath>
-            </File>
-            <File>
               <FileName>os_impl_timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\03_OS\implementation\os_impl_timer.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>03_OS/Common</GroupName>
+          <Files>
+            <File>
+              <FileName>os_macro.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\USER\03_OS\common\os_macro.h</FilePath>
             </File>
           </Files>
         </Group>
