@@ -34,14 +34,17 @@ extern "C" {
 #include "FreeRTOS.h"
 #include "semphr.h"
 
+typedef QueueHandle_t os_mutex_handle_t;
 
 #endif
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-
-
+int32_t os_impl_mutex_create(os_mutex_handle_t * handle);
+void os_impl_mutex_delete(os_mutex_handle_t handle);
+int32_t os_impl_mutex_give(os_mutex_handle_t handle);
+int32_t os_impl_mutex_take(os_mutex_handle_t handle, uint32_t timeout);
 
 /**********************
  *      MACROS
