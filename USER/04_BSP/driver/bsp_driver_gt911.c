@@ -80,16 +80,40 @@ static void gt911_read_reg(gt911_driver_t * self, uint8_t dev_addr, uint16_t reg
         bool ret = false;
 
         ret = i2c->pf_start();
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_send_addr(dev_addr);
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_write_byte(reg_addr >> 8);
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_write_byte(reg_addr & 0xFF);
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_start();
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_send_addr(dev_addr | 0x01);
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         for(uint16_t i = 0; i < len; i++) {
             if(i == (len - 1)) {
@@ -151,15 +175,31 @@ static void gt911_write_reg(gt911_driver_t * self, uint8_t dev_addr, uint16_t re
         bool ret = false;
 
         ret = i2c->pf_start();
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_send_addr(dev_addr);
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_write_byte(reg_addr >> 8);
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         ret = i2c->pf_write_byte(reg_addr & 0xFF);
+        if(ret != true) {
+            i2c->pf_stop();
+            return;
+        }
 
         for(uint16_t i = 0; i < len; i++) {
-            if(false == i2c->pf_write_byte(src[i])) {
+            if(true != i2c->pf_write_byte(src[i])) {
                 i2c->pf_stop();
                 return;
             }

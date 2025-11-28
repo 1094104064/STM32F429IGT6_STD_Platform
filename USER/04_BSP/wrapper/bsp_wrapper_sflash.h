@@ -36,6 +36,7 @@ typedef struct sflash_eraser   sflash_eraser_t;
 typedef struct sflash_ops      sflash_ops_t;
 typedef struct sflash_ctx      sflash_ctx_t;
 typedef struct sflash_object   sflash_obj_t;
+typedef struct sflash_wrapper  sflash_wrapper_t;
 
 struct sflash_eraser {
     uint32_t    size;
@@ -69,10 +70,22 @@ struct sflash_object
     sflash_ctx_t ctx;
 };
 
-// struct sflash_wrapper {
+struct sflash_wrapper 
+{
+    sflash_obj_t *  (* obj_create)  (const sflash_ops_t * ops, const char * const name, void * const user_data);
+    void            (* obj_delete)  (const char * const name);
+    sflash_obj_t *  (* find)        (const char * const name);
+    
+    bool            (* init)        (sflash_obj_t * obj);
+    void            (* read_jedec_id)(sflash_obj_t * obj, uint32_t * id);
+    bool            (* read)        (sflash_obj_t * obj, uint32_t address, uint8_t * dst, uint32_t length);
+    bool            (* erase)       (sflash_obj_t * obj, uint32_t address, uint32_t length);
+    bool            (* write)       (sflash_obj_t * obj, uint32_t address, const uint8_t * src, uint32_t length);
+    bool            (* erase_write) (sflash_obj_t * obj, uint32_t address, const uint8_t * src, uint32_t length);
+    bool            (* chip_erase)  (sflash_obj_t * obj);
+};
 
-
-// };
+extern const struct sflash_wrapper wrp_sflash;
 
 /**********************
 *  GLOBAL PROTOTYPES

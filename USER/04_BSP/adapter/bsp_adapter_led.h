@@ -23,7 +23,8 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-
+#define BLUE_LED_NAME         "blueled"
+#define YELLOW_LED_NAME       "yellowled"
 /**********************
  *      TYPEDEFS
  **********************/
@@ -31,8 +32,7 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-extern const light_ops_t blue_led_ops;
-extern const light_ops_t yellow_led_ops;
+void LedRegister(void);
 /**********************
  *      MACROS
  **********************/

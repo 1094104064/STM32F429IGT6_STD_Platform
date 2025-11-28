@@ -103,19 +103,15 @@ void app_main(void)
     debug_init(230400);
     mm_init();
 
-    g_blue_led = wrp_light.obj_create(&blue_led_ops, "Blue LED", NULL);
-    g_yellow_led = wrp_light.obj_create(&yellow_led_ops, "Yellow LED", NULL);
+    LedRegister();
+    LcdRegister();
 
-    wrp_light.init(g_blue_led);
-    wrp_light.init(g_yellow_led);
+    g_blue_led = wrp_light.find(BLUE_LED_NAME);
+    g_yellow_led = wrp_light.find(YELLOW_LED_NAME);
+    g_lcd = wrp_display.find(LCD_NAME);
 
-    g_lcd = wrp_display.obj_create(&lcd_ops, "simple lcd", NULL);
-    wrp_display.init(g_lcd);
-    pr_trace("width = %d", wrp_display.get_width(g_lcd));
-    pr_trace("height = %d", wrp_display.get_height(g_lcd));
-    pr_trace("framebuffer = %x", wrp_display.get_framebuffer(g_lcd));
-    wrp_display.backlight_on(g_lcd);
-    wrp_display.draw_grad_rgb565(g_lcd, 30);
+
+
 
     InitMiddleware();
     InitFreeRTOS();

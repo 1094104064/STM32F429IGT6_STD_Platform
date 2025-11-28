@@ -17,6 +17,7 @@
 /*********************
  *      INCLUDES
  *********************/
+#include "bsp_wrapper_touchpad.h"
 #include "bsp_adapter_gt911.h"
 #include "bsp_driver_gt911.h"
 #include "bsp_linker_gt911.h"
@@ -48,7 +49,7 @@ static gt911_driver_t gs_gt911_drv;
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-static void ops_gt911_init(void)
+static int ops_gt911_init(void)
 {
     static const gt911_ctrl_t ctrl = {
         .pf_set_int_pin     = bsp_linker_gt911_set_int_pin,
@@ -82,10 +83,42 @@ static void ops_gt911_init(void)
 
     bsp_driver_gt911_link(&gs_gt911_drv, &handle);
 
+    if (gs_gt911_drv.pf_init(&gs_gt911_drv) == false) {
+        return 2;
+    }
     
+    return 0;
 }
 
+static bool ops_gt911_is_pressed(void)
+{
+    return gs_gt911_drv.pf_is_pressed(&gs_gt911_drv);
+}
 
+static void ops_gt911_control(int cmd, void * arg)
+{
+    // Implement control commands if needed
+}
+
+static void ops_gt911_get_xy(uint16_t * x, uint16_t * y, uint8_t read_num)
+{
+    gs_gt911_drv.pf_get_coordinates(&gs_gt911_drv, x, y, read_num);
+}
+
+static const touchpad_ops_t gt911_ops = {
+    .pf_init           = ops_gt911_init,
+    .pf_is_pressed     = ops_gt911_is_pressed,
+    .pf_control        = ops_gt911_control,
+    .pf_get_xy         = ops_gt911_get_xy,
+};
+
+void Gt911Register(void)
+{
+    touchpad_obj_t * gt911_obj = NULL;
+
+    gt911_obj = wrp_touchpad.obj_create(&gt911_ops, "gt911", NULL);
+    wrp_touchpad.init(gt911_obj);
+}
 
 /******************************* (END OF FILE) *********************************/
 

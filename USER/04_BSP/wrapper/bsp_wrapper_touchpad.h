@@ -37,10 +37,9 @@ typedef struct touchpad_ctx touchpad_ctx_t;
 struct touchpad_ops
 {
     int  (* pf_init)            (void);
-    void (* pf_reset)           (void);
-    void (* pf_scan)            (void);
     bool (* pf_is_pressed)      (void);
-    void (* pf_get_coordinates) (uint16_t * x, uint16_t * y, uint8_t num);
+    void (* pf_control)         (int cmd, void *arg);
+    void (* pf_get_xy)          (uint16_t * x, uint16_t * y, uint8_t read_num);
 };
 
 struct touchpad_ctx
@@ -63,13 +62,12 @@ struct touchpad_wrapper
     touchpad_obj_t *    (* find)                (const char * const name);
 
     bool                (* init)                (touchpad_obj_t * obj);
-    void                (* reset)               (touchpad_obj_t * obj);
-    void                (* scan)                (touchpad_obj_t * obj);
     bool                (* is_pressed)          (touchpad_obj_t * obj);
-    void                (* get_coordinates)     (touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t num);
+    void                (* control)             (touchpad_obj_t * obj, int cmd, void * arg);
+    void                (* get_xy)              (touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t read_num);
 };
 
-
+extern const struct touchpad_wrapper wrp_touchpad;
 
 
 /**********************
@@ -79,14 +77,17 @@ touchpad_obj_t *    bsp_wrapper_touchpad_obj_create            (const touchpad_o
 void                bsp_wrapper_touchpad_obj_delete            (const char * const name);
 touchpad_obj_t *    bsp_wrapper_touchpad_find                  (const char * const name);
 bool                bsp_wrapper_touchpad_init                  (touchpad_obj_t * obj);
-void                bsp_wrapper_touchpad_reset                 (touchpad_obj_t * obj);
-void                bsp_wrapper_touchpad_scan                  (touchpad_obj_t * obj);
 bool                bsp_wrapper_touchpad_is_pressed            (touchpad_obj_t * obj);
-void                bsp_wrapper_touchpad_get_coordinates       (touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t num);
+void                bsp_wrapper_touchpad_control               (touchpad_obj_t * obj, int cmd, void * arg);
+void                bsp_wrapper_touchpad_get_xy                (touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t read_num);
 /**********************
  *      MACROS
  **********************/
 
+/* Touch control cmd types */
+#define TOUCHPAD_CTRL_GET_ID                       0
+#define TOUCHPAD_CTRL_GET_INFO                     1
+#define TOUCHPAD_CTRL_RESET                        2
 
 
 #ifdef __cplusplus

@@ -29,7 +29,19 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
-
+const struct sflash_wrapper wrp_sflash = {
+    .obj_create        = bsp_wrapper_sflash_create,
+    .obj_delete        = bsp_wrapper_sflash_delete,
+    .find              = bsp_wrapper_sflash_find,
+    
+    .init              = bsp_wrapper_sflash_init,
+    .read_jedec_id     = bsp_wrapper_sflash_read_jedec_id,
+    .read              = bsp_wrapper_sflash_read,
+    .erase             = bsp_wrapper_sflash_erase,
+    .write             = bsp_wrapper_sflash_write,
+    .erase_write       = bsp_wrapper_sflash_erase_write,
+    .chip_erase        = bsp_wrapper_sflash_chip_erase,
+};
 /**********************
  *  STATIC PROTOTYPES
  **********************/

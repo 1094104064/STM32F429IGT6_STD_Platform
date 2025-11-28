@@ -19,11 +19,11 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "bsp_wrapper_display.h"
+
 /*********************
  *      DEFINES
  *********************/
-
+#define LCD_NAME    "simplelcd"
 /**********************
  *      TYPEDEFS
  **********************/
@@ -32,7 +32,7 @@ extern "C" {
 *  GLOBAL PROTOTYPES
  **********************/
 
-extern const display_ops_t lcd_ops;
+void LcdRegister(void);
 
 
 /**********************

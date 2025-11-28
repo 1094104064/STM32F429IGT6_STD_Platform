@@ -80,11 +80,12 @@ static void ops_led1_off(void)
     gs_led1_driver.pf_off(&gs_led1_driver);
 }
 
-const light_ops_t blue_led_ops = {
+static const light_ops_t blue_led_ops = {
     .pf_init    = ops_led1_init,
     .pf_on      = ops_led1_on,
     .pf_off     = ops_led1_off,
 };
+
 
 static int ops_led2_init(void)
 {
@@ -113,10 +114,21 @@ static void ops_led2_off(void)
     gs_led2_driver.pf_off(&gs_led2_driver);
 }
 
-const light_ops_t yellow_led_ops = {
+static const light_ops_t yellow_led_ops = {
     .pf_init    = ops_led2_init,
     .pf_on      = ops_led2_on,
     .pf_off     = ops_led2_off,
 };
+
+void LedRegister(void)
+{
+    light_obj_t * led_obj = NULL;
+
+    led_obj = wrp_light.obj_create(&blue_led_ops, BLUE_LED_NAME, NULL);
+    wrp_light.init(led_obj);
+
+    led_obj = wrp_light.obj_create(&yellow_led_ops, YELLOW_LED_NAME, NULL);
+    wrp_light.init(led_obj);
+}
 
 /******************************* (END OF FILE) *********************************/

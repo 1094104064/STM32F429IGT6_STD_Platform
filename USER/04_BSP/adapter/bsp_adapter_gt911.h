@@ -19,7 +19,7 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "bsp_wrapper_touchpad.h"
+
 /*********************
  *      DEFINES
  *********************/
@@ -32,7 +32,7 @@ extern "C" {
 *  GLOBAL PROTOTYPES
  **********************/
 
-
+void Gt911Register(void);
 
 /**********************
  *      MACROS

@@ -29,7 +29,16 @@
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
-
+const struct touchpad_wrapper wrp_touchpad = {
+    .obj_create        = bsp_wrapper_touchpad_obj_create,
+    .obj_delete        = bsp_wrapper_touchpad_obj_delete,
+    .find              = bsp_wrapper_touchpad_find,
+    
+    .init              = bsp_wrapper_touchpad_init,
+    .is_pressed       = bsp_wrapper_touchpad_is_pressed,
+    .control          = bsp_wrapper_touchpad_control,
+    .get_xy           = bsp_wrapper_touchpad_get_xy,
+};
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -107,18 +116,6 @@ bool bsp_wrapper_touchpad_init(touchpad_obj_t * obj)
     return true;
 }
 
-void bsp_wrapper_touchpad_reset(touchpad_obj_t * obj)
-{
-    if(obj->ops->pf_reset)
-        obj->ops->pf_reset();
-}
-
-void bsp_wrapper_touchpad_scan(touchpad_obj_t * obj)
-{
-    if(obj->ops->pf_scan)
-        obj->ops->pf_scan();
-}
-
 bool bsp_wrapper_touchpad_is_pressed(touchpad_obj_t * obj)
 {
     if(obj->ops->pf_is_pressed)
@@ -127,11 +124,20 @@ bool bsp_wrapper_touchpad_is_pressed(touchpad_obj_t * obj)
     return false;
 }
 
-void bsp_wrapper_touchpad_get_coordinates(touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t num)
+void bsp_wrapper_touchpad_control(touchpad_obj_t * obj, int cmd, void * arg)
 {
-    if(obj->ops->pf_get_coordinates)
-        obj->ops->pf_get_coordinates(x, y, num);
+    /* Add control code here if needed in the future */
 }
+
+void bsp_wrapper_touchpad_get_xy(touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t read_num)
+{
+    if(obj->ops->pf_get_xy)
+        obj->ops->pf_get_xy(x, y, read_num);
+}
+
+
+
+
 
 /**********************
  *   STATIC FUNCTIONS

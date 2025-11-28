@@ -17,6 +17,7 @@
 /*********************
  *      INCLUDES
  *********************/
+#include "bsp_wrapper_display.h"
 #include "bsp_adapter_lcd.h"
 #include "bsp_driver_lcd.h"
 #include "bsp_linker_lcd.h"
@@ -136,6 +137,14 @@ const display_ops_t lcd_ops = {
     .pf_get_height          = ops_lcd_get_height,
     .pf_get_framebuffer     = ops_lcd_get_framebuffer,
 };
+
+void LcdRegister(void)
+{
+    display_obj_t * lcd_obj = NULL;
+
+    lcd_obj = wrp_display.obj_create(&lcd_ops, LCD_NAME, NULL);
+    wrp_display.init(lcd_obj);
+}
 
 /******************************* (END OF FILE) *********************************/
 
