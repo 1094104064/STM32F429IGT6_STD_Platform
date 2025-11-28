@@ -79,7 +79,28 @@ void bsp_driver_w25q64_link(struct w25q64_driver * self, struct w25q64_oper * op
 /**********************
  *      MACROS
  **********************/
+#define W25Q64_PAGE_SIZE                    256
+#define W25Q64_SECTOR_SIZE                  4096
+#define W25Q64_BLOCK_32K_SIZE               32768
+#define W25Q64_BLOCK_64K_SIZE               65536
+#define W25Q64_TOTAL_SIZE                   8388608  /* 8MB */
 
+#define W25Q64_JEDEC_MF_ID                  0xEFU
+#define W25Q64_JEDEC_DIE_ID                 0x40U
+#define W25Q64_JEDEC_PN_ID                  0x17U
+
+#define W25Q64_WRITE_ENABLE_CMD             0x06U 
+#define W25Q64_WRITE_DISABLE_CMD            0x04U
+#define W25Q64_READ_STATUS_REG_CMD          0x05U
+#define W25Q64_WRITE_STATUS_REG_CMD         0x01U
+#define W25Q64_READ_DATA_CMD                0x03U
+#define W25Q64_FAST_READ_CMD                0x0BU
+#define W25Q64_PAGE_PROGRAM_CMD             0x02U
+#define W25Q64_SECTOR_ERASE_CMD             0x20U
+#define W25Q64_BLOCK_32K_ERASE_CMD          0x52U
+#define W25Q64_BLOCK_64K_ERASE_CMD          0xD8U
+#define W25Q64_CHIP_ERASE_CMD               0xC7U
+#define W25Q64_READ_DEVICE_ID_CMD           0x9FU
 
 
 #ifdef __cplusplus

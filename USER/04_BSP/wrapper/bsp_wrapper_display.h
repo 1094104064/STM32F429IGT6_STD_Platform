@@ -73,9 +73,9 @@ enum
 /**********************
  *      TYPEDEFS
  **********************/
-typedef struct display_object display_obj_t;
-typedef struct display_ops display_ops_t;
-typedef struct display_ctx display_ctx_t;
+typedef struct display_object   display_obj_t;
+typedef struct display_ops      display_ops_t;
+typedef struct display_ctx      display_ctx_t;
 
 struct display_ops
 {

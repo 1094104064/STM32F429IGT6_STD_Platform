@@ -37,140 +37,201 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static struct sflash_wrapper sflash_wrappers[SFLASH_MAX_NUM];
-static uint8_t current_sflash_idx = 0;
+static sflash_obj_t gs_mempool[SFLASH_MAX_NUM];
+static uint8_t gsuc_index = 0;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_wrapper_sflash_link(struct sflash_wrapper * self, const char * const name, void * const user_data)
+sflash_obj_t * bsp_wrapper_sflash_create(const sflash_ops_t * ops, const char * const name, void * const user_data)
 {
-    uint8_t idx = 0;
-
-    current_sflash_idx++;
-
-    if (current_sflash_idx < SFLASH_MAX_NUM) {
-        idx = current_sflash_idx;
-    }
-    else {
-        current_sflash_idx = 0;
+    if(gsuc_index >= SFLASH_MAX_NUM) {
+        gsuc_index = 0;
     }
 
-    memset(&sflash_wrappers[idx], 0, sizeof(struct sflash_wrapper));
+    if(ops == NULL) return NULL;
 
-    sflash_wrappers[idx] = *self;
-    sflash_wrappers[idx].idx = idx;
-    sflash_wrappers[idx].name = name;
-    sflash_wrappers[idx].user_data = user_data;
+    if(bsp_wrapper_sflash_find(name) != NULL) return NULL;
 
-    if(sflash_wrappers[idx].name == NULL) {
-//        pr_warn("This wrapper has no name and will be filled with a default name");
-        sflash_wrappers[idx].name = "sflash_default";
+    memset(&gs_mempool[gsuc_index], 0, sizeof(sflash_obj_t));
+
+    gs_mempool[gsuc_index].ops = ops;
+
+    gs_mempool[gsuc_index].ctx.idx       = gsuc_index;
+    gs_mempool[gsuc_index].ctx.user_data = user_data;
+    strncpy(gs_mempool[gsuc_index].ctx.name, name, sizeof(gs_mempool[gsuc_index].ctx.name) - 1);
+
+    gsuc_index++;
+
+    return &gs_mempool[gsuc_index - 1];
+}
+
+void bsp_wrapper_sflash_delete(const char * const name)
+{
+    sflash_obj_t * obj = bsp_wrapper_sflash_find(name);
+    if(obj != NULL) {
+        memset(obj, 0, sizeof(sflash_obj_t));
     }
 }
 
-bool bsp_wrapper_sflash_init(void)
+sflash_obj_t * bsp_wrapper_sflash_find(const char * const name)
 {
-    int ret = 0;
-    struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
+    uint8_t i = 0;
 
-//    assert_null(self->pf_init);
-//    assert_null(self->pf_get_device_id);
-//    assert_null(self->pf_erase);
-//    assert_null(self->pf_read);
-//    assert_null(self->pf_write);
-//    assert_null(self->pf_erase_chip);
-
-    if( self->pf_init   == NULL     || self->pf_get_device_id   == NULL ||
-        self->pf_erase  == NULL     || self->pf_read            == NULL ||
-        self->pf_write  == NULL     || self->pf_erase_chip      == NULL ) {
-        return false;
+    for(i = 0; i < SFLASH_MAX_NUM; i++) {
+        if(strncmp(gs_mempool[i].ctx.name, name, SFLASH_NAME_MAX_LEN) == 0) {
+            return &gs_mempool[i];
+        }
     }
 
-    ret = self->pf_init(self);
+    return NULL;
+}
+
+
+bool bsp_wrapper_sflash_init(sflash_obj_t * obj)
+{
+    if(obj->ctx.is_initialized == true) return true;
+
+    int ret = 1;
+    if(obj->ops->pf_init)
+        obj->ops->pf_init();
 
     if(ret != 0) {
-//        pr_error("%s : failed to initialize, error code: %d", self->name, ret);
         return false;
     }
 
-//    pr_info("%s : initialized successfully", self->name);
+    obj->ctx.is_initialized = true;
 
     return true;
 }
 
-
-void bsp_wrapper_sflash_deinit(void)
+void bsp_wrapper_sflash_read_jedec_id(sflash_obj_t * obj, uint32_t * id)
 {
-    // De-initialization code for serial flash
+    if(obj->ops->pf_read_jedec_id)
+        obj->ops->pf_read_jedec_id(id);
 }
 
-void bsp_wrapper_sflash_get_device_id(uint32_t * id)
+bool bsp_wrapper_sflash_read(sflash_obj_t * obj, uint32_t address, uint8_t * dst, uint32_t length)
 {
-    struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
-
-    self->pf_get_device_id(self, id);
-}
-
-void bsp_wrapper_sflash_read(uint32_t address, uint8_t *data, uint32_t length)
-{
-    struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
-
-    self->pf_read(self, address, data, length);
-}
-
-void bsp_wrapper_sflash_erase(uint32_t address, uint32_t length)
-{
-    struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
-
-    self->pf_erase(self, address, length);
-}
-
-
-void bsp_wrapper_sflash_write(uint32_t address, const uint8_t *data, uint32_t length)
-{
-    struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
-
-    self->pf_write(self, address, data, length);
-}
-
-void bsp_wrapper_sflash_erase_write(uint32_t address, const uint8_t *data, uint32_t length)
-{
-    bsp_wrapper_sflash_erase(address, length);
-    bsp_wrapper_sflash_write(address, data, length);
-}
-
-
-void bsp_wrapper_sflash_chip_erase(void)
-{
-    struct sflash_wrapper *self = &sflash_wrappers[current_sflash_idx];
-
-    self->pf_erase_chip(self);
-}
-
-
-void bsp_wrapper_sflash_test(void)
-{
-    uint8_t write_buf[256] = {0};
-    uint8_t read_buf[256] = {0};
-    uint32_t chip_id = {0};
-    uint32_t address = 0x000000;
-
-    bsp_wrapper_sflash_get_device_id(&chip_id);
-//    pr_info("sflash chip id: 0x%X", chip_id);
-
-    memset(write_buf, 0xAA, sizeof(write_buf));
-
-    bsp_wrapper_sflash_erase(address, sizeof(write_buf));
-    bsp_wrapper_sflash_write(address, write_buf, sizeof(write_buf));
-    bsp_wrapper_sflash_read(address, read_buf, sizeof(read_buf));
-
-    if (memcmp(write_buf, read_buf, sizeof(write_buf)) == 0) {
-//        pr_info("sflash read/write test passed");
-    } else {
-//        pr_info("sflash read/write test failed");
+    /* check the flash address bound */
+    if (address + length > obj->ctx.chip_capacity) {
+        return false;
     }
 
+    if(obj->ops->pf_fast_read) {
+        return obj->ops->pf_fast_read(address, dst, length);
+    } 
+    else if(obj->ops->pf_read) {
+        return obj->ops->pf_read(address, dst, length);
+    }
+
+    return false;
 }
+
+bool bsp_wrapper_sflash_erase(sflash_obj_t * obj, uint32_t address, uint32_t length)
+{
+    bool result = true;
+
+    /* check the flash address bound */
+    if (address + length > obj->ctx.chip_capacity) {
+
+        return false;
+    }
+
+    if (address == 0 && length == obj->ctx.chip_capacity) {
+        
+        return bsp_wrapper_sflash_chip_erase(obj);
+    }
+
+    size_t e_index;
+
+    /* Find the suitable eraser.
+     * The largest size eraser is at the end of eraser table.
+     * In order to decrease erase command counts, so the find process is from the end of eraser table. */
+    for (e_index = SFLASH_ERASE_TYPE_MAX_NUM - 1;; e_index--) {
+
+        if ((obj->ops->eraser[e_index].size != 0) && 
+            (length >= obj->ops->eraser[e_index].size) && 
+            (address % obj->ops->eraser[e_index].size == 0)) 
+        {
+            break;
+        }
+
+        if (e_index == 0) {
+            break;
+        }
+    }
+
+    size_t e_size = obj->ops->eraser[e_index].size;
+
+    /* loop erase operate. erase unit is erase granularity */
+    while (length) {
+
+        result = obj->ops->eraser[e_index].pf_erasing(address, length);
+        if (result != true) {
+            goto __exit;
+        }
+
+
+        /* make erase align and calculate next erase address */
+        if (address % e_size != 0) {
+            if (length > e_size - (address % e_size)) {
+
+                length -= e_size - (address % e_size);
+                address += e_size - (address % e_size);
+            } 
+            else {
+                goto __exit;
+            }
+        } 
+        else {
+            if (length > e_size) {
+
+                length -= e_size;
+                address += e_size;
+            } 
+            else {
+                goto __exit;
+            }
+        }
+    }
+
+__exit:
+
+    return result;
+}
+
+bool bsp_wrapper_sflash_write(sflash_obj_t * obj, uint32_t address, const uint8_t * src, uint32_t length)
+{
+    if(obj->ops->pf_write)
+       return obj->ops->pf_write(address, src, length);
+    
+    return false;
+}
+
+bool bsp_wrapper_sflash_erase_write(sflash_obj_t * obj, uint32_t address, const uint8_t * src, uint32_t length)
+{
+    bool result = true;
+
+    result = bsp_wrapper_sflash_erase(obj, address, length);
+
+    if (result == true) {
+        result = bsp_wrapper_sflash_write(obj, address, src, length);
+    }
+
+    return result;
+}
+
+bool bsp_wrapper_sflash_chip_erase(sflash_obj_t * obj)
+{
+
+    if(obj->ops->pf_erase_chip)
+        return obj->ops->pf_erase_chip();
+
+    return false;
+}
+
+
+
 
 
 
