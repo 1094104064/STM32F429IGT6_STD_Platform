@@ -38,6 +38,7 @@ const struct display_wrapper wrp_display =
     .init               = bsp_wrapper_display_init,
     .backlight_on       = bsp_wrapper_display_backlight_on,
     .backlight_off      = bsp_wrapper_display_backlight_off,
+    .backlight_set      = bsp_wrapper_display_backlight_set,
     .draw_pixel         = bsp_wrapper_display_draw_pixel,
     .fill_rect          = bsp_wrapper_display_fill_rect,
     .fill_screen        = bsp_wrapper_display_fill_screen,
@@ -138,6 +139,12 @@ void bsp_wrapper_display_backlight_off(display_obj_t * obj)
 {
     if(obj->ops->pf_backlight_off)
         obj->ops->pf_backlight_off();
+}
+
+void bsp_wrapper_display_backlight_set(display_obj_t * obj, uint8_t brightness)
+{
+    if(obj->ops->pf_backlight_set)
+        obj->ops->pf_backlight_set(brightness);
 }
 
 void bsp_wrapper_display_draw_pixel(display_obj_t * obj, uint16_t x, uint16_t y, uint32_t color)

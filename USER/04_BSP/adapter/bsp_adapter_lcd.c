@@ -124,7 +124,7 @@ static uint32_t ops_lcd_get_framebuffer(void)
     return gs_lcd_driver.framebuffer;
 }
 
-const display_ops_t lcd_ops = {
+static const display_ops_t lcd_ops = {
     .pf_init                = ops_lcd_init,
     .pf_backlight_on        = ops_lcd_backlight_on,
     .pf_backlight_off       = ops_lcd_backlight_off,
@@ -138,11 +138,17 @@ const display_ops_t lcd_ops = {
     .pf_get_framebuffer     = ops_lcd_get_framebuffer,
 };
 
-void LcdRegister(void)
+void InitLCD(void)
 {
     display_obj_t * lcd_obj = NULL;
 
     lcd_obj = wrp_display.obj_create(&lcd_ops, LCD_NAME, NULL);
+
+    if(lcd_obj == NULL)
+    {
+        for(;;);
+    }
+
     wrp_display.init(lcd_obj);
 }
 

@@ -32,7 +32,7 @@ extern "C" {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void LedRegister(void);
+void InitLED(void);
 /**********************
  *      MACROS
  **********************/

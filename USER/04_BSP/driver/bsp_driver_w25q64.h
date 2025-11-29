@@ -30,33 +30,34 @@ extern "C" {
 
 #define W25Q64_DEBUG_ENABLE 0
 
-#if W25Q64_DEBUG_ENABLE
-
-    #define w25q64_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-
-    #define w25q64_assert_null(param)                                                            \
-            do {                                                                                \
-                if(param == NULL) { w25q64_dbg("NULL pointer: %s", #param); while(1); }          \
-            } while (0)    
-#else
-    #define w25q64_dbg(fmt, ...)             do {} while (0)
-    #define w25q64_assert_null(param)        do {} while (0)
-#endif
 
 /**********************
  *      TYPEDEFS
  **********************/
+typedef int (* pf_printf_t)(const char* format, ...);
 
+typedef enum 
+{
+    W25Q64_LOG_NONE = 0,
+    W25Q64_LOG_ERROR,
+    W25Q64_LOG_INFO,
+    W25Q64_LOG_DEBUG,
+} w25q_log_level_t;
 
-struct w25q64_oper {
-    void (* pf_spi_read_write)(uint8_t * src, uint8_t * dst, uint32_t size);
+typedef struct w25q64_handle w25q64_handle_t;
+typedef struct w25q64_driver w25q64_driver_t;
+
+struct w25q64_handle 
+{
+    bool (* pf_spi_read_write)(uint8_t * src, uint8_t * dst, uint32_t size);
     void (* pf_spi_cs_low)(void);
     void (* pf_spi_cs_high)(void);
 };
 
 
-struct w25q64_driver {
-    struct w25q64_oper * oper;
+struct w25q64_driver 
+{
+    const w25q64_handle_t * handle;
 
     bool (* pf_init)(struct w25q64_driver * self);
     void (* pf_read_id)(struct w25q64_driver * self, uint32_t * id);
@@ -75,7 +76,11 @@ struct w25q64_driver {
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_driver_w25q64_link(struct w25q64_driver * self, struct w25q64_oper * oper);
+void bsp_driver_w25q64_link(w25q64_driver_t * drv, w25q64_handle_t * handle);
+
+#if W25Q64_DEBUG_ENABLE
+void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q_log_level_t level);
+#endif  
 /**********************
  *      MACROS
  **********************/

@@ -52,9 +52,6 @@ typedef struct st7735_driver st7735_driver_t;
 
 struct st7735_handle
 {
-    uint16_t    width;
-    uint16_t    height;
-
     void (* pf_spi_transmit_8bit)       (uint8_t data);
     void (* pf_spi_transmit_16bit)      (uint16_t data, uint32_t size);
     void (* pf_spi_dma_transmit_8bit)   (uint8_t * buf, uint32_t size);
@@ -71,6 +68,9 @@ struct st7735_handle
     void (* pf_backlight_off) (void);
     void (* pf_backlight_set) (uint8_t brightness);
 
+    uint16_t (* pf_get_width)  (void);
+    uint16_t (* pf_get_height) (void);
+
     void (* pf_delay_ms)(uint32_t ms);
 };
 
@@ -80,6 +80,8 @@ struct st7735_driver
 {
     const struct st7735_handle * handle;
 
+    uint16_t    width;
+    uint16_t    height;
     uint8_t     rotated;
 
     void (* pf_write_data)      (struct st7735_driver * self, uint8_t byte);

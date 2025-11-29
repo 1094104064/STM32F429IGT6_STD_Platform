@@ -54,16 +54,16 @@ extern "C" {
 
 #include "bsp_wrapper_light.h"
 #include "bsp_wrapper_display.h"
+#include "bsp_wrapper_touchpad.h"
+#include "bsp_wrapper_sflash.h"
 
 #include "bsp_adapter_led.h"
 #include "bsp_adapter_lcd.h"
+#include "bsp_adapter_gt911.h" 
+#include "bsp_adapter_st7735.h"
+#include "bsp_adapter_w25q64.h"
 
 
-
-#include "bsp_wrapper_touchpad.h"
-
-#include "bsp_adapter_sflash.h"
-#include "bsp_wrapper_sflash.h"
 
 
 

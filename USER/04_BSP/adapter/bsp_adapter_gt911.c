@@ -97,7 +97,22 @@ static bool ops_gt911_is_pressed(void)
 
 static void ops_gt911_control(int cmd, void * arg)
 {
-    // Implement control commands if needed
+    switch (cmd) {
+    case TOUCHPAD_CTRL_GET_ID:
+        /* code */
+        break;
+
+    case TOUCHPAD_CTRL_GET_INFO:
+        /* code */
+        break;
+
+    case TOUCHPAD_CTRL_RESET:
+        /* code */
+        break;
+        
+    default:
+        break;
+    }
 }
 
 static void ops_gt911_get_xy(uint16_t * x, uint16_t * y, uint8_t read_num)
@@ -112,11 +127,17 @@ static const touchpad_ops_t gt911_ops = {
     .pf_get_xy         = ops_gt911_get_xy,
 };
 
-void Gt911Register(void)
+void InitGT911(void)
 {
     touchpad_obj_t * gt911_obj = NULL;
 
     gt911_obj = wrp_touchpad.obj_create(&gt911_ops, "gt911", NULL);
+
+    if(gt911_obj == NULL)
+    {
+        for(;;);
+    }
+
     wrp_touchpad.init(gt911_obj);
 }
 

@@ -32,7 +32,7 @@ extern "C" {
 *  GLOBAL PROTOTYPES
  **********************/
 
-void Gt911Register(void);
+void InitGT911(void);
 
 /**********************
  *      MACROS

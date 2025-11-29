@@ -25,16 +25,7 @@
 /*********************
  *      DEFINES
  *********************/
-#define CS_HIGH(self)           ((self)->handle->pf_cs_high())
-#define CS_LOW(self)            ((self)->handle->pf_cs_low())
 
-#define DC_HIGH(self)           ((self)->handle->pf_dc_high())
-#define DC_LOW(self)            ((self)->handle->pf_dc_low())
-
-#define RST_HIGH(self)          ((self)->handle->pf_rst_high())
-#define RST_LOW(self)           ((self)->handle->pf_rst_low())
-
-#define DELAY_MS(self, x)       ((self)->handle->pf_delay_ms(x))
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
@@ -50,7 +41,8 @@ static void st7735_set_window       (st7735_driver_t * self, uint16_t x1, uint16
 static void st7735_put_pixel        (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t color);
 static void st7735_fill_rect        (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
 static void st7735_fill_screen      (st7735_driver_t * self, uint16_t color);
-static void st7735_copy_buffer      (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data);
+static void st7735_copy_8bit_buffer (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t * data);
+static void st7735_copy_16bit_buffer(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data);
 static void st7735_backlight_on     (st7735_driver_t * self);
 static void st7735_backlight_off    (st7735_driver_t * self);
 static void st7735_backlight_set    (st7735_driver_t * self, uint8_t brightness);
@@ -92,7 +84,7 @@ void bsp_driver_st7735_link(st7735_driver_t * drv, const st7735_handle_t * handl
     drv->pf_put_pixel          = st7735_put_pixel;
     drv->pf_fill_rect          = st7735_fill_rect;
     drv->pf_fill_screen        = st7735_fill_screen;
-    drv->pf_copy_buffer        = st7735_copy_buffer;
+    drv->pf_copy_buffer        = st7735_copy_16bit_buffer;
     drv->pf_backlight_on       = st7735_backlight_on;
     drv->pf_backlight_off      = st7735_backlight_off;
     drv->pf_backlight_set      = st7735_backlight_set;
@@ -148,15 +140,19 @@ static bool st7735_init(st7735_driver_t * self)
     }
 
 
+    self->width     = self->handle->pf_get_width();
+    self->height    = self->handle->pf_get_height();
+    self->rotated   = 0;
+
     uint32_t i = 0;
 
-    CS_HIGH(self);
-    DELAY_MS(self, 10);
+    self->handle->pf_cs_high();
+    self->handle->pf_delay_ms(10);
 
-    RST_HIGH(self);
-    DELAY_MS(self, 120);
+    self->handle->pf_rst_high();
+    self->handle->pf_delay_ms(120);
 
-    CS_LOW(self);
+    self->handle->pf_cs_low();
 
     st7735_write_command(self, 0x01); // Software reset
     self->handle->pf_delay_ms(150);
@@ -315,10 +311,21 @@ static void st7735_fill_rect(st7735_driver_t * self, uint16_t x, uint16_t y, uin
 
 static void st7735_fill_screen(st7735_driver_t * self, uint16_t color)
 {
-    st7735_fill_rect(self, 0, 0, self->handle->width - 1, self->handle->height - 1, color);
+    st7735_fill_rect(self, 0, 0, self->width - 1, self->height - 1, color);
 }
 
-static void st7735_copy_buffer(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data)
+static void st7735_copy_8bit_buffer(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t * data)
+{
+    st7735_set_window(self, x, y, x + width - 1, y + height - 1);
+
+    self->handle->pf_cs_low();
+
+    self->handle->pf_spi_dma_transmit_8bit(data, width * height * 2);
+
+    self->handle->pf_cs_high();
+}
+
+static void st7735_copy_16bit_buffer(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data)
 {
     st7735_set_window(self, x, y, x + width - 1, y + height - 1);
 

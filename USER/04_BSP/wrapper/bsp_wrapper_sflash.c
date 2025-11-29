@@ -173,6 +173,12 @@ bool bsp_wrapper_sflash_erase(sflash_obj_t * obj, uint32_t address, uint32_t len
         }
     }
 
+    if((obj->ops->eraser[e_index].size == 0) ||
+       (obj->ops->eraser[e_index].pf_erasing == NULL)) {
+        /* No suitable eraser found */
+        return false;
+    }
+
     size_t e_size = obj->ops->eraser[e_index].size;
 
     /* loop erase operate. erase unit is erase granularity */

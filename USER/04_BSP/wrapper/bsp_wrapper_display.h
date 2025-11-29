@@ -82,6 +82,7 @@ struct display_ops
     int      (* pf_init)              (void);
     void     (* pf_backlight_on)      (void);
     void     (* pf_backlight_off)     (void);
+    void     (* pf_backlight_set)     (uint8_t brightness);
     void     (* pf_put_pixel)         (uint16_t x, uint16_t y, uint32_t color);
     void     (* pf_fill_rect)         (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
     void     (* pf_fill_screen)       (uint32_t color);
@@ -143,6 +144,7 @@ display_obj_t * bsp_wrapper_display_find              (const char *const name);
 bool            bsp_wrapper_display_init              (display_obj_t *obj);
 void            bsp_wrapper_display_backlight_on      (display_obj_t *obj);
 void            bsp_wrapper_display_backlight_off     (display_obj_t *obj);
+void            bsp_wrapper_display_backlight_set     (display_obj_t * obj, uint8_t brightness);
 void            bsp_wrapper_display_draw_pixel        (display_obj_t *obj, uint16_t x, uint16_t y, uint32_t color);
 void            bsp_wrapper_display_fill_rect         (display_obj_t *obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
 void            bsp_wrapper_display_draw_line         (display_obj_t *obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t color);

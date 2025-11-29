@@ -120,14 +120,26 @@ static const light_ops_t yellow_led_ops = {
     .pf_off     = ops_led2_off,
 };
 
-void LedRegister(void)
+void InitLED(void)
 {
     light_obj_t * led_obj = NULL;
 
     led_obj = wrp_light.obj_create(&blue_led_ops, BLUE_LED_NAME, NULL);
+
+    if(led_obj == NULL)
+    {
+        for(;;);
+    }
+
     wrp_light.init(led_obj);
 
     led_obj = wrp_light.obj_create(&yellow_led_ops, YELLOW_LED_NAME, NULL);
+
+    if(led_obj == NULL)
+    {
+        for(;;);
+    }
+
     wrp_light.init(led_obj);
 }
 

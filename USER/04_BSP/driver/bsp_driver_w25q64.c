@@ -25,7 +25,41 @@
 /*********************
  *      DEFINES
  *********************/
+#if W25Q64_DEBUG_ENABLE
 
+
+static pf_printf_t printf_cb = NULL;
+
+static w25q_log_level_t log_level = W25Q64_LOG_NONE;
+
+#define LOG_OUTPUT(level, fmt, ...) do { \
+    if (printf_cb && level <= log_level) { \
+        printf_cb("[W25Q64] " fmt, ##__VA_ARGS__); \
+    } \
+} while(0)
+
+#define LOG_E(fmt, ...) LOG_OUTPUT(W25Q64_LOG_ERROR, "E: " fmt"\r\n", ##__VA_ARGS__)    /* 用于输出详细的调试信息 */
+#define LOG_I(fmt, ...) LOG_OUTPUT(W25Q64_LOG_INFO,  "I: " fmt"\r\n", ##__VA_ARGS__)    /* 用于记录重要的操作节点或状态变化 */
+#define LOG_D(fmt, ...) LOG_OUTPUT(W25Q64_LOG_DEBUG, "D: " fmt"\r\n", ##__VA_ARGS__)    /* 用于表示发生了错误 */
+
+
+#define ASSERT_NULL(param)                                                          \
+        do {                                                                        \
+            if(param == NULL) { LOG_E("NULL pointer: \r\n", #param); while(1); }    \
+        } while (0)
+
+#else
+
+#define LOG_E(fmt, ...)
+#define LOG_I(fmt, ...)
+#define LOG_D(fmt, ...)
+
+#define ASSERT_NULL(param)                                                          \
+        do {                                                                        \
+            if(param == NULL) { while(1); }                                         \
+        } while (0)
+
+#endif
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
@@ -48,91 +82,130 @@ static void w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t *
  *  STATIC VARIABLES
  **********************/
 
+
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-void bsp_driver_w25q64_link(struct w25q64_driver * self, struct w25q64_oper * oper)
+void bsp_driver_w25q64_link(w25q64_driver_t * drv, w25q64_handle_t * handle)
 {
-    w25q64_assert_null(self);
-    w25q64_assert_null(oper);
+    ASSERT_NULL(drv);
+    ASSERT_NULL(handle);
 
-    if(self == NULL || oper == NULL) {
-        return;
-    }
 
-    self->oper = oper;
+    drv->handle = handle;
 
-    self->pf_init               = w25q64_init;
-    self->pf_read_id            = w25q64_read_id;
-    self->pf_write_enable       = w25q64_write_enable;
-    self->pf_wait_for_write_end = w25q64_wait_for_write_end;
-    self->pf_erase_sector       = w25q64_erase_sector;
-    self->pf_erase_block_32k    = w25q64_erase_block_32k;
-    self->pf_erase_block_64k    = w25q64_erase_block_64k;
-    self->pf_erase_chip         = w25q64_erase_chip;
-    self->pf_write_page         = w25q64_write_page;
-    self->pf_write              = w25q64_write;
-    self->pf_read               = w25q64_read;
+    drv->pf_init               = w25q64_init;
+    drv->pf_read_id            = w25q64_read_id;
+    drv->pf_write_enable       = w25q64_write_enable;
+    drv->pf_wait_for_write_end = w25q64_wait_for_write_end;
+    drv->pf_erase_sector       = w25q64_erase_sector;
+    drv->pf_erase_block_32k    = w25q64_erase_block_32k;
+    drv->pf_erase_block_64k    = w25q64_erase_block_64k;
+    drv->pf_erase_chip         = w25q64_erase_chip;
+    drv->pf_write_page         = w25q64_write_page;
+    drv->pf_write              = w25q64_write;
+    drv->pf_read               = w25q64_read;
 
 }
 
+
+#if W25Q64_DEBUG_ENABLE
+void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q_log_level_t level)
+{
+    printf_cb = cb;
+    log_level = level;
+}
+#endif
 /**********************
  *   STATIC FUNCTIONS
  **********************/
 
 static bool w25q64_init(struct w25q64_driver * self)
 {
-    w25q64_assert_null(self->oper->pf_spi_read_write);
-    w25q64_assert_null(self->oper->pf_spi_cs_high);
-    w25q64_assert_null(self->oper->pf_spi_cs_low);
+    ASSERT_NULL(self->handle->pf_spi_read_write);
+    ASSERT_NULL(self->handle->pf_spi_cs_high);
+    ASSERT_NULL(self->handle->pf_spi_cs_low);
 
-    if( self->oper->pf_spi_read_write   == NULL ||
-        self->oper->pf_spi_cs_high      == NULL ||
-        self->oper->pf_spi_cs_low       == NULL) {
+
+    uint32_t jedec_id = (W25Q64_JEDEC_MF_ID << 16) | (W25Q64_JEDEC_DIE_ID << 8) | W25Q64_JEDEC_PN_ID;
+    uint32_t id = 0;
+
+    self->pf_read_id(self, &id);
+
+    if(id != jedec_id) {
+        LOG_E("w25q64 init failed");
         return false;
     }
 
-    w25q64_dbg("w25q64 init successfully");
+    LOG_I("w25q64 init successfully");
 
     return true;
 }
 
 static void w25q64_read_id(struct w25q64_driver * self, uint32_t * id)
 {
-    uint8_t tx_data[4] = {0x9F, 0, 0, 0};
+    uint8_t tx_data[4] = {W25Q64_READ_DEVICE_ID_CMD, 0, 0, 0};
     uint8_t rx_data[4] = {0};
 
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(tx_data, rx_data, 4);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
+
+    if(true != self->handle->pf_spi_read_write(tx_data, rx_data, 4)) {
+        LOG_E("w25q64 read id failed");
+    }
+
+    self->handle->pf_spi_cs_high();
 
     *id = rx_data[1] << 16 | rx_data[2] << 8 | rx_data[3];
+
+    LOG_I("w25q64 id: 0x%06X", *id);
 }
 
 static void w25q64_write_enable(struct w25q64_driver * self)
 {
-    uint8_t tx_data = 0x06;
+    uint8_t tx_data = W25Q64_WRITE_ENABLE_CMD;
     
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(&tx_data, NULL, 1);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
 
+    if(true != self->handle->pf_spi_read_write(&tx_data, NULL, 1)) {
+        LOG_E("w25q64 write enable failed");
+    }
+
+    self->handle->pf_spi_cs_high();
+}
+
+static void w25q64_write_disable(struct w25q64_driver * self)
+{
+    uint8_t tx_data = W25Q64_WRITE_DISABLE_CMD;
+    
+    self->handle->pf_spi_cs_low();
+
+    if(true != self->handle->pf_spi_read_write(&tx_data, NULL, 1)) {
+        LOG_E("w25q64 write disable failed");
+    }
+
+    self->handle->pf_spi_cs_high();
 }
 
 static void w25q64_wait_for_write_end(struct w25q64_driver * self)
 {
-    uint8_t tx_data[] = {0x05, 0};
+    uint8_t tx_data[] = {W25Q64_READ_STATUS_REG_CMD, 0};
     uint8_t rx_data = 0;
 
-    self->oper->pf_spi_cs_low();
+    self->handle->pf_spi_cs_low();
 
-    self->oper->pf_spi_read_write(&tx_data[0], &rx_data, 1);
+    if(true != self->handle->pf_spi_read_write(&tx_data[0], &rx_data, 1)) {
+        LOG_E("w25q64 wait for write end failed");
+    }
 
     do {
-        self->oper->pf_spi_read_write(&tx_data[1], &rx_data, 1);
+
+        if(true != self->handle->pf_spi_read_write(&tx_data[1], &rx_data, 1)) {
+            LOG_E("w25q64 wait for write end failed");
+        }
+
     } while(rx_data & 0x01);
 
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_high();
 }
 
 static void w25q64_erase_sector(struct w25q64_driver * self, uint32_t sector_address)
@@ -143,13 +216,19 @@ static void w25q64_erase_sector(struct w25q64_driver * self, uint32_t sector_add
 
     w25q64_write_enable(self);
 
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(tx_data, NULL, 4);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
+
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        LOG_E("w25q64 erase sector failed");
+    }
+
+    self->handle->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
 
-    w25q64_dbg("finished");
+    w25q64_write_disable(self);
+
+    LOG_D("w25q64 erase sector 0x%06X", sector_address);
 }
 
 static void w25q64_erase_block_32k(struct w25q64_driver * self, uint32_t block_address)
@@ -160,13 +239,19 @@ static void w25q64_erase_block_32k(struct w25q64_driver * self, uint32_t block_a
 
     w25q64_write_enable(self);
 
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(tx_data, NULL, 4);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
+
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        LOG_E("w25q64 erase block 32k failed");
+    }
+
+    self->handle->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
 
-    w25q64_dbg("finished");
+    w25q64_write_disable(self);
+
+    LOG_D("w25q64 erase block 32k 0x%06X", block_address);
 }
 
 static void w25q64_erase_block_64k(struct w25q64_driver * self, uint32_t block_address)
@@ -177,13 +262,19 @@ static void w25q64_erase_block_64k(struct w25q64_driver * self, uint32_t block_a
 
     w25q64_write_enable(self);
 
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(tx_data, NULL, 4);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
+
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        LOG_E("w25q64 erase block 64k failed");
+    }
+
+    self->handle->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
 
-    w25q64_dbg("finished");
+    w25q64_write_disable(self);
+
+    LOG_D("w25q64 erase block 64k 0x%06X", block_address);
 }
 
 static void w25q64_erase_chip(struct w25q64_driver * self)
@@ -192,13 +283,19 @@ static void w25q64_erase_chip(struct w25q64_driver * self)
     
     w25q64_write_enable(self);
 
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(&tx_data, NULL, 1);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
+
+    if(true != self->handle->pf_spi_read_write(&tx_data, NULL, 1)) {
+        LOG_E("w25q64 erase chip failed");
+    }
+
+    self->handle->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
 
-    w25q64_dbg("finished");
+    w25q64_write_disable(self);
+
+    LOG_D("w25q64 erase chip");
 }
 
 static void w25q64_write_page(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length)
@@ -207,14 +304,23 @@ static void w25q64_write_page(struct w25q64_driver * self, uint32_t page_address
 
     w25q64_write_enable(self);
 
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(tx_data, NULL, 4);
-    self->oper->pf_spi_read_write((uint8_t *)data, NULL, length);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
+
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        LOG_E("w25q64 write page failed");
+    }
+
+    if(true != self->handle->pf_spi_read_write((uint8_t *)data, NULL, length)) {
+        LOG_E("w25q64 write page failed");
+    }
+
+    self->handle->pf_spi_cs_high();
 
     w25q64_wait_for_write_end(self);
 
-    w25q64_dbg("finished");
+    w25q64_write_disable(self);
+
+    LOG_D("w25q64 write page 0x%06X, length: %d", page_address, length);
 }
 
 static void w25q64_write(struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length)
@@ -231,19 +337,25 @@ static void w25q64_write(struct w25q64_driver * self, uint32_t address, const ui
         w25q64_write(self, page_addr + page_size, data + page_remain, length - page_remain);
     }
 
-    w25q64_dbg("finished");
 }
 
 static void w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length)
 {
     uint8_t tx_data[4] = {0x03, (address >> 16) & 0xFF, (address >> 8) & 0xFF, address & 0xFF};
 
-    self->oper->pf_spi_cs_low();
-    self->oper->pf_spi_read_write(tx_data, NULL, 4);
-    self->oper->pf_spi_read_write(NULL, data, length);
-    self->oper->pf_spi_cs_high();
+    self->handle->pf_spi_cs_low();
 
-    w25q64_dbg("finished");
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        LOG_E("w25q64 read failed");
+    }
+
+    if(true != self->handle->pf_spi_read_write(NULL, data, length)) {
+        LOG_E("w25q64 read failed");
+    }
+
+    self->handle->pf_spi_cs_high();
+
+    LOG_D("w25q64 read 0x%06X, length: %d", address, length);
 }
 
 /******************************* (END OF FILE) *********************************/

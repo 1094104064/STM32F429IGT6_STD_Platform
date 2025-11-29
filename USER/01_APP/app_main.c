@@ -87,7 +87,7 @@ static void StartUpTask(void * pvParameters)
 }
 #endif
 
-static void InitFreeRTOS(void)
+static void InitOS(void)
 {
 #ifdef USING_FREERTOS
     static TaskHandle_t StartupTaskHandle = {0};
@@ -103,18 +103,17 @@ void app_main(void)
     debug_init(230400);
     mm_init();
 
-    LedRegister();
-    LcdRegister();
+    InitLED();
+    InitLCD();
+    InitW25Q64();
 
     g_blue_led = wrp_light.find(BLUE_LED_NAME);
     g_yellow_led = wrp_light.find(YELLOW_LED_NAME);
     g_lcd = wrp_display.find(LCD_NAME);
 
 
-
-
     InitMiddleware();
-    InitFreeRTOS();
+    InitOS();
 
     for(;;) {
 

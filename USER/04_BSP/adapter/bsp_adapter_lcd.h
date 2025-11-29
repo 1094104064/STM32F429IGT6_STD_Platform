@@ -32,7 +32,7 @@ extern "C" {
 *  GLOBAL PROTOTYPES
  **********************/
 
-void LcdRegister(void);
+void InitLCD(void);
 
 
 /**********************

@@ -126,7 +126,8 @@ bool bsp_wrapper_touchpad_is_pressed(touchpad_obj_t * obj)
 
 void bsp_wrapper_touchpad_control(touchpad_obj_t * obj, int cmd, void * arg)
 {
-    /* Add control code here if needed in the future */
+    if(obj->ops->pf_control)
+        obj->ops->pf_control(cmd, arg);
 }
 
 void bsp_wrapper_touchpad_get_xy(touchpad_obj_t * obj, uint16_t * x, uint16_t * y, uint8_t read_num)
