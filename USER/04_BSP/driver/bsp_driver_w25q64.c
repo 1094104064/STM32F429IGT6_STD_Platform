@@ -30,7 +30,7 @@
 
 static pf_printf_t printf_cb = NULL;
 
-static w25q_log_level_t log_level = W25Q64_LOG_NONE;
+static w25q64_log_level_t log_level = W25Q64_LOG_NONE;
 
 #define LOG_OUTPUT(level, fmt, ...) do { \
     if (printf_cb && level <= log_level) { \
@@ -67,17 +67,17 @@ static w25q_log_level_t log_level = W25Q64_LOG_NONE;
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static bool w25q64_init(struct w25q64_driver * self);
-static void w25q64_read_id(struct w25q64_driver * self, uint32_t * id);
-static void w25q64_write_enable(struct w25q64_driver * self);
-static void w25q64_wait_for_write_end(struct w25q64_driver * self);
-static void w25q64_erase_sector(struct w25q64_driver * self, uint32_t sector_address);
-static void w25q64_erase_block_32k(struct w25q64_driver * self, uint32_t block_address);
-static void w25q64_erase_block_64k(struct w25q64_driver * self, uint32_t block_address);
-static void w25q64_erase_chip(struct w25q64_driver * self);
-static void w25q64_write_page(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
-static void w25q64_write(struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length);
-static void w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
+static bool w25q64_init                 (struct w25q64_driver * self);
+static void w25q64_read_id              (struct w25q64_driver * self, uint32_t * id);
+static void w25q64_write_enable         (struct w25q64_driver * self);
+static void w25q64_wait_for_write_end   (struct w25q64_driver * self);
+static void w25q64_erase_sector         (struct w25q64_driver * self, uint32_t sector_address);
+static void w25q64_erase_block_32k      (struct w25q64_driver * self, uint32_t block_address);
+static void w25q64_erase_block_64k      (struct w25q64_driver * self, uint32_t block_address);
+static void w25q64_erase_chip           (struct w25q64_driver * self);
+static void w25q64_write_page           (struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
+static void w25q64_write                (struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length);
+static void w25q64_read                 (struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -110,7 +110,7 @@ void bsp_driver_w25q64_link(w25q64_driver_t * drv, w25q64_handle_t * handle)
 
 
 #if W25Q64_DEBUG_ENABLE
-void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q_log_level_t level)
+void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q64_log_level_t level)
 {
     printf_cb = cb;
     log_level = level;

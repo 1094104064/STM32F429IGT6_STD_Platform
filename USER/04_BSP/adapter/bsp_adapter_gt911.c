@@ -92,7 +92,7 @@ static int ops_gt911_init(void)
 
 static bool ops_gt911_is_pressed(void)
 {
-    return gs_gt911_drv.pf_is_pressed(&gs_gt911_drv);
+    return false;
 }
 
 static void ops_gt911_control(int cmd, void * arg)
@@ -117,7 +117,7 @@ static void ops_gt911_control(int cmd, void * arg)
 
 static void ops_gt911_get_xy(uint16_t * x, uint16_t * y, uint8_t read_num)
 {
-    gs_gt911_drv.pf_get_coordinates(&gs_gt911_drv, x, y, read_num);
+
 }
 
 static const touchpad_ops_t gt911_ops = {

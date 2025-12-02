@@ -42,7 +42,7 @@ typedef enum
     W25Q64_LOG_ERROR,
     W25Q64_LOG_INFO,
     W25Q64_LOG_DEBUG,
-} w25q_log_level_t;
+} w25q64_log_level_t;
 
 typedef struct w25q64_handle w25q64_handle_t;
 typedef struct w25q64_driver w25q64_driver_t;
@@ -79,7 +79,7 @@ struct w25q64_driver
 void bsp_driver_w25q64_link(w25q64_driver_t * drv, w25q64_handle_t * handle);
 
 #if W25Q64_DEBUG_ENABLE
-void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q_log_level_t level);
+void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q64_log_level_t level);
 #endif  
 /**********************
  *      MACROS
