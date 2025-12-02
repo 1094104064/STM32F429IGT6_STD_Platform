@@ -2,7 +2,7 @@
   ******************************************************************************
   *
   * @file    bsp_wrapper_display.c
-  * @author  Jamin
+  * @author  
   * @brief   Display wrapper for BSP
   *
   ******************************************************************************
@@ -96,6 +96,11 @@ void bsp_wrapper_display_delete(const char * const name)
     display_obj_t * obj = bsp_wrapper_display_find(name);
     if(obj != NULL) {
         memset(obj, 0, sizeof(display_obj_t));
+
+        for(uint32_t i = obj->ctx.idx; i < DISPLAY_MAX_NUM - 1; i++) {
+            gs_mempool[i] = gs_mempool[i + 1];
+        }
+        gsuc_index--;
     }
 }
 

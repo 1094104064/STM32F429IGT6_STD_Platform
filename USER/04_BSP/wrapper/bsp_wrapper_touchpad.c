@@ -2,7 +2,7 @@
   ******************************************************************************
   *
   * @file    bsp_wrapper_touchpad.c
-  * @author  Jamin
+  * @author  
   * @brief   Touchpad wrapper for BSP
   *
   ******************************************************************************
@@ -81,6 +81,11 @@ void bsp_wrapper_touchpad_obj_delete(const char * const name)
 
     if(obj != NULL) {
         memset(obj, 0, sizeof(touchpad_obj_t));
+
+        for(uint32_t i = obj->ctx.idx; i < TOUCHPAD_MAX_NUM - 1; i++) {
+            gs_mempool[i] = gs_mempool[i + 1];
+        }
+        gsuc_index--;
     }
 }
 

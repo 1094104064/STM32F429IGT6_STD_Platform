@@ -2,7 +2,7 @@
   ******************************************************************************
   *
   * @file    bsp_wrapper_sflash.c
-  * @author  Jamin
+  * @author  
   * @brief   
   *
   ******************************************************************************
@@ -82,6 +82,11 @@ void bsp_wrapper_sflash_delete(const char * const name)
     sflash_obj_t * obj = bsp_wrapper_sflash_find(name);
     if(obj != NULL) {
         memset(obj, 0, sizeof(sflash_obj_t));
+
+        for(uint32_t i = obj->ctx.idx; i < SFLASH_MAX_NUM - 1; i++) {
+            gs_mempool[i] = gs_mempool[i + 1];
+        }
+        gsuc_index--;
     }
 }
 
