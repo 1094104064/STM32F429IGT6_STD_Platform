@@ -26,13 +26,6 @@
  *      DEFINES
  *********************/
 
-struct lw_msg
-{
-    bool        is_used;
-    uint32_t    id;
-    lw_msg_cb_t callback;
-    void *      user_data;
-};
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
@@ -40,13 +33,14 @@ struct lw_msg
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static lw_msg_t * alloc_msg(void);
-static void free_msg(lw_msg_t * msg);
+static lw_msg_global_t * alloc_msg(void);
+static void free_msg(lw_msg_global_t * msg);
 /**********************
  *  STATIC VARIABLES
  **********************/
-static lw_msg_t * msg_queue = NULL;
-static uint32_t msg_queue_items = 0;
+static lw_msg_global_t * gs_mempool = NULL;
+static lw_msg_global_t * free_list = NULL;     
+static lw_msg_global_t * used_list = NULL; 
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
@@ -56,12 +50,20 @@ static uint32_t msg_queue_items = 0;
   * @param  buf_size: Size of the message buffer in bytes.
   * @retval None
   */
-void lw_msg_init(lw_msg_t * msg_buf, uint32_t buf_size)
+void lw_msg_global_init(lw_msg_global_t * msg_buf, uint32_t buf_size)
 {
-    msg_queue = msg_buf;
-    msg_queue_items = buf_size / sizeof(lw_msg_t);
+    gs_mempool = msg_buf;
+    uint32_t msg_count = buf_size / sizeof(lw_msg_global_t);
 
-    memset(msg_queue, 0, buf_size);
+    LW_MSG_MEMSET(gs_mempool, 0, buf_size);
+
+    free_list = NULL;
+    used_list = NULL;
+
+    for(uint32_t i = 0; i < msg_count; i++){
+        gs_mempool[i].next = free_list;
+        free_list = &gs_mempool[i];
+    }
 }
 
 /**
@@ -71,29 +73,29 @@ void lw_msg_init(lw_msg_t * msg_buf, uint32_t buf_size)
   * @param  user_data: User data to be passed to the callback function.
   * @retval Pointer to the allocated message structure if successful, NULL otherwise.
   */
-lw_msg_t * lw_msg_subscribe(uint32_t msg_id, lw_msg_cb_t callback, void * user_data)
+lw_msg_global_t * lw_msg_global_subscribe(uint32_t msg_id, lw_msg_cb_t callback, void * user_data)
 {
-    lw_msg_t * msg = alloc_msg();
-    if(msg == NULL) {
+    lw_msg_global_t * self = alloc_msg();
+    if(self == NULL) {
         return NULL;
     }
-    msg->is_used    = true;
-    msg->id         = msg_id;
-    msg->callback   = callback;
-    msg->user_data  = user_data;
 
-    return msg;
+    self->msg.id = msg_id;
+    self->msg.callback = callback;
+    self->msg.user_data = user_data;
+
+    return self;
 }
 
 /**
   * @brief  Unsubscribe from a message ID.
-  * @param  msg: Pointer to the message structure to unsubscribe from.
+  * @param  self: Pointer to the message structure to unsubscribe from.
   * @retval None
   */
-void lw_msg_unsubscribe(lw_msg_t * msg)
+void lw_msg_global_unsubscribe(lw_msg_global_t * self)
 {
-    if(msg)
-        free_msg(msg);
+    if(self)
+        free_msg(self);
 }
 
 /**
@@ -101,17 +103,25 @@ void lw_msg_unsubscribe(lw_msg_t * msg)
   * @param  msg_id: ID of the message to publish.
   * @retval None
   */
-void lw_msg_publish(uint32_t msg_id)
+void lw_msg_global_publish(uint32_t msg_id)
 {
-    for(uint32_t i = 0; i < msg_queue_items; i++) {
-        if(!msg_queue[i].is_used) {
-            continue;
+    lw_msg_global_t * self = used_list;
+    while(self) {
+        if(self->msg.id == msg_id && self->msg.callback != NULL) {
+            self->msg.callback(&self->msg);
         }
-
-        if(msg_queue[i].id == msg_id && msg_queue[i].callback != NULL) {
-            msg_queue[i].callback(&msg_queue[i]);
-        }
+        self = self->next;
     }
+}
+
+/**
+  * @brief  Initialize a message object.
+  * @param  obj: Pointer to the message object structure.
+  * @retval None
+  */
+void lw_msg_object_init(lw_msg_object_t * obj)
+{
+    LW_MSG_MEMSET(obj, 0, sizeof(lw_msg_object_t));
 }
 
 /**
@@ -122,13 +132,16 @@ void lw_msg_publish(uint32_t msg_id)
   * @param  user_data: User data to be passed to the callback function.
   * @retval None
   */
-void lw_msg_obj_add_event(lw_msg_obj_t * obj, uint32_t msg_id, lw_msg_cb_t callback, void * user_data)
+void lw_msg_object_add_event(lw_msg_object_t * obj, uint32_t msg_id, lw_msg_cb_t callback, void * user_data)
 {
     if(obj->msg_cnt >= LW_OBJ_MAX_MSG_CNT) {
         return;
     }
 
-    obj->msg[obj->msg_cnt] = lw_msg_subscribe(msg_id, callback, user_data);
+    obj->msg[obj->msg_cnt].id = msg_id;
+    obj->msg[obj->msg_cnt].callback = callback;
+    obj->msg[obj->msg_cnt].user_data = user_data;
+
     obj->msg_cnt++;
 }
 
@@ -138,18 +151,20 @@ void lw_msg_obj_add_event(lw_msg_obj_t * obj, uint32_t msg_id, lw_msg_cb_t callb
   * @param  callback: Callback function to be removed.
   * @retval None
   */
-void lw_msg_obj_remove_event(lw_msg_obj_t * obj, lw_msg_cb_t callback)
+void lw_msg_object_remove_event(lw_msg_object_t * obj, lw_msg_cb_t callback)
 {
-    for(uint32_t i = 0; i < obj->msg_cnt; i++) {
-        if(obj->msg[i]->callback == callback) {
-            lw_msg_unsubscribe(obj->msg[i]);
+    uint32_t write_idx = 0;
 
-            for(uint32_t j = i; j < obj->msg_cnt - 1; j++) {
-                obj->msg[j] = obj->msg[j + 1];
+    for (uint32_t read_idx = 0; read_idx < obj->msg_cnt; read_idx++) {
+        if (obj->msg[read_idx].callback != callback) {
+            if (write_idx != read_idx) {
+                obj->msg[write_idx] = obj->msg[read_idx];
             }
-            obj->msg_cnt--;
+            write_idx++;
         }
     }
+
+    obj->msg_cnt = write_idx;
 }
 
 /**
@@ -157,11 +172,9 @@ void lw_msg_obj_remove_event(lw_msg_obj_t * obj, lw_msg_cb_t callback)
   * @param  obj: Pointer to the message object structure.
   * @retval None
   */
-void lw_msg_obj_remove_all_event(lw_msg_obj_t * obj)
+void lw_msg_object_remove_all_event(lw_msg_object_t * obj)
 {
-    for(uint32_t i = 0; i < obj->msg_cnt; i++) {
-        lw_msg_unsubscribe(obj->msg[i]);
-    }
+    LW_MSG_MEMSET(obj->msg, 0, sizeof(lw_msg_t) * LW_OBJ_MAX_MSG_CNT);
     obj->msg_cnt = 0;
 }
 
@@ -171,34 +184,15 @@ void lw_msg_obj_remove_all_event(lw_msg_obj_t * obj)
   * @param  msg_id: ID of the message to send.
   * @retval None
   */
-void lw_msg_obj_send_event(lw_msg_obj_t * obj, uint32_t msg_id)
+void lw_msg_object_send_event(lw_msg_object_t * obj, uint32_t msg_id)
 {
     for(uint32_t i = 0; i < obj->msg_cnt; i++) {
-        if(obj->msg[i]->id == msg_id && obj->msg[i]->callback != NULL) {
-            obj->msg[i]->callback(obj->msg[i]);
+        if(obj->msg[i].id == msg_id && obj->msg[i].callback != NULL) {
+            obj->msg[i].callback(&obj->msg[i]);
         }
     }
 }
 
-/**
-  * @brief  Get the ID of a message.
-  * @param  self: Pointer to the message structure.
-  * @retval ID of the message.
-  */
-uint32_t lw_msg_get_id(lw_msg_t * self)
-{
-    return self->id;
-}
-
-/**
-  * @brief  Get the user data of a message.
-  * @param  self: Pointer to the message structure.
-  * @retval User data of the message.
-  */
-void * lw_msg_get_user_data(lw_msg_t * self)
-{
-    return self->user_data;
-}
 
 /**********************
  *   STATIC FUNCTIONS
@@ -208,28 +202,39 @@ void * lw_msg_get_user_data(lw_msg_t * self)
   * @param  None
   * @retval Pointer to the allocated message structure if successful, NULL otherwise.
   */
-static lw_msg_t * alloc_msg(void)
+static lw_msg_global_t * alloc_msg(void)
 {
-    for(uint32_t i = 0; i < msg_queue_items; i++) {
-        if(msg_queue[i].is_used == false) {
-            msg_queue[i].is_used = true;
-            return &msg_queue[i];
-        }
-    }
-    return NULL;  /*没有空间*/
+    if(!free_list)
+        return NULL;
+
+    lw_msg_global_t * self = free_list;
+    free_list = free_list->next;
+
+    self->next = used_list;
+    used_list = self;
+
+    return self;
 }
 
 /**
   * @brief  Free a message structure.
-  * @param  msg: Pointer to the message structure to free.
+  * @param  self: Pointer to the message structure to free.
   * @retval None
   */
-static void free_msg(lw_msg_t * msg)
+static void free_msg(lw_msg_global_t * self)
 {
-    uint32_t i = msg - msg_queue;
-    if(i < msg_queue_items) {
-        msg_queue[i].is_used = false;
+    lw_msg_global_t ** pp = &used_list;
+
+    while(*pp) {
+        if(*pp == self) {
+            *pp = self->next;   
+            break;
+        }
+        pp = &((*pp)->next);
     }
+
+    self->next = free_list;
+    free_list = self;
 }
 
 

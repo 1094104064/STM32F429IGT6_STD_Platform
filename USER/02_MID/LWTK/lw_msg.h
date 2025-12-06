@@ -25,33 +25,61 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#define LW_MSG_MEMCPY(dst, src, size) memcpy(dst, src, size)
+#define LW_MSG_MEMSET(buf, value, size) memset(buf, value, size)
+#define LW_MSG_MEMMOVE(dst, src, size) memmove(dst, src, size)
+
 #define LW_OBJ_MAX_MSG_CNT   (32)
 /**********************
  *      TYPEDEFS
  **********************/
 typedef struct lw_msg lw_msg_t;
-typedef struct lw_msg_obj lw_msg_obj_t;
+typedef struct lw_msg_object lw_msg_object_t;
+typedef struct lw_msg_global lw_msg_global_t;
 typedef void (* lw_msg_cb_t)(lw_msg_t * self);
 
-struct lw_msg_obj
+struct lw_msg
 {
-    lw_msg_t * msg[LW_OBJ_MAX_MSG_CNT];
+    uint32_t    id;
+    lw_msg_cb_t callback;
+    void *      user_data;
+};
+
+struct lw_msg_object
+{
+    lw_msg_t   msg[LW_OBJ_MAX_MSG_CNT];
     uint32_t   msg_cnt;
+};
+
+struct lw_msg_global
+{
+    lw_msg_t msg;
+    struct lw_msg_global * next;
 };
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void        lw_msg_init                 (lw_msg_t * msg_buf, uint32_t buf_size);
-lw_msg_t *  lw_msg_subscribe            (uint32_t msg_id, lw_msg_cb_t callback, void * user_data);
-void        lw_msg_unsubscribe          (lw_msg_t * msg);
-void        lw_msg_publish              (uint32_t msg_id);
-void        lw_msg_obj_add_event        (lw_msg_obj_t * obj, uint32_t msg_id, lw_msg_cb_t callback, void * user_data);
-void        lw_msg_obj_remove_event     (lw_msg_obj_t * obj, lw_msg_cb_t callback);
-void        lw_msg_obj_remove_all_event (lw_msg_obj_t * obj);
-void        lw_msg_obj_send_event       (lw_msg_obj_t * obj, uint32_t msg_id);
-uint32_t    lw_msg_get_id               (lw_msg_t * self);
-void *      lw_msg_get_user_data        (lw_msg_t * self);
+static inline uint32_t lw_msg_get_id(lw_msg_t * self)
+{
+    return self->id;
+}
+
+static inline void * lw_msg_get_user_data(lw_msg_t * self)
+{
+    return self->user_data;
+}
+
+void lw_msg_global_init(lw_msg_global_t * msg_buf, uint32_t buf_size);
+lw_msg_global_t * lw_msg_global_subscribe(uint32_t msg_id, lw_msg_cb_t callback, void * user_data);
+void lw_msg_global_unsubscribe(lw_msg_global_t * self);
+void lw_msg_global_publish(uint32_t msg_id);
+
+void lw_msg_object_init(lw_msg_object_t * obj);
+void lw_msg_object_add_event(lw_msg_object_t * obj, uint32_t msg_id, lw_msg_cb_t callback, void * user_data);
+void lw_msg_object_remove_event(lw_msg_object_t * obj, lw_msg_cb_t callback);
+void lw_msg_object_remove_all_event(lw_msg_object_t * obj);
+void lw_msg_object_send_event(lw_msg_object_t * obj, uint32_t msg_id);
 /**********************
  *      MACROS
  **********************/
