@@ -103,19 +103,12 @@ int     debug_puts(const char *fmt, ...);
 
 #define pr_user(fmt, ...)           pr_log("[User] [%s:%d] " fmt"\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
-//#if LOG_ENABLE
-//    #define assert_msg(expr, msg)                                           \
-//        do {                                                                \
-//            if((expr)) {                                                    \
-//                pr_fatal("Asserted at expression: %s (%s)", #expr, msg);    \
-//                while(1);                                                   \
-//            }                                                               \
-//        } while(0)                                                          
-//#else
-//    #define assert_msg(expr, msg)  do{}while(0)
-//#endif
+#define ERROR_HANDLER(msg)         do { pr_fatal(msg); while(1); } while(0)
 
-//#define assert_null(p) assert_msg(p == NULL, "NULL pointer")
+#define ASSERT_MSG(expr, msg)        do { if((expr)) { ERROR_HANDLER(msg); } } while(0)
+
+#define ASSERT_NULL(ptr)            ASSERT_MSG((ptr) == NULL, "NULL pointer")
+
 
 
 #ifdef __cplusplus

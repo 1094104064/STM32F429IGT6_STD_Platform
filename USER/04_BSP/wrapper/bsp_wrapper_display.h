@@ -104,6 +104,7 @@ struct display_ctx
 struct display_object {
     const display_ops_t * ops;
     display_ctx_t ctx;
+    display_obj_t * next;
 };
 
 struct display_wrapper 

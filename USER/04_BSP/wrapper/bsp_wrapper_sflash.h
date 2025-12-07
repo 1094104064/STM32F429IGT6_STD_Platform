@@ -67,7 +67,8 @@ struct sflash_ctx
 struct sflash_object
 {
     const sflash_ops_t * ops;
-    sflash_ctx_t ctx;
+    sflash_ctx_t         ctx;
+    sflash_obj_t       * next;
 };
 
 struct sflash_wrapper 

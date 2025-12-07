@@ -45,64 +45,63 @@ const struct sflash_wrapper wrp_sflash = {
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-
+static void mempool_init(void);
+static sflash_obj_t * mempool_alloc(void);
+static void mempool_free(sflash_obj_t * obj);
 /**********************
  *  STATIC VARIABLES
  **********************/
 static sflash_obj_t gs_mempool[SFLASH_MAX_NUM];
-static uint8_t gsuc_index = 0;
+static sflash_obj_t * free_list = NULL;     
+static sflash_obj_t * used_list = NULL; 
+static bool gs_mempool_initialized = false;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 sflash_obj_t * bsp_wrapper_sflash_create(const sflash_ops_t * ops, const char * const name, void * const user_data)
 {
-    if(gsuc_index >= SFLASH_MAX_NUM) {
-        gsuc_index = 0;
+    if(gs_mempool_initialized == false) {
+        mempool_init();
     }
 
     if(ops == NULL) return NULL;
 
     if(bsp_wrapper_sflash_find(name) != NULL) return NULL;
 
-    memset(&gs_mempool[gsuc_index], 0, sizeof(sflash_obj_t));
+    sflash_obj_t * obj = mempool_alloc();
+    if(obj == NULL) return NULL;
 
-    gs_mempool[gsuc_index].ops = ops;
+    memset(&obj->ctx, 0, sizeof(sflash_ctx_t));
 
-    gs_mempool[gsuc_index].ctx.idx       = gsuc_index;
-    gs_mempool[gsuc_index].ctx.user_data = user_data;
-    strncpy(gs_mempool[gsuc_index].ctx.name, name, sizeof(gs_mempool[gsuc_index].ctx.name) - 1);
+    obj->ops= ops;
+    obj->ctx.is_initialized = true;
+    obj->ctx.user_data = user_data;
+    strncpy(obj->ctx.name, name, sizeof(obj->ctx.name) - 1);
 
-    gsuc_index++;
-
-    return &gs_mempool[gsuc_index - 1];
+    return obj;
 }
 
 void bsp_wrapper_sflash_delete(const char * const name)
 {
     sflash_obj_t * obj = bsp_wrapper_sflash_find(name);
-    if(obj != NULL) {
-        memset(obj, 0, sizeof(sflash_obj_t));
 
-        for(uint32_t i = obj->ctx.idx; i < SFLASH_MAX_NUM - 1; i++) {
-            gs_mempool[i] = gs_mempool[i + 1];
-        }
-        gsuc_index--;
+    if(obj != NULL) {
+        mempool_free(obj);
     }
 }
 
 sflash_obj_t * bsp_wrapper_sflash_find(const char * const name)
 {
-    uint8_t i = 0;
+    sflash_obj_t * obj = used_list;
 
-    for(i = 0; i < SFLASH_MAX_NUM; i++) {
-        if(strncmp(gs_mempool[i].ctx.name, name, SFLASH_NAME_MAX_LEN) == 0) {
-            return &gs_mempool[i];
+    while (obj != NULL) {
+        if (strncmp(obj->ctx.name, name, SFLASH_NAME_MAX_LEN) == 0) {
+            return obj;
         }
+        obj = obj->next;
     }
-
     return NULL;
 }
-
 
 bool bsp_wrapper_sflash_init(sflash_obj_t * obj)
 {
@@ -254,9 +253,54 @@ bool bsp_wrapper_sflash_chip_erase(sflash_obj_t * obj)
 }
 
 
+/**********************
+ *   STATIC FUNCTIONS
+ **********************/
+static void mempool_init(void)
+{
+    if (free_list != NULL) return;
 
+    memset(gs_mempool, 0, sizeof(gs_mempool));
 
+    for(uint32_t i = 0; i < SFLASH_MAX_NUM; i++) {
+        gs_mempool[i].next = &gs_mempool[i + 1];
+    }
+    gs_mempool[SFLASH_MAX_NUM - 1].next = NULL;
 
+    free_list = &gs_mempool[0];
+    used_list = NULL;
+    gs_mempool_initialized = true;
+}
+
+static sflash_obj_t * mempool_alloc(void)
+{
+    if(!free_list)
+        return NULL;
+
+    sflash_obj_t * obj = free_list;
+    free_list = free_list->next;
+
+    obj->next = used_list;
+    used_list = obj;
+
+    return obj;
+}
+
+static void mempool_free(sflash_obj_t * obj)
+{
+    sflash_obj_t ** pp = &used_list;
+
+    while(*pp) {
+        if(*pp == obj) {
+            *pp = obj->next;   
+            break;
+        }
+        pp = &((*pp)->next);
+    }
+
+    obj->next = free_list;
+    free_list = obj;
+}
 
 
 

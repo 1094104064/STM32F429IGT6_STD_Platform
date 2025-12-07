@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   *
-  * @file    template.h
+  * @file    os_impl_heap.h
   * @author  
-  * @brief   Header file of template module.
+  * @brief   Header file of os_impl_heap module.
   *
   ******************************************************************************
   **/
   
-#ifndef _TEMPLATE_H
-#define _TEMPLATE_H
+#ifndef _OS_IMPL_HEAP_H
+#define _OS_IMPL_HEAP_H
 
 
 #ifdef __cplusplus
@@ -46,7 +46,7 @@ extern "C" {
 }
 #endif
 
-#endif /*_TEMPLATE_H*/
+#endif /*_OS_IMPL_HEAP_H*/
 
 
 /******************************* (END OF FILE) *********************************/

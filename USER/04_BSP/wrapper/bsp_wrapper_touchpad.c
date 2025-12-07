@@ -42,37 +42,41 @@ const struct touchpad_wrapper wrp_touchpad = {
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-
+static void mempool_init(void);
+static touchpad_obj_t * mempool_alloc(void);
+static void mempool_free(touchpad_obj_t * obj);
 /**********************
  *  STATIC VARIABLES
  **********************/
 static touchpad_obj_t gs_mempool[TOUCHPAD_MAX_NUM];
-static uint8_t gsuc_index = 0;
+static touchpad_obj_t * free_list = NULL;     
+static touchpad_obj_t * used_list = NULL; 
+static bool gs_mempool_initialized = false;
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
 
 touchpad_obj_t * bsp_wrapper_touchpad_obj_create(const touchpad_ops_t * ops, const char * const name, void * const user_data)
 {
-    if(gsuc_index >= TOUCHPAD_MAX_NUM) {
-        gsuc_index = 0;
+    if(gs_mempool_initialized == false) {
+        mempool_init();
     }
 
     if(ops == NULL) return NULL;
 
     if(bsp_wrapper_touchpad_find(name) != NULL) return NULL;
 
-    memset(&gs_mempool[gsuc_index], 0, sizeof(touchpad_obj_t));
+    touchpad_obj_t * obj = mempool_alloc();
+    if(obj == NULL) return NULL;
 
-    gs_mempool[gsuc_index].ops = ops;
+    memset(&obj->ctx, 0, sizeof(touchpad_ctx_t));
 
-    gs_mempool[gsuc_index].ctx.idx       = gsuc_index;
-    gs_mempool[gsuc_index].ctx.user_data = user_data;
-    strncpy(gs_mempool[gsuc_index].ctx.name, name, sizeof(gs_mempool[gsuc_index].ctx.name) - 1);
+    obj->ops= ops;
+    obj->ctx.is_initialized = true;
+    obj->ctx.user_data = user_data;
+    strncpy(obj->ctx.name, name, sizeof(obj->ctx.name) - 1);
 
-    gsuc_index++;
-
-    return &gs_mempool[gsuc_index - 1];
+    return obj;
 }
 
 void bsp_wrapper_touchpad_obj_delete(const char * const name)
@@ -80,25 +84,19 @@ void bsp_wrapper_touchpad_obj_delete(const char * const name)
     touchpad_obj_t * obj = bsp_wrapper_touchpad_find(name);
 
     if(obj != NULL) {
-        memset(obj, 0, sizeof(touchpad_obj_t));
-
-        for(uint32_t i = obj->ctx.idx; i < TOUCHPAD_MAX_NUM - 1; i++) {
-            gs_mempool[i] = gs_mempool[i + 1];
-        }
-        gsuc_index--;
+        mempool_free(obj);
     }
 }
 
 touchpad_obj_t * bsp_wrapper_touchpad_find(const char * const name)
 {
-    uint8_t i = 0;
+    touchpad_obj_t * obj = used_list;
 
-    if(name == NULL) return NULL;
-
-    for(i = 0; i < sizeof(gs_mempool) / sizeof(gs_mempool[0]); i++ ) {
-        if(strncmp(gs_mempool[i].ctx.name, name, TOUCHPAD_NAME_MAX_LEN) == 0) {
-            return &gs_mempool[i];
+    while (obj != NULL) {
+        if (strncmp(obj->ctx.name, name, TOUCHPAD_NAME_MAX_LEN) == 0) {
+            return obj;
         }
+        obj = obj->next;
     }
     return NULL;
 }
@@ -148,6 +146,52 @@ void bsp_wrapper_touchpad_get_xy(touchpad_obj_t * obj, uint16_t * x, uint16_t * 
 /**********************
  *   STATIC FUNCTIONS
  **********************/
+static void mempool_init(void)
+{
+    if (free_list != NULL) return;
+
+    memset(gs_mempool, 0, sizeof(gs_mempool));
+
+    for(uint32_t i = 0; i < TOUCHPAD_MAX_NUM; i++) {
+        gs_mempool[i].next = &gs_mempool[i + 1];
+    }
+    gs_mempool[TOUCHPAD_MAX_NUM - 1].next = NULL;
+
+    free_list = &gs_mempool[0];
+    used_list = NULL;
+    gs_mempool_initialized = true;
+}
+
+static touchpad_obj_t * mempool_alloc(void)
+{
+    if(!free_list)
+        return NULL;
+
+    touchpad_obj_t * obj = free_list;
+    free_list = free_list->next;
+
+    obj->next = used_list;
+    used_list = obj;
+
+    return obj;
+}
+
+static void mempool_free(touchpad_obj_t * obj)
+{
+    touchpad_obj_t ** pp = &used_list;
+
+    while(*pp) {
+        if(*pp == obj) {
+            *pp = obj->next;   
+            break;
+        }
+        pp = &((*pp)->next);
+    }
+
+    obj->next = free_list;
+    free_list = obj;
+}
+
 
 
 /******************************* (END OF FILE) *********************************/

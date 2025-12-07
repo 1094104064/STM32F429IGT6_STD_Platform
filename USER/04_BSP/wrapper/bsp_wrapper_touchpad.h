@@ -53,6 +53,7 @@ struct touchpad_ctx
 struct touchpad_object {
     const touchpad_ops_t * ops;
     touchpad_ctx_t         ctx;
+    touchpad_obj_t       * next;
 };
 
 struct touchpad_wrapper 

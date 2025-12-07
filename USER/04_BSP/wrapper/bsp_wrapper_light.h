@@ -43,15 +43,15 @@ struct light_ops
 
 struct light_ctx
 {
-    uint8_t         idx;
-    void *          user_data;
     char            name[LIGHT_NAME_MAX_LEN];
     bool            is_initialized;
+    void *          user_data;
 };
 
 struct light_object {
     const light_ops_t * ops;
     light_ctx_t         ctx;
+    light_obj_t      * next;
 };
 
 
