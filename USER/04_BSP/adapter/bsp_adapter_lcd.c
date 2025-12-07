@@ -56,9 +56,9 @@ static int ops_lcd_init(void)
         .pf_backlight_off       = bsp_linker_lcd_backlight_off,
         .pf_backlight_set       = bsp_linker_lcd_backlight_set,
         .pf_put_pixel           = bsp_linker_lcd_put_pixel,
-        .pf_fill_rect           = bsp_linker_lcd_fill_rectangle,
+        .pf_fill_area           = bsp_linker_lcd_fill_rectangle,
         .pf_fill_screen         = bsp_linker_lcd_fill_screen,
-        .pf_copy_buffer         = bsp_linker_lcd_copy_buffer,
+        .pf_flush               = bsp_linker_lcd_copy_buffer,
         .pf_switch_framebuffer  = bsp_linker_lcd_switch_layer,
         .pf_get_width           = bsp_linker_lcd_get_width,
         .pf_get_height          = bsp_linker_lcd_get_height,
@@ -91,7 +91,7 @@ static void ops_lcd_put_pixel(uint16_t x, uint16_t y, uint32_t color)
 
 static void ops_lcd_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
-    gs_lcd_driver.pf_fill_rect(&gs_lcd_driver, x, y, width, height, color);
+    gs_lcd_driver.pf_fill_area(&gs_lcd_driver, x, y, width, height, color);
 }
 
 static void ops_lcd_fill_screen(uint32_t color)
@@ -101,7 +101,7 @@ static void ops_lcd_fill_screen(uint32_t color)
 
 static void ops_lcd_copy_buffer(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
 {
-    gs_lcd_driver.pf_copy_buffer(&gs_lcd_driver, x, y, width, height, data);
+    gs_lcd_driver.pf_flush(&gs_lcd_driver, x, y, width, height, data);
 }
 
 static void ops_lcd_switch_framebuffer(uint8_t layerx)
@@ -126,13 +126,16 @@ static uint32_t ops_lcd_get_framebuffer(void)
 
 static const display_ops_t lcd_ops = {
     .pf_init                = ops_lcd_init,
+
+    .pf_put_pixel           = ops_lcd_put_pixel,
+    .pf_fill_area           = ops_lcd_fill_rect,
+    .pf_fill_screen         = ops_lcd_fill_screen,
+    .pf_flush               = ops_lcd_copy_buffer,
+    .pf_switch_framebuffer  = ops_lcd_switch_framebuffer,
+
     .pf_backlight_on        = ops_lcd_backlight_on,
     .pf_backlight_off       = ops_lcd_backlight_off,
-    .pf_put_pixel           = ops_lcd_put_pixel,
-    .pf_fill_rect           = ops_lcd_fill_rect,
-    .pf_fill_screen         = ops_lcd_fill_screen,
-    .pf_copy_buffer         = ops_lcd_copy_buffer,
-    .pf_switch_framebuffer  = ops_lcd_switch_framebuffer,
+
     .pf_get_width           = ops_lcd_get_width,
     .pf_get_height          = ops_lcd_get_height,
     .pf_get_framebuffer     = ops_lcd_get_framebuffer,

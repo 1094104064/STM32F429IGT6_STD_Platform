@@ -135,9 +135,9 @@ static const display_ops_t st7735_ops = {
     .pf_backlight_off       = ops_st7735_backlight_off,
     .pf_backlight_set       = ops_st7735_backlight_set,
     .pf_put_pixel           = ops_st7735_put_pixel,
-    .pf_fill_rect           = ops_st7735_fill_rect,
+    .pf_fill_area           = ops_st7735_fill_rect,
     .pf_fill_screen         = ops_st7735_fill_screen,
-    .pf_copy_buffer         = ops_st7735_copy_buffer,
+    .pf_flush               = ops_st7735_copy_buffer,
     .pf_get_width           = ops_st7735_get_width,
     .pf_get_height          = ops_st7735_get_height,
 };

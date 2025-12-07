@@ -67,15 +67,15 @@ static lcd_log_level_t log_level = LCD_LOG_NONE;
  *  STATIC PROTOTYPES
  **********************/
 static bool lcd_init                (lcd_driver_t * self);
+static void lcd_put_pixel           (lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color);
+static void lcd_fill_area           (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
+static void lcd_fill_screen         (lcd_driver_t * self, uint32_t color);
+static void lcd_flush         (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+static void lcd_switch_framebuffer  (lcd_driver_t * self, uint8_t layerx);
+static void lcd_set_orientation     (lcd_driver_t * self, uint16_t rotated);
 static void lcd_backlight_on        (lcd_driver_t * self);
 static void lcd_backlight_off       (lcd_driver_t * self);
 static void lcd_backlight_set       (lcd_driver_t * self, uint8_t brightness);
-static void lcd_put_pixel           (lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color);
-static void lcd_fill_rect           (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
-static void lcd_fill_screen         (lcd_driver_t * self, uint32_t color);
-static void lcd_copy_buffer         (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
-static void lcd_switch_framebuffer  (lcd_driver_t * self, uint8_t layerx);
-static void lcd_set_orientation     (lcd_driver_t * self, uint16_t rotated);
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -95,11 +95,11 @@ void bsp_driver_lcd_link(lcd_driver_t * drv, const lcd_handle_t * handle)
     drv->pf_backlight_off       = lcd_backlight_off;
     drv->pf_backlight_set       = lcd_backlight_set;
     drv->pf_put_pixel           = lcd_put_pixel;
-    drv->pf_fill_rect           = lcd_fill_rect;
+    drv->pf_fill_area           = lcd_fill_area;
     drv->pf_fill_screen         = lcd_fill_screen;
-    drv->pf_copy_buffer         = lcd_copy_buffer;
+    drv->pf_flush               = lcd_flush;
     drv->pf_switch_framebuffer  = lcd_switch_framebuffer;
-    drv->pf_set_rotated         = lcd_set_orientation;
+    drv->pf_set_orientation     = lcd_set_orientation;
 }
 
 #if LCD_DEBUG_ENABLE
@@ -113,9 +113,21 @@ void bsp_driver_lcd_log_init(pf_printf_t cb, lcd_log_level_t level)
  *   STATIC FUNCTIONS
  **********************/
 
-
 static bool lcd_init(lcd_driver_t * self)
 {
+    ASSERT_NULL(self->handle->pf_hardware_init);
+    ASSERT_NULL(self->handle->pf_backlight_on);
+    ASSERT_NULL(self->handle->pf_backlight_off);
+    ASSERT_NULL(self->handle->pf_backlight_set);
+    ASSERT_NULL(self->handle->pf_put_pixel);
+    ASSERT_NULL(self->handle->pf_fill_area);
+    ASSERT_NULL(self->handle->pf_fill_screen);
+    ASSERT_NULL(self->handle->pf_flush);
+    ASSERT_NULL(self->handle->pf_switch_framebuffer);
+    ASSERT_NULL(self->handle->pf_get_width);
+    ASSERT_NULL(self->handle->pf_get_height);
+    ASSERT_NULL(self->handle->pf_get_framebuffer);
+
     self->handle->pf_hardware_init();
 
     self->width         = self->handle->pf_get_width();
@@ -125,6 +137,39 @@ static bool lcd_init(lcd_driver_t * self)
 
     return true;
 }
+
+
+static void lcd_put_pixel(lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color)
+{
+    self->handle->pf_put_pixel(x, y, color, self->rotated);
+}
+
+static void lcd_fill_area(lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+{
+    self->handle->pf_fill_area(x, y, width, height, color);
+}
+
+static void lcd_fill_screen(lcd_driver_t * self, uint32_t color)
+{
+    self->handle->pf_fill_screen(color);
+}
+
+static void lcd_flush(lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
+{
+    self->handle->pf_flush(x, y, width, height, data);
+}
+
+static void lcd_switch_framebuffer(lcd_driver_t * self, uint8_t layerx)
+{
+    self->handle->pf_switch_framebuffer(layerx);
+}
+
+
+static void lcd_set_orientation(lcd_driver_t * self, uint16_t rotated)
+{
+    self->rotated = rotated;
+}
+
 
 static void lcd_backlight_on(lcd_driver_t * self)
 {
@@ -140,39 +185,6 @@ static void lcd_backlight_set(lcd_driver_t * self, uint8_t brightness)
 {
     self->handle->pf_backlight_set(brightness);
 }
-
-static void lcd_put_pixel(lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color)
-{
-    self->handle->pf_put_pixel(x, y, color, self->rotated);
-}
-
-static void lcd_fill_rect(lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
-{
-    self->handle->pf_fill_rect(x, y, width, height, color);
-}
-
-static void lcd_fill_screen(lcd_driver_t * self, uint32_t color)
-{
-    self->handle->pf_fill_screen(color);
-}
-
-static void lcd_copy_buffer(lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data)
-{
-    self->handle->pf_copy_buffer(x, y, width, height, data);
-}
-
-static void lcd_switch_framebuffer(lcd_driver_t * self, uint8_t layerx)
-{
-    self->handle->pf_switch_framebuffer(layerx);
-}
-
-
-static void lcd_set_orientation(lcd_driver_t * self, uint16_t rotated)
-{
-    self->rotated = rotated;
-}
-
-
 
 /******************************* (END OF FILE) *********************************/
 

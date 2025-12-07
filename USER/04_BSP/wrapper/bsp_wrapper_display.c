@@ -36,13 +36,8 @@ const struct display_wrapper wrp_display =
     .find               = bsp_wrapper_display_find,
 
     .init               = bsp_wrapper_display_init,
-    .backlight_on       = bsp_wrapper_display_backlight_on,
-    .backlight_off      = bsp_wrapper_display_backlight_off,
-    .backlight_set      = bsp_wrapper_display_backlight_set,
+
     .draw_pixel         = bsp_wrapper_display_draw_pixel,
-    .fill_rect          = bsp_wrapper_display_fill_rect,
-    .fill_screen        = bsp_wrapper_display_fill_screen,
-    .draw_image         = bsp_wrapper_display_draw_image,
     .draw_line          = bsp_wrapper_display_draw_line,
     .draw_circle        = bsp_wrapper_display_draw_circle,
     .draw_triangle      = bsp_wrapper_display_draw_triangle,
@@ -50,9 +45,18 @@ const struct display_wrapper wrp_display =
     .draw_arc           = bsp_wrapper_display_draw_arc,
     .draw_ellipse       = bsp_wrapper_display_draw_ellipse,
     .switch_framebuffer = bsp_wrapper_display_switch_framebuffer,
+    .draw_full_area     = bsp_wrapper_display_draw_full_area,
+    .draw_full_screen   = bsp_wrapper_display_draw_full_screen,
+    .draw_bitmap        = bsp_wrapper_display_draw_bitmap,
+
     .get_width          = bsp_wrapper_display_get_width,
     .get_height         = bsp_wrapper_display_get_height,
     .get_framebuffer    = bsp_wrapper_display_get_framebuffer,
+
+    .backlight_on       = bsp_wrapper_display_backlight_on,
+    .backlight_off      = bsp_wrapper_display_backlight_off,
+    .backlight_set      = bsp_wrapper_display_backlight_set,
+
     .draw_grad_rgb565   = bsp_wrapper_display_draw_grad_rgb565,
 };
 /**********************
@@ -134,34 +138,10 @@ bool bsp_wrapper_display_init(display_obj_t * obj)
     return true;
 }
 
-void bsp_wrapper_display_backlight_on(display_obj_t * obj)
-{
-    if(obj->ops->pf_backlight_on)
-        obj->ops->pf_backlight_on();
-}
-
-void bsp_wrapper_display_backlight_off(display_obj_t * obj)
-{
-    if(obj->ops->pf_backlight_off)
-        obj->ops->pf_backlight_off();
-}
-
-void bsp_wrapper_display_backlight_set(display_obj_t * obj, uint8_t brightness)
-{
-    if(obj->ops->pf_backlight_set)
-        obj->ops->pf_backlight_set(brightness);
-}
-
 void bsp_wrapper_display_draw_pixel(display_obj_t * obj, uint16_t x, uint16_t y, uint32_t color)
 {
     if(obj->ops->pf_put_pixel)
         obj->ops->pf_put_pixel(x, y, color);
-}
-
-void bsp_wrapper_display_fill_rect(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
-{
-    if(obj->ops->pf_fill_rect)
-        obj->ops->pf_fill_rect(x, y, width, height, color);
 }
 
 void bsp_wrapper_display_draw_line(display_obj_t * obj, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint32_t color)
@@ -341,16 +321,22 @@ void bsp_wrapper_display_draw_ellipse(display_obj_t * obj, int32_t x, int32_t y,
   }
 }
 
-void bsp_wrapper_display_fill_screen(display_obj_t * obj, uint32_t color)
+void bsp_wrapper_display_draw_full_area(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+{
+    if(obj->ops->pf_fill_area)
+        obj->ops->pf_fill_area(x, y, width, height, color);
+}
+
+void bsp_wrapper_display_draw_full_screen(display_obj_t * obj, uint32_t color)
 {
     if( obj->ops->pf_fill_screen)
         obj->ops->pf_fill_screen(color);
 }
 
-void bsp_wrapper_display_draw_image(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * image_data)
+void bsp_wrapper_display_draw_bitmap(display_obj_t * obj, uint16_t x, uint16_t y, uint16_t width, uint16_t height, void * data)
 {
-    if(obj->ops->pf_copy_buffer)
-        obj->ops->pf_copy_buffer(x, y, width, height, image_data);
+    if(obj->ops->pf_flush)
+        obj->ops->pf_flush(x, y, width, height, data);
 }
 
 void bsp_wrapper_display_switch_framebuffer(display_obj_t * obj, uint8_t layerx)
@@ -380,6 +366,23 @@ uint32_t bsp_wrapper_display_get_framebuffer(display_obj_t * obj)
     return 0;
 }
 
+void bsp_wrapper_display_backlight_on(display_obj_t * obj)
+{
+    if(obj->ops->pf_backlight_on)
+        obj->ops->pf_backlight_on();
+}
+
+void bsp_wrapper_display_backlight_off(display_obj_t * obj)
+{
+    if(obj->ops->pf_backlight_off)
+        obj->ops->pf_backlight_off();
+}
+
+void bsp_wrapper_display_backlight_set(display_obj_t * obj, uint8_t brightness)
+{
+    if(obj->ops->pf_backlight_set)
+        obj->ops->pf_backlight_set(brightness);
+}
 
 void bsp_wrapper_display_draw_grad_rgb565(display_obj_t * obj, uint16_t grid_size)
 {
