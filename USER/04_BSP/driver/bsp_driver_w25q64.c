@@ -122,6 +122,7 @@ void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q64_log_level_t level)
 
 static bool w25q64_init(struct w25q64_driver * self)
 {
+    ASSERT_NULL(self->handle->pf_spi_init);
     ASSERT_NULL(self->handle->pf_spi_read_write);
     ASSERT_NULL(self->handle->pf_spi_cs_high);
     ASSERT_NULL(self->handle->pf_spi_cs_low);

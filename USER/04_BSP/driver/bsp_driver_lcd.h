@@ -27,25 +27,20 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-
-#define LCD_DEBUG_ENABLE 0
-
-#if LCD_DEBUG_ENABLE
-
-    #define lcd_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-    #define lcd_assert_null(param)                                                            \
-            do {                                                                              \
-                if(param == NULL) { lcd_dbg("NULL pointer: %s", #param); while(1); }          \
-            } while (0)    
-#else
-    #define lcd_dbg(fmt, ...)             do {} while (0)
-    #define lcd_assert_null(param)        do {} while (0)
-#endif
+#define LCD_DEBUG_ENABLE 1
 
 /**********************
  *      TYPEDEFS
  **********************/
+typedef int (* pf_printf_t)(const char* format, ...);
 
+typedef enum 
+{
+    LCD_LOG_NONE = 0,
+    LCD_LOG_ERROR,
+    LCD_LOG_INFO,
+    LCD_LOG_DEBUG,
+} lcd_log_level_t;
 
 typedef struct lcd_handle lcd_handle_t;
 typedef struct lcd_driver lcd_driver_t;
@@ -53,7 +48,7 @@ typedef struct lcd_driver lcd_driver_t;
 
 struct lcd_handle
 {
-    void     (* pf_hal_init)            (void);
+    void     (* pf_hardware_init)       (void);
     void     (* pf_backlight_on)        (void);
     void     (* pf_backlight_off)       (void);
     void     (* pf_backlight_set)       (uint8_t brightness);
@@ -95,6 +90,10 @@ struct lcd_driver
 *  GLOBAL PROTOTYPES
  **********************/
 void bsp_driver_lcd_link(lcd_driver_t * drv, const lcd_handle_t * handle);
+
+#if LCD_DEBUG_ENABLE
+void bsp_driver_lcd_log_init(pf_printf_t cb, lcd_log_level_t level);
+#endif  
 /**********************
  *      MACROS
  **********************/

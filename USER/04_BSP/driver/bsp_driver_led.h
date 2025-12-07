@@ -27,35 +27,28 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-#define LED_DEBUG_ENABLE 0
 
-#if LED_DEBUG_ENABLE
-
-    #define led_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-
-    #define led_assert_null(param)                                                              \
-            do {                                                                                \
-                if(param == NULL) { led_dbg("NULL pointer: %s", #param); while(1); }            \
-            } while (0)    
-#else
-    #define led_dbg(fmt, ...)             do {} while (0)
-    #define led_assert_null(param)        do {} while (0)
-#endif
-
-
-
-
+#define LED_DEBUG_ENABLE 1
 
 /**********************
  *      TYPEDEFS
  **********************/
+typedef int (* pf_printf_t)(const char* format, ...);
+
+typedef enum 
+{
+    LED_LOG_NONE = 0,
+    LED_LOG_ERROR,
+    LED_LOG_INFO,
+    LED_LOG_DEBUG,
+} led_log_level_t;
 
 typedef struct led_handle led_handle_t;
 typedef struct led_driver led_driver_t;
 
 struct led_handle 
 {
-    void (* pf_hal_init)(void);
+    void (* pf_gpio_init)(void);
     void (* pf_on)  (void);
     void (* pf_off) (void);
 };
@@ -73,6 +66,10 @@ struct led_driver
 *  GLOBAL PROTOTYPES
  **********************/
 void bsp_driver_led_link(led_driver_t * drv, const led_handle_t * handle);
+
+#if LED_DEBUG_ENABLE
+void bsp_driver_led_log_init(pf_printf_t cb, led_log_level_t level);
+#endif  
 /**********************
  *      MACROS
  **********************/

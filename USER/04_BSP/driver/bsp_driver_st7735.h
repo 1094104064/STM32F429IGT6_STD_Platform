@@ -27,31 +27,27 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
-#define ST7735_DEBUG_ENABLE 0
-
-#if ST7735_DEBUG_ENABLE
-
-    #define st7735_dbg(fmt, ...)         printf("%s [%d] : " fmt "\r\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-
-    #define st7735_assert_null(param)                                                           \
-            do {                                                                                \
-                if(param == NULL) { st7735_dbg("NULL pointer: %s", #param); while(1); }         \
-            } while (0)    
-#else
-    #define st7735_dbg(fmt, ...)             do {} while (0)
-    #define st7735_assert_null(param)        do {} while (0)
-#endif
-
+#define ST7735_DEBUG_ENABLE 1
 
 /**********************
  *      TYPEDEFS
  **********************/
+typedef int (* pf_printf_t)(const char* format, ...);
+
+typedef enum 
+{
+    ST7735_LOG_NONE = 0,
+    ST7735_LOG_ERROR,
+    ST7735_LOG_INFO,
+    ST7735_LOG_DEBUG,
+} st7735_log_level_t;
 
 typedef struct st7735_handle st7735_handle_t;
 typedef struct st7735_driver st7735_driver_t;
 
 struct st7735_handle
 {
+    void (* pf_spi_init)                (void);
     void (* pf_spi_transmit_8bit)       (uint8_t data);
     void (* pf_spi_transmit_16bit)      (uint16_t data, uint32_t size);
     void (* pf_spi_dma_transmit_8bit)   (uint8_t * buf, uint32_t size);
@@ -84,27 +80,32 @@ struct st7735_driver
     uint16_t    height;
     uint8_t     rotated;
 
-    void (* pf_write_data)      (struct st7735_driver * self, uint8_t byte);
-    void (* pf_write_command)   (struct st7735_driver * self, uint8_t cmd);
     bool (* pf_init)            (struct st7735_driver * self);
+    void (* pf_reset)           (struct st7735_driver * self);
+    void (* set_sleep)          (struct st7735_driver * self, bool enable);
+    void (* set_display)        (struct st7735_driver * self, bool enable);
+    void (* pf_set_orientation) (struct st7735_driver * self, uint16_t rotated);
+    void (* pf_read_id)         (struct st7735_driver * self, uint8_t * id);
     void (* pf_set_cursor)      (struct st7735_driver * self, uint16_t x, uint16_t y);
     void (* pf_set_window)      (struct st7735_driver * self, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
     void (* pf_put_pixel)       (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t color);
-    void (* pf_fill_rect)       (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+    void (* pf_fill_area)       (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
     void (* pf_fill_screen)     (struct st7735_driver * self, uint16_t color);
-    void (* pf_copy_buffer)     (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t * data);
+    void (* pf_flush)           (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, void * data);
 
     void (* pf_backlight_on)    (struct st7735_driver * self);
     void (* pf_backlight_off)   (struct st7735_driver * self);
     void (* pf_backlight_set)   (struct st7735_driver * self, uint8_t brightness);
-
-    void (* pf_rotated_set)     (struct st7735_driver * self, uint16_t rotated);
 };
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
 void bsp_driver_st7735_link(st7735_driver_t * drv, const st7735_handle_t * handle);
+
+#if ST7735_DEBUG_ENABLE
+void bsp_driver_st7735_log_init(pf_printf_t cb, st7735_log_level_t level);
+#endif  
 /**********************
  *      MACROS
  **********************/

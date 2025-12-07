@@ -2,7 +2,7 @@
   ******************************************************************************
   *
   * @file    bsp_driver_lcd.c
-  * @author  Jamin
+  * @author  
   * @brief   
   *
   ******************************************************************************
@@ -25,7 +25,40 @@
 /*********************
  *      DEFINES
  *********************/
+#if LCD_DEBUG_ENABLE
 
+static pf_printf_t printf_cb = NULL;
+
+static lcd_log_level_t log_level = LCD_LOG_NONE;
+
+#define LOG_OUTPUT(level, fmt, ...) do { \
+    if (printf_cb && level <= log_level) { \
+        printf_cb("[LCD] " fmt, ##__VA_ARGS__); \
+    } \
+} while(0)
+
+#define LOG_E(fmt, ...) LOG_OUTPUT(LCD_LOG_ERROR, "E: " fmt"\r\n", ##__VA_ARGS__)    /* 用于输出详细的调试信息 */
+#define LOG_I(fmt, ...) LOG_OUTPUT(LCD_LOG_INFO,  "I: " fmt"\r\n", ##__VA_ARGS__)    /* 用于记录重要的操作节点或状态变化 */
+#define LOG_D(fmt, ...) LOG_OUTPUT(LCD_LOG_DEBUG, "D: " fmt"\r\n", ##__VA_ARGS__)    /* 用于表示发生了错误 */
+
+
+#define ASSERT_NULL(param)                                                          \
+        do {                                                                        \
+            if(param == NULL) { LOG_E("NULL pointer: \r\n", #param); while(1); }    \
+        } while (0)
+
+#else
+
+#define LOG_E(fmt, ...)
+#define LOG_I(fmt, ...)
+#define LOG_D(fmt, ...)
+
+#define ASSERT_NULL(param)                                                          \
+        do {                                                                        \
+            if(param == NULL) { while(1); }                                         \
+        } while (0)
+
+#endif
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
@@ -42,7 +75,7 @@ static void lcd_fill_rect           (lcd_driver_t * self, uint16_t x, uint16_t y
 static void lcd_fill_screen         (lcd_driver_t * self, uint32_t color);
 static void lcd_copy_buffer         (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
 static void lcd_switch_framebuffer  (lcd_driver_t * self, uint8_t layerx);
-static void lcd_set_rotated         (lcd_driver_t * self, uint16_t rotated);
+static void lcd_set_orientation     (lcd_driver_t * self, uint16_t rotated);
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -52,12 +85,8 @@ static void lcd_set_rotated         (lcd_driver_t * self, uint16_t rotated);
  **********************/ 
 void bsp_driver_lcd_link(lcd_driver_t * drv, const lcd_handle_t * handle)
 {
-    lcd_assert_null(drv);
-    lcd_assert_null(handle);
-
-    if (drv == NULL || handle == NULL) {
-        return;
-    }
+    ASSERT_NULL(drv);
+    ASSERT_NULL(handle);
 
     drv->handle = handle;
 
@@ -70,8 +99,16 @@ void bsp_driver_lcd_link(lcd_driver_t * drv, const lcd_handle_t * handle)
     drv->pf_fill_screen         = lcd_fill_screen;
     drv->pf_copy_buffer         = lcd_copy_buffer;
     drv->pf_switch_framebuffer  = lcd_switch_framebuffer;
-    drv->pf_set_rotated         = lcd_set_rotated;
+    drv->pf_set_rotated         = lcd_set_orientation;
 }
+
+#if LCD_DEBUG_ENABLE
+void bsp_driver_lcd_log_init(pf_printf_t cb, lcd_log_level_t level)
+{
+    printf_cb = cb;
+    log_level = level;
+}
+#endif
 /**********************
  *   STATIC FUNCTIONS
  **********************/
@@ -79,23 +116,7 @@ void bsp_driver_lcd_link(lcd_driver_t * drv, const lcd_handle_t * handle)
 
 static bool lcd_init(lcd_driver_t * self)
 {
-
-    if( self->handle->pf_hal_init       == NULL || 
-        self->handle->pf_backlight_on   == NULL ||
-        self->handle->pf_backlight_off  == NULL ||
-        self->handle->pf_backlight_set  == NULL ||
-        self->handle->pf_put_pixel      == NULL ||
-        self->handle->pf_fill_rect      == NULL ||
-        self->handle->pf_fill_screen    == NULL ||
-        self->handle->pf_copy_buffer    == NULL ||
-        self->handle->pf_get_width      == NULL ||
-        self->handle->pf_get_height     == NULL ||
-        self->handle->pf_get_framebuffer== NULL )
-
-        return false;
-
-    self->handle->pf_hal_init();
-
+    self->handle->pf_hardware_init();
 
     self->width         = self->handle->pf_get_width();
     self->height        = self->handle->pf_get_height();
@@ -146,7 +167,7 @@ static void lcd_switch_framebuffer(lcd_driver_t * self, uint8_t layerx)
 }
 
 
-static void lcd_set_rotated(lcd_driver_t * self, uint16_t rotated)
+static void lcd_set_orientation(lcd_driver_t * self, uint16_t rotated)
 {
     self->rotated = rotated;
 }

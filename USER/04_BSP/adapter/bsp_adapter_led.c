@@ -56,7 +56,7 @@ static led_driver_t gs_led2_driver;
 static int ops_led1_init(void)
 {
     static const led_handle_t blue_led_handle = {
-        .pf_hal_init    = bsp_linker_led1_init,
+        .pf_gpio_init   = bsp_linker_led1_init,
         .pf_on          = bsp_linker_led1_on,
         .pf_off         = bsp_linker_led1_off,
     };
@@ -90,7 +90,7 @@ static const light_ops_t blue_led_ops = {
 static int ops_led2_init(void)
 {
    static const led_handle_t yellow_led_handle = {
-       .pf_hal_init    = bsp_linker_led2_init,
+       .pf_gpio_init   = bsp_linker_led2_init,
        .pf_on          = bsp_linker_led2_on,
        .pf_off         = bsp_linker_led2_off,
    };

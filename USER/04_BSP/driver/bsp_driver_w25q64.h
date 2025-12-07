@@ -49,6 +49,7 @@ typedef struct w25q64_driver w25q64_driver_t;
 
 struct w25q64_handle 
 {
+    void (* pf_spi_init)(void);
     bool (* pf_spi_read_write)(uint8_t * src, uint8_t * dst, uint32_t size);
     void (* pf_spi_cs_low)(void);
     void (* pf_spi_cs_high)(void);

@@ -51,7 +51,7 @@ static lcd_driver_t gs_lcd_driver;
 static int ops_lcd_init(void)
 {
     static const lcd_handle_t simple_panel_handle = {
-        .pf_hal_init            = bsp_linker_lcd_simple_panel_init,
+        .pf_hardware_init       = bsp_linker_lcd_simple_panel_init,
         .pf_backlight_on        = bsp_linker_lcd_backlight_on,
         .pf_backlight_off       = bsp_linker_lcd_backlight_off,
         .pf_backlight_set       = bsp_linker_lcd_backlight_set,
