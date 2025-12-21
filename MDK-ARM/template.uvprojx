@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F429_439xx,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\02_MID\tlsf;..\USER\02_MID\LWTK;..\USER\03_OS\osal;..\USER\03_OS\implementation;..\USER\03_OS\common;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\linker;..\USER\05_HAL\EDF\widget;..\USER\05_HAL\EDF\board\st;..\USER\05_HAL\EDF\common;..\USER\05_HAL\EDF\core;..\USER\05_HAL\EDF\port;..\USER\UTILITIES</IncludePath>
+              <IncludePath>..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\Libraries\CMSIS\Include;..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\Core\inc;..\USER\01_APP;..\USER\02_MID\EasyLogger\inc;..\USER\02_MID\LVGL;..\USER\02_MID\LVGL\src;..\USER\02_MID\LVGL\examples\porting;..\USER\02_MID\LVGL\demos;..\USER\02_MID\tlsf;..\USER\02_MID\LWTK;..\USER\03_OS\osal;..\USER\03_OS\implementation;..\USER\03_OS\common;..\USER\03_OS\FreeRTOS\include;..\USER\03_OS\FreeRTOS\portable\RVDS\ARM_CM4F;..\USER\04_BSP\wrapper;..\USER\04_BSP\adapter;..\USER\04_BSP\driver;..\USER\04_BSP\linker;..\USER\05_HAL\EDF\widget;..\USER\05_HAL\EDF\board\st;..\USER\05_HAL\EDF\common;..\USER\05_HAL\EDF\core;..\USER\05_HAL\EDF\port;..\USER\UTILITIES;..\USER\02_MID\LibCRC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2467,6 +2467,51 @@
               <FileName>stm32f4xx_wwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_wwdg.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>02_MID/LibCRC</GroupName>
+          <Files>
+            <File>
+              <FileName>crc8.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\crc8.c</FilePath>
+            </File>
+            <File>
+              <FileName>crc16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\crc16.c</FilePath>
+            </File>
+            <File>
+              <FileName>crc32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\crc32.c</FilePath>
+            </File>
+            <File>
+              <FileName>crcccitt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\crcccitt.c</FilePath>
+            </File>
+            <File>
+              <FileName>crcdnp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\crcdnp.c</FilePath>
+            </File>
+            <File>
+              <FileName>crckrmit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\crckrmit.c</FilePath>
+            </File>
+            <File>
+              <FileName>crcsick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\crcsick.c</FilePath>
+            </File>
+            <File>
+              <FileName>nmea-chk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\02_MID\LibCRC\nmea-chk.c</FilePath>
             </File>
           </Files>
         </Group>

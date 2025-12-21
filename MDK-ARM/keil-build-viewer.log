@@ -2,12 +2,12 @@
 =================================================== keil-build-viewer v1.6 ==================================================
  
 [Search keil project] 1 item(s)
-	c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
+	C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
 
 [User input] 
-[Current folder] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM
+[Current folder] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM
 [Encoding] 936
-[Keil project path] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
+[Keil project path] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
 [Keil project name] template.uvprojx
 [Is keil v4] 0
 [target name] Platform
@@ -31,7 +31,7 @@
 [name] IROM [base addr] 0x08000000 [size] 0x00100000 [type] 2 [off-chip] 0 [is pack] 1 [ID] 4 
 
 
-[map file path] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Listings\template.map
+[map file path] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Listings\template.map
 
 [region info]
 [load region] LR_IROM1
@@ -403,6 +403,14 @@
 [old name] stm32f4xx_tim.c                              [type] 1   [path] ..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c
 [old name] stm32f4xx_usart.c                            [type] 1   [path] ..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c
 [old name] stm32f4xx_wwdg.c                             [type] 1   [path] ..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_wwdg.c
+[old name] crc8.c                                       [type] 1   [path] ..\USER\02_MID\LibCRC\crc8.c
+[old name] crc16.c                                      [type] 1   [path] ..\USER\02_MID\LibCRC\crc16.c
+[old name] crc32.c                                      [type] 1   [path] ..\USER\02_MID\LibCRC\crc32.c
+[old name] crcccitt.c                                   [type] 1   [path] ..\USER\02_MID\LibCRC\crcccitt.c
+[old name] crcdnp.c                                     [type] 1   [path] ..\USER\02_MID\LibCRC\crcdnp.c
+[old name] crckrmit.c                                   [type] 1   [path] ..\USER\02_MID\LibCRC\crckrmit.c
+[old name] crcsick.c                                    [type] 1   [path] ..\USER\02_MID\LibCRC\crcsick.c
+[old name] nmea-chk.c                                   [type] 1   [path] ..\USER\02_MID\LibCRC\nmea-chk.c
 
 [record region info]
 [load region] LR_IROM1
@@ -467,9 +475,9 @@ LR_IROM1
         FLASH 1           [0x08000000 | 0x00100000 (1048576)]
                 ER_IROM1  [0x08000000]|¡ö_________________________________________________| (  24.8 KB /   1.0 MB )   2.4%  
  
-[htm file path] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Objects\template.htm
+[htm file path] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Objects\template.htm
 Maximum Stack Usage =        360 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)
  
 =============================================================================================================================
 
-run time: 0.212 s
+run time: 0.210 s
