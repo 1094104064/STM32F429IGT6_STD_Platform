@@ -120,10 +120,11 @@ bool bsp_wrapper_sflash_init(sflash_obj_t * obj)
     return true;
 }
 
-void bsp_wrapper_sflash_read_jedec_id(sflash_obj_t * obj, uint32_t * id)
+bool bsp_wrapper_sflash_read_jedec_id(sflash_obj_t * obj, uint32_t * id)
 {
     if(obj->ops->pf_read_jedec_id)
-        obj->ops->pf_read_jedec_id(id);
+        return obj->ops->pf_read_jedec_id(id);
+    return false;
 }
 
 bool bsp_wrapper_sflash_read(sflash_obj_t * obj, uint32_t address, uint8_t * dst, uint32_t length)

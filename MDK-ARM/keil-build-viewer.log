@@ -2,12 +2,12 @@
 =================================================== keil-build-viewer v1.6 ==================================================
  
 [Search keil project] 1 item(s)
-	C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
+	c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
 
 [User input] 
-[Current folder] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM
+[Current folder] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM
 [Encoding] 936
-[Keil project path] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
+[Keil project path] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\template.uvprojx
 [Keil project name] template.uvprojx
 [Is keil v4] 0
 [target name] Platform
@@ -31,14 +31,14 @@
 [name] IROM [base addr] 0x08000000 [size] 0x00100000 [type] 2 [off-chip] 0 [is pack] 1 [ID] 4 
 
 
-[map file path] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Listings\template.map
+[map file path] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Listings\template.map
 
 [region info]
 [load region] LR_IROM1
-	[execution region] ER_IROM1, 0x08000000, 0x00100000, 0x00006344 [memory type] 2 [memory ID] 4
+	[execution region] ER_IROM1, 0x08000000, 0x00100000, 0x0000678C [memory type] 2 [memory ID] 4
 
-	[execution region] RW_IRAM1, 0x20000000, 0x00030000, 0x00005018 [memory type] 1 [memory ID] 2
-		[ZI block] addr: 0x20000120, size: 0x00004EF8 (20216)
+	[execution region] RW_IRAM1, 0x20000000, 0x00030000, 0x00005048 [memory type] 1 [memory ID] 2
+		[ZI block] addr: 0x20000120, size: 0x00004F28 (20264)
 
 
 [object name max length] 43
@@ -51,8 +51,10 @@
 [object name] bsp_adapter_w25q64.o                         [path] ..\USER\04_BSP\adapter\bsp_adapter_w25q64.c
 [object name] bsp_driver_lcd.o                             [path] ..\USER\04_BSP\driver\bsp_driver_lcd.c
 [object name] bsp_driver_led.o                             [path] ..\USER\04_BSP\driver\bsp_driver_led.c
+[object name] bsp_driver_w25q64.o                          [path] ..\USER\04_BSP\driver\bsp_driver_w25q64.c
 [object name] bsp_linker_lcd.o                             [path] ..\USER\04_BSP\linker\bsp_linker_lcd.c
 [object name] bsp_linker_led.o                             [path] ..\USER\04_BSP\linker\bsp_linker_led.c
+[object name] bsp_linker_w25q64.o                          [path] ..\USER\04_BSP\linker\bsp_linker_w25q64.c
 [object name] bsp_wrapper_display.o                        [path] ..\USER\04_BSP\wrapper\bsp_wrapper_display.c
 [object name] bsp_wrapper_light.o                          [path] ..\USER\04_BSP\wrapper\bsp_wrapper_light.c
 [object name] bsp_wrapper_sflash.o                         [path] ..\USER\04_BSP\wrapper\bsp_wrapper_sflash.c
@@ -414,19 +416,21 @@
 
 [record region info]
 [load region] LR_IROM1
-	[execution region] ER_IROM1, 0x08000000, 0x00100000, 0x00006344 [type] 2 [ID] 4
-	[execution region] RW_IRAM1, 0x20000000, 0x00030000, 0x00005018 [type] 1 [ID] 2
+	[execution region] ER_IROM1, 0x08000000, 0x00100000, 0x0000678C [type] 2 [ID] 4
+	[execution region] RW_IRAM1, 0x20000000, 0x00030000, 0x00005048 [type] 1 [ID] 2
 --------------------------------------------------------------------------------------------------------------------------------------------------
                                           FILE(s)                                          |         RAM (byte)       |       FLASH (byte)       |
 --------------------------------------------------------------------------------------------------------------------------------------------------
 ..\USER\01_APP\app_main.c():                                                               |          20              |         333              |
 ..\USER\04_BSP\adapter\bsp_adapter_lcd.c():                                                |          56              |         364              |
 ..\USER\04_BSP\adapter\bsp_adapter_led.c():                                                |          32              |         244              |
-..\USER\04_BSP\adapter\bsp_adapter_w25q64.c():                                             |           0              |         134              |
+..\USER\04_BSP\adapter\bsp_adapter_w25q64.c():                                             |          48              |         288              |
 ..\USER\04_BSP\driver\bsp_driver_lcd.c():                                                  |           8              |         958              |
 ..\USER\04_BSP\driver\bsp_driver_led.c():                                                  |           8              |         348              |
+..\USER\04_BSP\driver\bsp_driver_w25q64.c():                                               |           0              |         932              |
 ..\USER\04_BSP\linker\bsp_linker_lcd.c():                                                  |          28              |         494              |
 ..\USER\04_BSP\linker\bsp_linker_led.c():                                                  |           0              |         112              |
+..\USER\04_BSP\linker\bsp_linker_w25q64.c():                                               |           0              |          10              |
 ..\USER\04_BSP\wrapper\bsp_wrapper_display.c():                                            |          84              |        1788              |
 ..\USER\04_BSP\wrapper\bsp_wrapper_light.c():                                              |          76              |         314              |
 ..\USER\04_BSP\wrapper\bsp_wrapper_sflash.c():                                             |          92              |         638              |
@@ -470,14 +474,14 @@ Unused Load Region
 LR_IROM1
         RAM 1             [0x20000000 | 0x00030000 (196608)]
                 [zi start] 1   [zi end] 5
-                RW_IRAM1  [0x20000000]|¡ö¡õ¡õ¡õ¡õ_____________________________________________| (  20.0 KB / 192.0 KB )  10.4%  
+                RW_IRAM1  [0x20000000]|¡ö¡õ¡õ¡õ¡õ_____________________________________________| (  20.0 KB / 192.0 KB )  10.5%  
  
         FLASH 1           [0x08000000 | 0x00100000 (1048576)]
-                ER_IROM1  [0x08000000]|¡ö_________________________________________________| (  24.8 KB /   1.0 MB )   2.4%  
+                ER_IROM1  [0x08000000]|¡ö_________________________________________________| (  25.8 KB /   1.0 MB )   2.5%  
  
-[htm file path] C:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Objects\template.htm
+[htm file path] c:\Users\cjm10\Desktop\MyRes\STM32F429IGT6_STD_Platform\MDK-ARM\Objects\template.htm
 Maximum Stack Usage =        360 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)
  
 =============================================================================================================================
 
-run time: 0.210 s
+run time: 0.190 s

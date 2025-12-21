@@ -78,7 +78,7 @@ struct st7735_driver
 
     uint16_t    width;
     uint16_t    height;
-    uint8_t     rotated;
+    uint16_t     rotated;
 
     bool (* pf_init)            (struct st7735_driver * self);
     void (* pf_reset)           (struct st7735_driver * self);

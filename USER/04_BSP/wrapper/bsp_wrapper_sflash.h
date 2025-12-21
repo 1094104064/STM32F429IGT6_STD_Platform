@@ -46,7 +46,7 @@ struct sflash_eraser {
 struct sflash_ops
 {
     int     (* pf_init)                 (void);
-    void    (* pf_read_jedec_id)        (uint32_t * id);
+    bool    (* pf_read_jedec_id)        (uint32_t * id);
     bool    (* pf_read)                 (uint32_t address, uint8_t * dst, uint32_t length);
     bool    (* pf_fast_read)            (uint32_t address, uint8_t * dst, uint32_t length);
     bool    (* pf_erase_chip)           (void);
@@ -78,7 +78,7 @@ struct sflash_wrapper
     sflash_obj_t *  (* find)        (const char * const name);
     
     bool            (* init)        (sflash_obj_t * obj);
-    void            (* read_jedec_id)(sflash_obj_t * obj, uint32_t * id);
+    bool            (* read_jedec_id)(sflash_obj_t * obj, uint32_t * id);
     bool            (* read)        (sflash_obj_t * obj, uint32_t address, uint8_t * dst, uint32_t length);
     bool            (* erase)       (sflash_obj_t * obj, uint32_t address, uint32_t length);
     bool            (* write)       (sflash_obj_t * obj, uint32_t address, const uint8_t * src, uint32_t length);
@@ -96,7 +96,7 @@ sflash_obj_t *  bsp_wrapper_sflash_create(const sflash_ops_t * ops, const char *
 void            bsp_wrapper_sflash_delete(const char * const name);
 sflash_obj_t *  bsp_wrapper_sflash_find(const char * const name);
 bool            bsp_wrapper_sflash_init(sflash_obj_t * obj);
-void            bsp_wrapper_sflash_read_jedec_id(sflash_obj_t * obj, uint32_t * id);
+bool            bsp_wrapper_sflash_read_jedec_id(sflash_obj_t * obj, uint32_t * id);
 bool            bsp_wrapper_sflash_read(sflash_obj_t * obj, uint32_t address, uint8_t * dst, uint32_t length);
 bool            bsp_wrapper_sflash_erase(sflash_obj_t * obj, uint32_t address, uint32_t length);
 bool            bsp_wrapper_sflash_write(sflash_obj_t * obj, uint32_t address, const uint8_t * src, uint32_t length);

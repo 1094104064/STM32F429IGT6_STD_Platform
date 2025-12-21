@@ -61,23 +61,23 @@ struct w25q64_driver
     const w25q64_handle_t * handle;
 
     bool (* pf_init)(struct w25q64_driver * self);
-    void (* pf_read_id)(struct w25q64_driver * self, uint32_t * id);
-    void (* pf_write_enable)(struct w25q64_driver * self);
-    void (* pf_wait_for_write_end)(struct w25q64_driver * self);
-    void (* pf_erase_sector)(struct w25q64_driver * self, uint32_t sector_address);
-    void (* pf_erase_block_32k)(struct w25q64_driver * self, uint32_t block_address);
-    void (* pf_erase_block_64k)(struct w25q64_driver * self, uint32_t block_address);
-    void (* pf_erase_chip)(struct w25q64_driver * self);
-    void (* pf_write_page)(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
-    void (* pf_write)(struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length);
-    void (* pf_read)(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
+    bool (* pf_read_id)(struct w25q64_driver * self, uint32_t * id);
+    bool (* pf_write_enable)(struct w25q64_driver * self);
+    bool (* pf_wait_for_write_end)(struct w25q64_driver * self);
+    bool (* pf_erase_sector)(struct w25q64_driver * self, uint32_t sector_address);
+    bool (* pf_erase_block_32k)(struct w25q64_driver * self, uint32_t block_address);
+    bool (* pf_erase_block_64k)(struct w25q64_driver * self, uint32_t block_address);
+    bool (* pf_erase_chip)(struct w25q64_driver * self);
+    bool (* pf_write_page)(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
+    bool (* pf_write)(struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length);
+    bool (* pf_read)(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
 };
 
 
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-void bsp_driver_w25q64_link(w25q64_driver_t * drv, w25q64_handle_t * handle);
+void bsp_driver_w25q64_link(w25q64_driver_t * drv, const w25q64_handle_t * handle);
 
 #if W25Q64_DEBUG_ENABLE
 void bsp_driver_w25q64_log_init(pf_printf_t cb, w25q64_log_level_t level);

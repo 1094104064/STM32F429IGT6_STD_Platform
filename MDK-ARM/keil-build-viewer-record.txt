@@ -2,11 +2,13 @@
        292          0         21         20          0          0   app_main.o
        268          0         96          0         56          0   bsp_adapter_lcd.o
        196          0         48          0         32          0   bsp_adapter_led.o
-        78          0         56          0          0          0   bsp_adapter_w25q64.o
+       216          0         72          0         48          0   bsp_adapter_w25q64.o
        950          0          0          8          0          0   bsp_driver_lcd.o
        340          0          0          8          0          0   bsp_driver_led.o
+       932          0          0          0          0          0   bsp_driver_w25q64.o
        490          0          0          4         24          0   bsp_linker_lcd.o
        112          0          0          0          0          0   bsp_linker_led.o
+        10          0          0          0          0          0   bsp_linker_w25q64.o
       1688          0         88         12         72          0   bsp_wrapper_display.o
        278          0         24         12         64          0   bsp_wrapper_light.o
        586          0         40         12         80          0   bsp_wrapper_sflash.o
@@ -48,8 +50,8 @@ Memory Map of the image
 
 	Load Region LR_IROM1 
 
-		Execution Region ER_IROM1 (Exec base: 0x08000000, Size: 0x00006344, Max: 0x00100000, END)
+		Execution Region ER_IROM1 (Exec base: 0x08000000, Size: 0x0000678C, Max: 0x00100000, END)
 
-		Execution Region RW_IRAM1 (Exec base: 0x20000000, Size: 0x00005018, Max: 0x00030000, END)
+		Execution Region RW_IRAM1 (Exec base: 0x20000000, Size: 0x00005048, Max: 0x00030000, END)
 
 Image component sizes
