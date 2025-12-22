@@ -32,6 +32,7 @@ extern "C" {
 *  GLOBAL PROTOTYPES
  **********************/
 void        bsp_linker_lcd_simple_panel_init   (void);
+void        bsp_linker_lcd_backlight_init      (void);
 void        bsp_linker_lcd_backlight_on        (void);
 void        bsp_linker_lcd_backlight_off       (void);
 void        bsp_linker_lcd_backlight_set       (uint8_t brightness);

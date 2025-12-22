@@ -69,17 +69,18 @@ static st7735_log_level_t log_level = ST7735_LOG_NONE;
 static void st7735_write_data       (st7735_driver_t * self, uint8_t byte);
 static void st7735_write_command    (st7735_driver_t * self, uint8_t cmd);
 static bool st7735_init             (st7735_driver_t * self);
-static void st7735_reset(st7735_driver_t * self);
-static void st7735_set_sleep(st7735_driver_t * self, bool enable);
-static void st7735_set_display(st7735_driver_t * self, bool enable);
-static void st7735_set_orientation(st7735_driver_t * self, uint16_t rotated);
-static void st7735_read_id(st7735_driver_t * self, uint8_t * id);
+static void st7735_reset            (st7735_driver_t * self);
+static void st7735_set_sleep        (st7735_driver_t * self, bool enable);
+static void st7735_set_display      (st7735_driver_t * self, bool enable);
+static void st7735_set_orientation  (st7735_driver_t * self, uint16_t rotated);
+static void st7735_read_id          (st7735_driver_t * self, uint8_t * id);
 static void st7735_set_cursor       (st7735_driver_t * self, uint16_t x, uint16_t y);
 static void st7735_set_window       (st7735_driver_t * self, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 static void st7735_put_pixel        (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t color);
-static void st7735_fill_area(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
-static void st7735_fill_screen(st7735_driver_t * self, uint16_t color);
-static void st7735_flush(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, void * data);
+static void st7735_fill_area        (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+static void st7735_fill_screen      (st7735_driver_t * self, uint16_t color);
+static void st7735_flush            (st7735_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, void * data);
+static void st7735_backlight_init   (st7735_driver_t * self);
 static void st7735_backlight_on     (st7735_driver_t * self);
 static void st7735_backlight_off    (st7735_driver_t * self);
 static void st7735_backlight_set    (st7735_driver_t * self, uint8_t brightness);
@@ -118,6 +119,7 @@ void bsp_driver_st7735_link(st7735_driver_t * drv, const st7735_handle_t * handl
     drv->pf_fill_area           = st7735_fill_area;
     drv->pf_fill_screen         = st7735_fill_screen;
     drv->pf_flush               = st7735_flush;
+    drv->pf_backlight_init      = st7735_backlight_init;
     drv->pf_backlight_on        = st7735_backlight_on;
     drv->pf_backlight_off       = st7735_backlight_off;
     drv->pf_backlight_set       = st7735_backlight_set;
@@ -394,6 +396,11 @@ static void st7735_flush(st7735_driver_t * self, uint16_t x, uint16_t y, uint16_
     }
 
     self->handle->pf_cs_high();
+}
+
+static void st7735_backlight_init(st7735_driver_t * self)
+{
+    self->handle->pf_backlight_init();
 }
 
 static void st7735_backlight_on(st7735_driver_t * self)

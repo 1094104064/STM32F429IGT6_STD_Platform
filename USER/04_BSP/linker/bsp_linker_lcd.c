@@ -97,6 +97,12 @@ void bsp_linker_lcd_simple_panel_init(void)
 
 }
 
+
+void bsp_linker_lcd_backlight_init(void)
+{
+    
+}
+
 void bsp_linker_lcd_backlight_on(void)
 {
     GPIO_SetBits(LCD_BL_PORT, LCD_BL_PIN);

@@ -74,7 +74,10 @@ static bool ops_w25q64_read_jedec_id(uint32_t * id)
 
 static bool ops_w25q64_read(uint32_t address, uint8_t * dst, uint32_t length)
 {
-    return gs_w25q64_drvier.pf_read(&gs_w25q64_drvier, address, dst, length);
+    if(0 != gs_w25q64_drvier.pf_read(&gs_w25q64_drvier, address, dst, length)) {
+        return false;
+    }
+    return true;
 }
 
 static bool ops_w25q64_fast_read(uint32_t address, uint8_t * dst, uint32_t length)
@@ -84,7 +87,10 @@ static bool ops_w25q64_fast_read(uint32_t address, uint8_t * dst, uint32_t lengt
 
 static bool ops_w25q64_erase_chip(void)
 {
-     return gs_w25q64_drvier.pf_erase_chip(&gs_w25q64_drvier);
+    if(0 != gs_w25q64_drvier.pf_erase_chip(&gs_w25q64_drvier)) {
+        return false;
+    }
+    return true;
 }
 
 static bool ops_w25q64_write(uint32_t address, const uint8_t * src, uint32_t length)
@@ -94,17 +100,26 @@ static bool ops_w25q64_write(uint32_t address, const uint8_t * src, uint32_t len
 
 static bool ops_w25q64_erase_sector(uint32_t address, uint32_t length)
 {
-    return gs_w25q64_drvier.pf_erase_sector(&gs_w25q64_drvier, address);
+    if(0 != gs_w25q64_drvier.pf_erase_sector(&gs_w25q64_drvier, address)) {
+        return false;
+    }
+    return true;
 }
 
 static bool ops_w25q64_erase_block_32k(uint32_t address, uint32_t length)
 {
-    return gs_w25q64_drvier.pf_erase_block_32k(&gs_w25q64_drvier, address);
+    if(0 != gs_w25q64_drvier.pf_erase_block_32k(&gs_w25q64_drvier, address)) {
+        return false;
+    }
+    return true;
 }
 
 static bool ops_w25q64_erase_block_64k(uint32_t address, uint32_t length)
 {
-    return gs_w25q64_drvier.pf_erase_block_64k(&gs_w25q64_drvier, address);
+    if(0 != gs_w25q64_drvier.pf_erase_block_64k(&gs_w25q64_drvier, address)) {
+        return false;
+    }
+    return true;
 }
 
 static const sflash_ops_t w25q64_ops = {

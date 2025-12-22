@@ -64,13 +64,13 @@ struct w25q64_driver
     bool (* pf_read_id)(struct w25q64_driver * self, uint32_t * id);
     bool (* pf_write_enable)(struct w25q64_driver * self);
     bool (* pf_wait_for_write_end)(struct w25q64_driver * self);
-    bool (* pf_erase_sector)(struct w25q64_driver * self, uint32_t sector_address);
-    bool (* pf_erase_block_32k)(struct w25q64_driver * self, uint32_t block_address);
-    bool (* pf_erase_block_64k)(struct w25q64_driver * self, uint32_t block_address);
-    bool (* pf_erase_chip)(struct w25q64_driver * self);
-    bool (* pf_write_page)(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
+    int  (* pf_erase_sector)(struct w25q64_driver * self, uint32_t sector_address);
+    int  (* pf_erase_block_32k)(struct w25q64_driver * self, uint32_t block_address);
+    int  (* pf_erase_block_64k)(struct w25q64_driver * self, uint32_t block_address);
+    int  (* pf_erase_chip)(struct w25q64_driver * self);
+    int  (* pf_write_page)(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
     bool (* pf_write)(struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length);
-    bool (* pf_read)(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
+    int  (* pf_read)(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
 };
 
 

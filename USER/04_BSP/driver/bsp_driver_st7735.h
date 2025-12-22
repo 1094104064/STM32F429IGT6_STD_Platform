@@ -60,6 +60,7 @@ struct st7735_handle
     void (* pf_rst_high)(void);
     void (* pf_rst_low) (void);
 
+    void (* pf_backlight_init)(void);
     void (* pf_backlight_on)  (void);
     void (* pf_backlight_off) (void);
     void (* pf_backlight_set) (uint8_t brightness);
@@ -93,6 +94,7 @@ struct st7735_driver
     void (* pf_fill_screen)     (struct st7735_driver * self, uint16_t color);
     void (* pf_flush)           (struct st7735_driver * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, void * data);
 
+    void (* pf_backlight_init)  (struct st7735_driver * self);
     void (* pf_backlight_on)    (struct st7735_driver * self);
     void (* pf_backlight_off)   (struct st7735_driver * self);
     void (* pf_backlight_set)   (struct st7735_driver * self, uint8_t brightness);

@@ -70,9 +70,10 @@ static bool lcd_init                (lcd_driver_t * self);
 static void lcd_put_pixel           (lcd_driver_t * self, uint16_t x, uint16_t y, uint32_t color);
 static void lcd_fill_area           (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
 static void lcd_fill_screen         (lcd_driver_t * self, uint32_t color);
-static void lcd_flush         (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
+static void lcd_flush               (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
 static void lcd_switch_framebuffer  (lcd_driver_t * self, uint8_t layerx);
 static void lcd_set_orientation     (lcd_driver_t * self, uint16_t rotated);
+static void lcd_backlight_init      (lcd_driver_t * self);
 static void lcd_backlight_on        (lcd_driver_t * self);
 static void lcd_backlight_off       (lcd_driver_t * self);
 static void lcd_backlight_set       (lcd_driver_t * self, uint8_t brightness);
@@ -91,15 +92,17 @@ void bsp_driver_lcd_link(lcd_driver_t * drv, const lcd_handle_t * handle)
     drv->handle = handle;
 
     drv->pf_init                = lcd_init;
-    drv->pf_backlight_on        = lcd_backlight_on;
-    drv->pf_backlight_off       = lcd_backlight_off;
-    drv->pf_backlight_set       = lcd_backlight_set;
     drv->pf_put_pixel           = lcd_put_pixel;
     drv->pf_fill_area           = lcd_fill_area;
     drv->pf_fill_screen         = lcd_fill_screen;
     drv->pf_flush               = lcd_flush;
     drv->pf_switch_framebuffer  = lcd_switch_framebuffer;
     drv->pf_set_orientation     = lcd_set_orientation;
+
+    drv->pf_backlight_init      = lcd_backlight_init;
+    drv->pf_backlight_on        = lcd_backlight_on;
+    drv->pf_backlight_off       = lcd_backlight_off;
+    drv->pf_backlight_set       = lcd_backlight_set;
 }
 
 #if LCD_DEBUG_ENABLE
@@ -170,6 +173,10 @@ static void lcd_set_orientation(lcd_driver_t * self, uint16_t rotated)
     self->rotated = rotated;
 }
 
+static void lcd_backlight_init(lcd_driver_t * self)
+{
+    self->handle->pf_backlight_init();
+}
 
 static void lcd_backlight_on(lcd_driver_t * self)
 {

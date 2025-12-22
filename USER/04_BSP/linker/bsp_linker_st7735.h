@@ -42,6 +42,7 @@ void bsp_linker_st7735_dc_high(void);
 void bsp_linker_st7735_dc_low(void);
 void bsp_linker_st7735_rst_high(void);
 void bsp_linker_st7735_rst_low(void);
+void bsp_linker_st7735_backlight_init(void);
 void bsp_linker_st7735_backlight_on(void);
 void bsp_linker_st7735_backlight_off(void);
 void bsp_linker_st7735_backlight_set(uint8_t brightness);

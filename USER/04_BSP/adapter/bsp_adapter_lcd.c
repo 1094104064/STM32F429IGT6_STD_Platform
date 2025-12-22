@@ -52,6 +52,7 @@ static int ops_lcd_init(void)
 {
     static const lcd_handle_t simple_panel_handle = {
         .pf_hardware_init       = bsp_linker_lcd_simple_panel_init,
+        .pf_backlight_init      = bsp_linker_lcd_backlight_init,
         .pf_backlight_on        = bsp_linker_lcd_backlight_on,
         .pf_backlight_off       = bsp_linker_lcd_backlight_off,
         .pf_backlight_set       = bsp_linker_lcd_backlight_set,
@@ -72,6 +73,12 @@ static int ops_lcd_init(void)
     }
 
     return 0;
+}
+
+
+static void ops_lcd_backlight_init(void)
+{
+    gs_lcd_driver.pf_backlight_init(&gs_lcd_driver);
 }
 
 static void ops_lcd_backlight_on(void)
@@ -133,6 +140,7 @@ static const display_ops_t lcd_ops = {
     .pf_flush               = ops_lcd_copy_buffer,
     .pf_switch_framebuffer  = ops_lcd_switch_framebuffer,
 
+    .pf_backlight_init      = ops_lcd_backlight_init,
     .pf_backlight_on        = ops_lcd_backlight_on,
     .pf_backlight_off       = ops_lcd_backlight_off,
 

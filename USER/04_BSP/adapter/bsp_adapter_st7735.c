@@ -66,6 +66,7 @@ static int ops_st7735_init(void)
         .pf_rst_high                = bsp_linker_st7735_rst_high,
         .pf_rst_low                 = bsp_linker_st7735_rst_low,
 
+        .pf_backlight_init          = bsp_linker_st7735_backlight_init,
         .pf_backlight_on            = bsp_linker_st7735_backlight_on,
         .pf_backlight_off           = bsp_linker_st7735_backlight_off,
         .pf_backlight_set           = bsp_linker_st7735_backlight_set,

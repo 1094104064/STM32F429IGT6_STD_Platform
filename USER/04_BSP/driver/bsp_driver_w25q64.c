@@ -60,6 +60,22 @@ static w25q64_log_level_t log_level = W25Q64_LOG_NONE;
         } while (0)
 
 #endif
+
+struct w25q64_error {
+    uint8_t code;
+    const char * message;
+};
+
+static const struct w25q64_error error[] = {
+    { 0,    "No Error"                     },
+    { 1,    "Write Enable Error"           },
+    { 2,    "Write Disable Error"          },
+    { 3,    "Wait For Write End Error"     },
+    { 4,    "SPI Transfer Error"           },
+};
+
+
+
 /**********************
  *   GLOBAL VARIABLES
  **********************/ 
@@ -70,14 +86,14 @@ static w25q64_log_level_t log_level = W25Q64_LOG_NONE;
 static bool w25q64_init                 (struct w25q64_driver * self);
 static bool w25q64_read_id              (struct w25q64_driver * self, uint32_t * id);
 static bool w25q64_write_enable         (struct w25q64_driver * self);
-static bool w25q64_wait_for_write_end   (struct w25q64_driver * self);
-static bool w25q64_erase_sector         (struct w25q64_driver * self, uint32_t sector_address);
-static bool w25q64_erase_block_32k      (struct w25q64_driver * self, uint32_t block_address);
-static bool w25q64_erase_block_64k      (struct w25q64_driver * self, uint32_t block_address);
-static bool w25q64_erase_chip           (struct w25q64_driver * self);
-static bool w25q64_write_page           (struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
+static bool w25q64_wait_busy   (struct w25q64_driver * self);
+static int  w25q64_erase_sector         (struct w25q64_driver * self, uint32_t sector_address);
+static int  w25q64_erase_block_32k      (struct w25q64_driver * self, uint32_t block_address);
+static int  w25q64_erase_block_64k      (struct w25q64_driver * self, uint32_t block_address);
+static int  w25q64_erase_chip           (struct w25q64_driver * self);
+static int  w25q64_write_page           (struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length);
 static bool w25q64_write                (struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length);
-static bool w25q64_read                 (struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
+static int  w25q64_read                 (struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length);
 /**********************
  *  STATIC VARIABLES
  **********************/
@@ -97,7 +113,7 @@ void bsp_driver_w25q64_link(w25q64_driver_t * drv, const w25q64_handle_t * handl
     drv->pf_init               = w25q64_init;
     drv->pf_read_id            = w25q64_read_id;
     drv->pf_write_enable       = w25q64_write_enable;
-    drv->pf_wait_for_write_end = w25q64_wait_for_write_end;
+    drv->pf_wait_for_write_end = w25q64_wait_busy;
     drv->pf_erase_sector       = w25q64_erase_sector;
     drv->pf_erase_block_32k    = w25q64_erase_block_32k;
     drv->pf_erase_block_64k    = w25q64_erase_block_64k;
@@ -203,7 +219,7 @@ static bool w25q64_write_disable(struct w25q64_driver * self)
     return is_successful;
 }
 
-static bool w25q64_wait_for_write_end(struct w25q64_driver * self)
+static bool w25q64_wait_busy(struct w25q64_driver * self)
 {
     bool is_successful = false;
     uint8_t tx_data[] = {W25Q64_READ_STATUS_REG_CMD, 0};
@@ -236,192 +252,278 @@ static bool w25q64_wait_for_write_end(struct w25q64_driver * self)
     return is_successful;
 }
 
-static bool w25q64_erase_sector(struct w25q64_driver * self, uint32_t sector_address)
+static int w25q64_erase_sector(struct w25q64_driver * self, uint32_t sector_address)
 {
-    bool is_successful = false;
+    uint8_t error_code = error[0].code;
     uint8_t tx_data[4] = {0x20, (sector_address >> 16) & 0xFF, 
                                 (sector_address >> 8) & 0xFF, 
                                 sector_address & 0xFF};
 
-    w25q64_write_enable(self);
+    if(true != w25q64_write_enable(self)) {
+        error_code = error[1].code;
+        goto error_handle;
+    }
 
     self->handle->pf_spi_cs_low();
 
-    is_successful = self->handle->pf_spi_read_write(tx_data, NULL, 4);
+   if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        self->handle->pf_spi_cs_high();
+        error_code = error[4].code;
+        goto error_handle;
+   }
+   else {
+        self->handle->pf_spi_cs_high();
+   }
 
-    self->handle->pf_spi_cs_high();
 
-    w25q64_wait_for_write_end(self);
-
-    w25q64_write_disable(self);
-
-    if(true != is_successful) {
-        LOG_E("w25q64 erase sector failed");
+    if(true != w25q64_wait_busy(self)) {
+        error_code = error[3].code;
+        goto error_handle;
     }
-    else {
-        LOG_D("w25q64 erase sector 0x%06X", sector_address);
+
+    if(true != w25q64_write_disable(self)) {
+        error_code = error[2].code;
+        goto error_handle;
     }
 
-    return is_successful;
+    LOG_D("w25q64 erase sector 0x%06X", sector_address);
+
+    return error_code;
+
+error_handle:
+    LOG_E("w25q64 erase sector failed, error code: %d, %s", error_code, error[error_code].message);
+    return error_code;
 }
 
-static bool w25q64_erase_block_32k(struct w25q64_driver * self, uint32_t block_address)
+static int w25q64_erase_block_32k(struct w25q64_driver * self, uint32_t block_address)
 {
-    bool is_successful = false;
+    uint8_t error_code = error[0].code;
     uint8_t tx_data[4] = {0x52, (block_address >> 16) & 0xFF, 
                                 (block_address >> 8) & 0xFF, 
                                 block_address & 0xFF};
 
-    w25q64_write_enable(self);
+    if(true != w25q64_write_enable(self)) {
+        error_code = error[1].code;
+        goto error_handle;
+    }
 
     self->handle->pf_spi_cs_low();
 
-    is_successful = self->handle->pf_spi_read_write(tx_data, NULL, 4);
-
-    self->handle->pf_spi_cs_high();
-
-    w25q64_wait_for_write_end(self);
-
-    w25q64_write_disable(self);
-
-    if(true != is_successful) {
-        LOG_E("w25q64 erase block 32k failed");
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        self->handle->pf_spi_cs_high();
+        error_code = error[4].code;
+        goto error_handle;
     }
     else {
-        LOG_D("w25q64 erase block 32k 0x%06X", block_address);
+        self->handle->pf_spi_cs_high();
     }
-    
-    return is_successful;
+
+    if(true != w25q64_wait_busy(self)) {
+        error_code = error[3].code;
+        goto error_handle;
+    }
+
+    if(true != w25q64_write_disable(self)) {
+        error_code = error[2].code;
+        goto error_handle;
+    }
+
+    LOG_D("w25q64 erase block 32k 0x%06X", block_address);
+
+    return error_code;
+
+error_handle:
+    LOG_E("w25q64 erase block 32k failed, error code: %d, %s", error_code, error[error_code].message);
+    return error_code;
 }
 
-static bool w25q64_erase_block_64k(struct w25q64_driver * self, uint32_t block_address)
+static int w25q64_erase_block_64k(struct w25q64_driver * self, uint32_t block_address)
 {
-    bool is_successful = false;
+    uint8_t error_code = error[0].code;
     uint8_t tx_data[4] = {0xD8, (block_address >> 16) & 0xFF, 
                                 (block_address >> 8) & 0xFF, 
                                 block_address & 0xFF};
 
-    w25q64_write_enable(self);
+    if(true != w25q64_write_enable(self)) {
+        error_code = error[1].code;
+        goto error_handle;
+    }
 
     self->handle->pf_spi_cs_low();
 
-    is_successful = self->handle->pf_spi_read_write(tx_data, NULL, 4);
-
-    self->handle->pf_spi_cs_high();
-
-    w25q64_wait_for_write_end(self);
-
-    w25q64_write_disable(self);
-
-    if(true != is_successful) {
-        LOG_E("w25q64 erase block 64k failed");
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        self->handle->pf_spi_cs_high();
+        error_code = error[4].code;
+        goto error_handle;
     }
     else {
-        LOG_D("w25q64 erase block 64k 0x%06X", block_address);
+        self->handle->pf_spi_cs_high();
     }
-    
-    return is_successful;
+
+
+    if(true != w25q64_wait_busy(self)) {
+        error_code = error[3].code;
+        goto error_handle;
+    }
+
+    if(true != w25q64_write_disable(self)) {
+        error_code = error[2].code;
+        goto error_handle;
+    }
+
+    LOG_D("w25q64 erase block 64k 0x%06X", block_address);
+
+    return error_code;
+
+error_handle:
+    LOG_E("w25q64 erase block 64k failed, error code: %d, %s", error_code, error[error_code].message);
+    return error_code;
 }
 
-static bool w25q64_erase_chip(struct w25q64_driver * self)
+static int w25q64_erase_chip(struct w25q64_driver * self)
 {
-    bool is_successful = false;
+    uint8_t error_code = error[0].code;
     uint8_t tx_data = 0xC7;
     
-    w25q64_write_enable(self);
+    if(true != w25q64_write_enable(self)) {
+        error_code = error[1].code;
+        goto error_handle;
+    }
 
     self->handle->pf_spi_cs_low();
 
-    is_successful = self->handle->pf_spi_read_write(&tx_data, NULL, 1);
-
-    self->handle->pf_spi_cs_high();
-
-    w25q64_wait_for_write_end(self);
-
-    w25q64_write_disable(self);
-
-    if(true != is_successful) {
-        LOG_E("w25q64 erase chip failed");
+    if(true != self->handle->pf_spi_read_write(&tx_data, NULL, 1)) {
+        self->handle->pf_spi_cs_high();
+        error_code = error[4].code;
+        goto error_handle;
     }
     else {
-        LOG_D("w25q64 erase chip");
+        self->handle->pf_spi_cs_high();
     }
-    
-    return is_successful;
+
+    if(true != w25q64_wait_busy(self)) {
+        error_code = error[3].code;
+        goto error_handle;
+    }
+
+    if(true != w25q64_write_disable(self)) {
+        error_code = error[2].code;
+        goto error_handle;
+    }
+
+    LOG_D("w25q64 erase chip");
+
+    return error_code;
+
+error_handle:
+    LOG_E("w25q64 erase chip failed, error code: %d, %s", error_code, error[error_code].message);
+    return error_code;
 }
 
-static bool w25q64_write_page(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length)
+static int w25q64_write_page(struct w25q64_driver * self, uint32_t page_address, const uint8_t * data, uint32_t length)
 {
-    bool is_successful = false;
+    uint8_t error_code = error[0].code;
     uint8_t tx_data[4] = {0x02, (page_address >> 16) & 0xFF, (page_address >> 8) & 0xFF, page_address & 0xFF};
 
-    w25q64_write_enable(self);
+    if(true != w25q64_write_enable(self)) {
+        error_code = error[1].code;
+        goto error_handle;
+    }
 
     self->handle->pf_spi_cs_low();
 
-    is_successful = self->handle->pf_spi_read_write(tx_data, NULL, 4);
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        self->handle->pf_spi_cs_high();
+        error_code = error[4].code;
+        goto error_handle;
+    }
 
-    is_successful = self->handle->pf_spi_read_write((uint8_t *)data, NULL, length);
+    if(true != self->handle->pf_spi_read_write((uint8_t *)data, NULL, length)) {
+        self->handle->pf_spi_cs_high();
+        error_code = error[4].code;
+        goto error_handle;
+    }
 
     self->handle->pf_spi_cs_high();
 
-    w25q64_wait_for_write_end(self);
-
-    w25q64_write_disable(self);
-
-    if(true != is_successful) {
-        LOG_E("w25q64 write page failed");
+    if(true != w25q64_wait_busy(self)) {
+        error_code = error[3].code;
+        goto error_handle;
     }
-    else {
-        LOG_D("w25q64 write page 0x%06X, length: %d", page_address, length);
+
+    if(true != w25q64_write_disable(self)) {
+        error_code = error[2].code;
+        goto error_handle;
     }
-    
-    return is_successful;
+
+    LOG_D("w25q64 write page 0x%06X, length: %d", page_address, length);
+
+    return error_code;
+
+error_handle:
+    LOG_E("w25q64 write page failed, error code: %d, %s", error_code, error[error_code].message);
+    return error_code;
 }
 
 static bool w25q64_write(struct w25q64_driver * self, uint32_t address, const uint8_t * data, uint32_t length)
 {
-    bool is_successful = false;
-    uint32_t page_size = 256;
-    uint32_t page_addr = address & 0xFFFFFF00;
-    uint32_t page_offset = address & 0xFF;
-    uint32_t page_remain = page_size - page_offset;
-
-    if(page_remain >= length) {
-        is_successful = w25q64_write_page(self, page_addr, data, length);
-    } 
-    else {
-        is_successful = w25q64_write_page(self, page_addr, data, page_remain);
-        if(true != is_successful) {
-            return is_successful;
-        }
-        is_successful = w25q64_write(self, page_addr + page_size, data + page_remain, length - page_remain);
+    if (self == NULL || data == NULL) {
+        return false;
     }
 
-    return is_successful;
+    while (length > 0) {
+        // 1. 计算当前页剩余可写的空间
+        //    address % W25Q64_PAGE_SIZE 计算出在页内的偏移量
+        uint32_t page_offset = address % W25Q64_PAGE_SIZE;
+        uint32_t page_remain = W25Q64_PAGE_SIZE - page_offset;
+
+        // 2. 决定本次写入的长度：取“剩余数据长度”和“当前页剩余空间”的较小值
+        uint32_t to_write = (length < page_remain) ? length : page_remain;
+
+        // 3. 执行单页（或部分页）写入
+        //    注意：这里传入的是当前的 address，而不是页首地址
+        if (!w25q64_write_page(self, address, data, to_write)) {
+            LOG_E("w25q64 write failed at address 0x%06X", address);
+            return false;
+        }
+
+        // 4. 更新游标
+        address += to_write;
+        data    += to_write;
+        length  -= to_write;
+
+    }
+
+    return true;
 }
 
-static bool w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length)
+static int w25q64_read(struct w25q64_driver * self, uint32_t address, uint8_t * data, uint32_t length)
 {
-    bool is_successful = false;
+    uint8_t error_code = error[0].code;
     uint8_t tx_data[4] = {0x03, (address >> 16) & 0xFF, (address >> 8) & 0xFF, address & 0xFF};
 
     self->handle->pf_spi_cs_low();
 
-    is_successful = self->handle->pf_spi_read_write(tx_data, NULL, 4);
+    if(true != self->handle->pf_spi_read_write(tx_data, NULL, 4)) {
+        error_code = error[4].code;
+        goto error_handle;
+    }
 
-    is_successful = self->handle->pf_spi_read_write(NULL, data, length);
+    if(true != self->handle->pf_spi_read_write(NULL, data, length)) {
+        error_code = error[4].code;
+        goto error_handle;
+    }
 
     self->handle->pf_spi_cs_high();
 
-    if(true != is_successful) {
-        LOG_E("w25q64 read failed");
-    }
-    else {
-        LOG_D("w25q64 read 0x%06X, length: %d", address, length);
-    }
-    
-    return is_successful;
+    LOG_D("w25q64 read 0x%06X, length: %d", address, length);
+
+    return error_code;
+
+error_handle:
+    self->handle->pf_spi_cs_high();
+    LOG_D("w25q64 read failed, error code: %d, %s", error_code, error[error_code].message);
+    return error_code;
 }
 
 /******************************* (END OF FILE) *********************************/

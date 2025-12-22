@@ -53,6 +53,7 @@ const struct display_wrapper wrp_display =
     .get_height         = bsp_wrapper_display_get_height,
     .get_framebuffer    = bsp_wrapper_display_get_framebuffer,
 
+    .backlight_init     = bsp_wrapper_display_backlight_init,
     .backlight_on       = bsp_wrapper_display_backlight_on,
     .backlight_off      = bsp_wrapper_display_backlight_off,
     .backlight_set      = bsp_wrapper_display_backlight_set,
@@ -364,6 +365,12 @@ uint32_t bsp_wrapper_display_get_framebuffer(display_obj_t * obj)
     if(obj->ops->pf_get_framebuffer)
         return obj->ops->pf_get_framebuffer();
     return 0;
+}
+
+void bsp_wrapper_display_backlight_init(display_obj_t * obj)
+{
+    if(obj->ops->pf_backlight_init)
+        obj->ops->pf_backlight_init();
 }
 
 void bsp_wrapper_display_backlight_on(display_obj_t * obj)

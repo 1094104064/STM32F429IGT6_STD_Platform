@@ -97,6 +97,11 @@ void bsp_linker_st7735_rst_low(void)
 
 }
 
+void bsp_linker_st7735_backlight_init(void)
+{
+
+}
+
 void bsp_linker_st7735_backlight_on(void)
 {
 

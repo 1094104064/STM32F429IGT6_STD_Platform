@@ -54,6 +54,7 @@ struct lcd_handle
     void     (* pf_fill_screen)         (uint32_t color);
     void     (* pf_flush)               (uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
     void     (* pf_switch_framebuffer)  (uint8_t layerx);
+    void     (* pf_backlight_init)      (void);
     void     (* pf_backlight_on)        (void);
     void     (* pf_backlight_off)       (void);
     void     (* pf_backlight_set)       (uint8_t brightness);
@@ -81,6 +82,7 @@ struct lcd_driver
     void (* pf_flush)         (lcd_driver_t * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t * data);
     void (* pf_switch_framebuffer)  (lcd_driver_t * self, uint8_t layerx);
     void (* pf_set_orientation)     (lcd_driver_t * self, uint16_t rotated);
+    void (* pf_backlight_init)      (lcd_driver_t * self);
     void (* pf_backlight_on)        (lcd_driver_t * self);
     void (* pf_backlight_off)       (lcd_driver_t * self);
     void (* pf_backlight_set)       (lcd_driver_t * self, uint8_t brightness);

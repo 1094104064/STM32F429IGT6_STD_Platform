@@ -90,6 +90,7 @@ struct display_ops
     uint16_t (* pf_get_height)        (void);
     uint32_t (* pf_get_framebuffer)   (void);
 
+    void     (* pf_backlight_init)    (void);
     void     (* pf_backlight_on)      (void);
     void     (* pf_backlight_off)     (void);
     void     (* pf_backlight_set)     (uint8_t brightness);
@@ -133,6 +134,7 @@ struct display_wrapper
     uint16_t        (* get_height)          (display_obj_t * obj);
     uint32_t        (* get_framebuffer)     (display_obj_t * obj);
 
+    void            (* backlight_init)      (display_obj_t * obj);
     void            (* backlight_on)        (display_obj_t * obj);
     void            (* backlight_off)       (display_obj_t * obj);
     void            (* backlight_set)       (display_obj_t * obj, uint8_t brightness);
@@ -164,6 +166,7 @@ void            bsp_wrapper_display_switch_framebuffer(display_obj_t * obj, uint
 uint16_t        bsp_wrapper_display_get_width         (display_obj_t * obj);
 uint16_t        bsp_wrapper_display_get_height        (display_obj_t * obj);
 uint32_t        bsp_wrapper_display_get_framebuffer   (display_obj_t * obj);
+void            bsp_wrapper_display_backlight_init    (display_obj_t * obj);
 void            bsp_wrapper_display_backlight_on      (display_obj_t *obj);
 void            bsp_wrapper_display_backlight_off     (display_obj_t *obj);
 void            bsp_wrapper_display_backlight_set     (display_obj_t * obj, uint8_t brightness);
