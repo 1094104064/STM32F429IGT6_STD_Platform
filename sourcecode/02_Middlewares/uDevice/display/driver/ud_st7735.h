@@ -27,9 +27,9 @@ extern "C" {
  *********************/
 struct ud_st7735
 {
+    const struct ud_display_ops * display_ops;
     const struct panel_spi_ops ** spi_ops;
     const struct panel_backlight_ops ** backlight_ops;
-    const struct ud_display_ops * display_ops;
 };
 /**********************
  *      TYPEDEFS
