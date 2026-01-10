@@ -34,8 +34,6 @@ void ud_st7735_put_pixel(const struct ud_display_ops ** ops, uint16_t x, uint16_
 
 void ud_st7735_fill_area(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
-    uint32_t i = 0;
-    uint32_t size = width * height;
     const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
 
     st7735_set_window(ops, x, y, x + width - 1, y + height - 1);
@@ -47,32 +45,42 @@ void ud_st7735_fill_area(const struct ud_display_ops ** ops, uint16_t x, uint16_
     panel_spi_stop_transmit(self->spi_ops);
 }
 
-void ud_st7735_fill_screen(const struct ud_display_ops ** ops, uint32_t color)
-{
-    // st7735_fill_area(self, 0, 0, self->width - 1, self->height - 1, color);
-}
 
-void ud_st7735_transfer_pixels(const struct ud_display_ops ** ops, const void * data, size_t size)
+void ud_st7735_transfer_pixels(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint16_t width, uint16_t height, const void * data)
 {
-    // Implementation for transferring pixels to ST7735
+    const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
+
+    st7735_set_window(ops, x, y, x + width - 1, y + height - 1);
+
+    panel_spi_start_transmit(self->spi_ops);
+
+    panel_spi_write_buffer(self->spi_ops, data, width * height);
+
+    panel_spi_stop_transmit(self->spi_ops);
 }
 
 void ud_st7735_enable_backlight(const struct ud_display_ops ** ops, bool state)
 {
-    panel_backlight_enable((struct panel_backlight_ops **)ops, state);
+    const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
+
+    panel_backlight_enable(self->backlight_ops, state);
 }
 
 void ud_st7735_set_backlight_brightness(const struct ud_display_ops ** ops, uint8_t brightness)
 {
-    panel_backlight_set_brightness((struct panel_backlight_ops **)ops, brightness);
+    const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
+
+    panel_backlight_set_brightness(self->backlight_ops, brightness);
 }
 
-uint8_t ud_st7735_get_backlight_brightness(const struct ud_display_ops ** ops)
+void ud_st7735_get_backlight_brightness(const struct ud_display_ops ** ops, uint8_t * brightness)
 {
-    return panel_backlight_get_brightness((struct panel_backlight_ops **)ops);
+    const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
+
+    panel_backlight_get_brightness(self->backlight_ops, brightness);
 }
 
-void ud_st7735_ioctl(struct ud_display_ops ** ops, unsigned int cmd, void * arg)
+void ud_st7735_ioctl(const struct ud_display_ops ** ops, unsigned int cmd, void * arg)
 {
     // Implementation for IO control on ST7735
 }
@@ -80,7 +88,6 @@ void ud_st7735_ioctl(struct ud_display_ops ** ops, unsigned int cmd, void * arg)
 const struct ud_display_ops st7735_ops = {
     .put_pixel                = ud_st7735_put_pixel,
     .fill_area                = ud_st7735_fill_area,
-    .fill_screen              = ud_st7735_fill_screen,
     .transfer_pixels          = ud_st7735_transfer_pixels,
     .enable_backlight         = ud_st7735_enable_backlight,
     .set_backlight_brightness = ud_st7735_set_backlight_brightness,
@@ -131,6 +138,7 @@ static void st7735_set_window(const struct ud_display_ops ** ops, uint16_t x0, u
     panel_spi_stop_transmit(self->spi_ops);
 }
 
+#if 0
 static void st7735_enable(struct ud_display_ops ** ops)
 {
     // Implementation for enabling/disabling ST7735 display
@@ -150,3 +158,4 @@ static void st7735_sleep_out(struct ud_display_ops ** ops)
 {
     // Implementation for waking ST7735 from sleep
 }
+#endif

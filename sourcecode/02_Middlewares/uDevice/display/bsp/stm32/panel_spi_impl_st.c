@@ -1,32 +1,32 @@
 #include "stm32f4xx.h"
 #include "../../adapter/panel_spi.h"
 
-static void spi_start_transmit(struct panel_spi_ops ** ops)
+static void spi_start_transmit(const struct panel_spi_ops ** ops)
 {
     // Implement SPI transmission start for STM32
 }
 
-static void spi_stop_transmit(struct panel_spi_ops ** ops)
+static void spi_stop_transmit(const struct panel_spi_ops ** ops)
 {
     // Implement SPI transmission stop for STM32
 }
 
-static void spi_write_data_8bit(struct panel_spi_ops ** ops, uint8_t data)
+static void spi_write_data_8bit(const struct panel_spi_ops ** ops, uint8_t data)
 {
     // Implement SPI 8-bit data write for STM32
 }
 
-static void spi_write_command(struct panel_spi_ops ** ops, uint8_t data)
+static void spi_write_command(const struct panel_spi_ops ** ops, uint8_t data)
 {
     // Implement SPI command write for STM32
 }
 
-static void spi_write_data_16bit(struct panel_spi_ops ** ops, uint16_t data)
+static void spi_write_data_16bit(const struct panel_spi_ops ** ops, uint16_t data)
 {
     // Implement SPI 16-bit data write for STM32
 }
 
-static void spi_write_buffer(struct panel_spi_ops ** ops, const void * data, size_t size)
+static void spi_write_buffer(const struct panel_spi_ops ** ops, const void * data, size_t size)
 {
     // Implement SPI buffer write for STM32
 }
@@ -51,3 +51,4 @@ const struct panel_spi_ops * ud_st7789_get_spi(void)
 {
     return &spi_ops;
 }
+

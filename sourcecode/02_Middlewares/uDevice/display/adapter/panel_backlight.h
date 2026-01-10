@@ -26,9 +26,9 @@ extern "C" {
  *********************/
 struct panel_backlight_ops
 {
-    void    (* enable)         (struct panel_backlight_ops ** ops, bool state);
-    void    (* set_brightness) (struct panel_backlight_ops ** ops, uint8_t brightness);
-    uint8_t (* get_brightness) (struct panel_backlight_ops ** ops);
+    void    (* enable)         (const struct panel_backlight_ops ** ops, bool state);
+    void    (* set_brightness) (const struct panel_backlight_ops ** ops, uint8_t brightness);
+    void    (* get_brightness) (const struct panel_backlight_ops ** ops, uint8_t * brightness);
 };
 
 /**********************
@@ -38,19 +38,19 @@ struct panel_backlight_ops
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/
-static inline void panel_backlight_enable(struct panel_backlight_ops ** ops, bool state)
+static inline void panel_backlight_enable(const struct panel_backlight_ops ** ops, bool state)
 {
     (*ops)->enable(ops, state);
 }
 
-static inline void panel_backlight_set_brightness(struct panel_backlight_ops ** ops, uint8_t brightness)
+static inline void panel_backlight_set_brightness(const struct panel_backlight_ops ** ops, uint8_t brightness)
 {
     (*ops)->set_brightness(ops, brightness);
 }
 
-static inline uint8_t panel_backlight_get_brightness(struct panel_backlight_ops ** ops)
+static inline void panel_backlight_get_brightness(const struct panel_backlight_ops ** ops, uint8_t * brightness)
 {
-    return (*ops)->get_brightness(ops);
+    (*ops)->get_brightness(ops, brightness);
 }
 
 

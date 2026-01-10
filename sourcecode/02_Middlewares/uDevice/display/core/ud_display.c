@@ -41,12 +41,12 @@
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/ 
-struct ud_display_ops ** ud_display_create(int type)
-{
+//struct ud_display_ops ** ud_display_create(int type)
+//{
 
-}
+//}
 
-void ud_display_register(struct ud_display * self, struct ud_display_ops ** ops)
+void ud_display_register(struct ud_display * self, const struct ud_display_ops ** ops)
 {
     self->ops = ops;
 }
@@ -77,10 +77,10 @@ void ud_display_draw_block(struct ud_display * self, uint16_t x, uint16_t y, uin
 
 void ud_display_clear(struct ud_display * self, uint32_t color)
 {
-    display_fill_screen_fn_t fn = (*self->ops)->fill_screen;
+    uint32_t width = self->width;
+    uint32_t height = self->height;
 
-    if(fn)
-        fn(self->ops, color);
+    ud_display_draw_block(self, 0, 0, width, height, color);
 }
 
 void ud_display_flush(struct ud_display * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, const void * buffer)

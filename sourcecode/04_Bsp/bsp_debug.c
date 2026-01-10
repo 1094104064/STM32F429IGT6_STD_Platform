@@ -64,3 +64,6 @@ void bsp_debug_putc(char c)
     /*!< Wait until the char has been sent */
     while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
 }
+
+
+

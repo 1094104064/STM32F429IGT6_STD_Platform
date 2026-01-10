@@ -324,7 +324,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>1</wLevel>
+            <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
@@ -489,7 +489,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Middlewares/uDevice/touch</GroupName>
+          <GroupName>Middlewares/uDevice/touch/src</GroupName>
+          <Files>
+            <File>
+              <FileName>ud_touch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\02_Middlewares\uDevice\touch\core\ud_touch.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Middlewares/uDevice/touch/drv</GroupName>
+          <Files>
+            <File>
+              <FileName>ud_gt9xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\02_Middlewares\uDevice\touch\driver\ud_gt9xx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Middlewares/uDevice/touch/bsp</GroupName>
         </Group>
         <Group>
           <GroupName>Middlewares/uDevice/sflash</GroupName>
