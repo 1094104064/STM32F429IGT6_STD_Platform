@@ -20,9 +20,13 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "../core/ud_touch.h"
+#include "../adapter/touchpad_i2c.h"
+#include "../adapter/touchpad_ctrl.h"
 /*********************
  *      DEFINES
  *********************/
+#define GT9XX_MAX_TOUCH_POINTS    5
+
 #define GT9XX_ADDRESS_HIGH  0x5D
 #define GT9XX_ADDRESS_LOW   0x14
 
@@ -41,6 +45,14 @@ extern "C" {
 #define GT9XX_POINT5_REG    0x816F
 
 #define GT9XX_CHECK_SUM     0x80FF
+
+struct ud_gt9xx
+{
+    const struct ud_touch_ops * touch_ops;
+    const struct touchpad_i2c_ops ** i2c_ops;
+    const struct touchpad_ctrl_ops ** ctrl_ops;
+};
+
 /**********************
  *      TYPEDEFS
  **********************/

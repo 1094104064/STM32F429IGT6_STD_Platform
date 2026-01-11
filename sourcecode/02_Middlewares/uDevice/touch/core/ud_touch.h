@@ -28,7 +28,7 @@ typedef struct ud_touch_ops touch_ops_t;
 typedef struct ud_touch_point touch_point_t;
 
 typedef void (* touch_prepare_fn_t) (const touch_ops_t ** ops);
-typedef bool (* touch_read_data_fn_t) (const touch_ops_t ** ops, touch_point_t * points, uint8_t point_num);
+typedef void (* touch_read_data_fn_t) (const touch_ops_t ** ops, touch_point_t * points, uint8_t point_num);
 typedef void (* touch_ioctrl_fn_t)(const touch_ops_t ** ops, unsigned int cmd, void * arg);
 /*********************
  *      DEFINES
