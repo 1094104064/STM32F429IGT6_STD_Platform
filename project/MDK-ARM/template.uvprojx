@@ -426,6 +426,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\sourcecode\02_Middlewares\uDevice\service\ud_i2c_bit.c</FilePath>
             </File>
+            <File>
+              <FileName>ud_spi_bit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\02_Middlewares\uDevice\service\ud_spi_bit.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -522,7 +527,32 @@
           <GroupName>Middlewares/uDevice/touch/bsp</GroupName>
         </Group>
         <Group>
-          <GroupName>Middlewares/uDevice/sflash</GroupName>
+          <GroupName>Middlewares/uDevice/sflash/src</GroupName>
+          <Files>
+            <File>
+              <FileName>ud_sflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\02_Middlewares\uDevice\sflash\core\ud_sflash.c</FilePath>
+            </File>
+            <File>
+              <FileName>flash_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\02_Middlewares\uDevice\sflash\adapter\flash_spi.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Middlewares/uDevice/sflash/drv</GroupName>
+          <Files>
+            <File>
+              <FileName>ud_w25qxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\02_Middlewares\uDevice\sflash\driver\ud_w25qxx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Middlewares/uDevice/sflash/bsp</GroupName>
         </Group>
         <Group>
           <GroupName>Middlewares/uDevice/sensor</GroupName>

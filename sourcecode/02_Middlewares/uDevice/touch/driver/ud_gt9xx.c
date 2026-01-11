@@ -66,12 +66,12 @@ static void gt9xx_set_irq_callback(const struct ud_touch_ops ** ops, touchpad_ir
     touchpad_ctrl_set_callback(self->ctrl_ops, irq_cb);
 }
 
-void gt9xx_ioctrl(const touch_ops_t ** ops, unsigned int cmd, void * arg)
+void ud_gt9xx_ioctrl(const touch_ops_t ** ops, unsigned int cmd, void * arg)
 {
 
 }
 
-void gt9xx_read_touch_data(const struct ud_touch_ops ** ops, struct ud_touch_point * points)
+void ud_gt9xx_read_touch_data(const struct ud_touch_ops ** ops, struct ud_touch_point * points)
 {
     uint8_t touch_buf[2 + GT9XX_MAX_TOUCH_POINTS * 8] = {0};
     const struct ud_gt9xx * self = (const struct ud_gt9xx *)ops;
