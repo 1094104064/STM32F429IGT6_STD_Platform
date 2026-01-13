@@ -25,6 +25,17 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+struct ud_st7735_ctx
+{
+    uint16_t width;
+    uint16_t height;
+    uint8_t  orientation;
+
+    uint32_t red_length;
+    uint32_t green_length;
+    uint32_t blue_length;
+};
+
 struct ud_st7735
 {
     const struct ud_display_ops * display_ops;

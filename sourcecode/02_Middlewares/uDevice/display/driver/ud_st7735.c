@@ -19,7 +19,7 @@ void ud_st7735_set_orientation(struct ud_display_ops ** ops, uint8_t orientation
     // Implementation for setting orientation on ST7735
 }
 
-void ud_st7735_put_pixel(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint32_t color)
+void ud_st7735_fill_point(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint32_t color)
 {
     const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
 
@@ -32,7 +32,7 @@ void ud_st7735_put_pixel(const struct ud_display_ops ** ops, uint16_t x, uint16_
     panel_spi_stop_transmit(self->spi_ops);
 }
 
-void ud_st7735_fill_area(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+void ud_st7735_fill_rectangle(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
     const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
 
@@ -46,7 +46,7 @@ void ud_st7735_fill_area(const struct ud_display_ops ** ops, uint16_t x, uint16_
 }
 
 
-void ud_st7735_transfer_pixels(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint16_t width, uint16_t height, const void * data)
+void ud_st7735_copy_area(const struct ud_display_ops ** ops, uint16_t x, uint16_t y, uint16_t width, uint16_t height, const void * data)
 {
     const struct ud_st7735 * self = (const struct ud_st7735 *)ops;
 
@@ -86,13 +86,13 @@ void ud_st7735_ioctl(const struct ud_display_ops ** ops, unsigned int cmd, void 
 }
 
 const struct ud_display_ops st7735_ops = {
-    .put_pixel                = ud_st7735_put_pixel,
-    .fill_area                = ud_st7735_fill_area,
-    .transfer_pixels          = ud_st7735_transfer_pixels,
-    .enable_backlight         = ud_st7735_enable_backlight,
-    .set_backlight_brightness = ud_st7735_set_backlight_brightness,
-    .get_backlight_brightness = ud_st7735_get_backlight_brightness,
-    .ioctl                    = ud_st7735_ioctl,
+    .fill_point                = ud_st7735_fill_point,
+    .fill_rectangle            = ud_st7735_fill_rectangle,
+    .copy_area                 = ud_st7735_copy_area,
+    .enable_backlight          = ud_st7735_enable_backlight,
+    .set_backlight_brightness  = ud_st7735_set_backlight_brightness,
+    .get_backlight_brightness  = ud_st7735_get_backlight_brightness,
+    .ioctl                     = ud_st7735_ioctl,
 };
 
 void ud_st7735_init(struct ud_st7735 * self, 

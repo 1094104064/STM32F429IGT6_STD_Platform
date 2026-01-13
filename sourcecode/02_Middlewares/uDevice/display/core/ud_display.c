@@ -59,17 +59,17 @@ void ud_display_prepare(struct ud_display * self)
         fn(self->ops);
 }
 
-void ud_display_draw_point(struct ud_display * self, uint16_t x, uint16_t y, uint32_t color)
+void ud_display_fill_point(struct ud_display * self, uint16_t x, uint16_t y, uint32_t color)
 {
-    display_put_pixel_fn_t fn = (*self->ops)->put_pixel;
+    display_fill_point_fn_t fn = (*self->ops)->fill_point;
 
     if(fn)
         fn(self->ops, x, y, color);
 }
 
-void ud_display_draw_block(struct ud_display * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
+void ud_display_fill_rectangle(struct ud_display * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color)
 {
-    display_fill_area_fn_t fn = (*self->ops)->fill_area;
+    display_fill_rectangle_fn_t fn = (*self->ops)->fill_rectangle;
 
     if(fn)
         fn(self->ops, x, y, width, height, color);
@@ -80,12 +80,12 @@ void ud_display_clear(struct ud_display * self, uint32_t color)
     uint32_t width = self->width;
     uint32_t height = self->height;
 
-    ud_display_draw_block(self, 0, 0, width, height, color);
+    ud_display_fill_rectangle(self, 0, 0, width, height, color);
 }
 
 void ud_display_flush(struct ud_display * self, uint16_t x, uint16_t y, uint16_t width, uint16_t height, const void * buffer)
 {
-    display_transfer_pixels_fn_t fn = (*self->ops)->transfer_pixels;
+    display_copy_area_fn_t fn = (*self->ops)->copy_area;
 
     if(fn)
         fn(self->ops, x, y, width, height, buffer);
@@ -157,7 +157,7 @@ void ud_display_draw_line(struct ud_display * self, uint16_t x1, uint16_t y1, ui
     err = dx - dy;
     
     while(1) {
-        ud_display_draw_point(self, x1, y1, color);
+        ud_display_fill_point(self, x1, y1, color);
         
         if(x1 == x2 && y1 == y2) {
             break;
@@ -182,10 +182,10 @@ void ud_display_draw_circle(struct ud_display * self, uint16_t x, uint16_t y, ui
 	int x_add = -radius, yadd = 0, err = 2 - 2 * radius, e2;
 	do {   
 
-		ud_display_draw_point(self, x - x_add, y + yadd, color);
-		ud_display_draw_point(self, x + x_add, y + yadd, color);
-		ud_display_draw_point(self, x + x_add, y - yadd, color);
-		ud_display_draw_point(self, x - x_add, y - yadd, color);
+		ud_display_fill_point(self, x - x_add, y + yadd, color);
+		ud_display_fill_point(self, x + x_add, y + yadd, color);
+		ud_display_fill_point(self, x + x_add, y - yadd, color);
+		ud_display_fill_point(self, x - x_add, y - yadd, color);
 
 		e2 = err;
 		if (e2 <= yadd) {
@@ -225,10 +225,10 @@ void ud_display_draw_ellipse(struct ud_display * self, int32_t x, int32_t y, int
         do {
             K = (float)(rad1/rad2);
 
-            ud_display_draw_point(self, x - x_add, y + (uint16_t)(y_add / K), color);
-            ud_display_draw_point(self, x + x_add, y + (uint16_t)(y_add / K), color);
-            ud_display_draw_point(self, x + x_add, y - (uint16_t)(y_add / K), color);
-            ud_display_draw_point(self, x - x_add, y - (uint16_t)(y_add / K), color);
+            ud_display_fill_point(self, x - x_add, y + (uint16_t)(y_add / K), color);
+            ud_display_fill_point(self, x + x_add, y + (uint16_t)(y_add / K), color);
+            ud_display_fill_point(self, x + x_add, y - (uint16_t)(y_add / K), color);
+            ud_display_fill_point(self, x - x_add, y - (uint16_t)(y_add / K), color);
 
             e2 = err;
             if (e2 <= y_add) {
@@ -246,10 +246,10 @@ void ud_display_draw_ellipse(struct ud_display * self, int32_t x, int32_t y, int
         do { 
             K = (float)(rad2/rad1);
 
-            ud_display_draw_point(self, x - (uint16_t)(x_add / K), y + y_add, color);
-            ud_display_draw_point(self, x + (uint16_t)(x_add / K), y + y_add, color);
-            ud_display_draw_point(self, x + (uint16_t)(x_add / K), y - y_add, color);
-            ud_display_draw_point(self, x - (uint16_t)(x_add / K), y - y_add, color);
+            ud_display_fill_point(self, x - (uint16_t)(x_add / K), y + y_add, color);
+            ud_display_fill_point(self, x + (uint16_t)(x_add / K), y + y_add, color);
+            ud_display_fill_point(self, x + (uint16_t)(x_add / K), y - y_add, color);
+            ud_display_fill_point(self, x - (uint16_t)(x_add / K), y - y_add, color);
 
             e2 = err;
             if (e2 <= x_add) {
@@ -270,23 +270,23 @@ void ud_display_draw_arc(struct ud_display * self, uint16_t x0, uint16_t y0, uin
     
     while(x <= y) {
         if(start_angle <= 45 && end_angle >= 45) {
-            ud_display_draw_point(self, x0 + x, y0 + y, color);
-            ud_display_draw_point(self, x0 - x, y0 + y, color);
+            ud_display_fill_point(self, x0 + x, y0 + y, color);
+            ud_display_fill_point(self, x0 - x, y0 + y, color);
         }
         
         if(start_angle <= 135 && end_angle >= 135) {
-            ud_display_draw_point(self, x0 + y, y0 + x, color);
-            ud_display_draw_point(self, x0 - y, y0 + x, color);
+            ud_display_fill_point(self, x0 + y, y0 + x, color);
+            ud_display_fill_point(self, x0 - y, y0 + x, color);
         }
         
         if(start_angle <= 225 && end_angle >= 225) {
-            ud_display_draw_point(self, x0 - x, y0 - y, color);
-            ud_display_draw_point(self, x0 + x, y0 - y, color);
+            ud_display_fill_point(self, x0 - x, y0 - y, color);
+            ud_display_fill_point(self, x0 + x, y0 - y, color);
         }
         
         if(start_angle <= 315 && end_angle >= 315) {
-            ud_display_draw_point(self, x0 - y, y0 - x, color);
-            ud_display_draw_point(self, x0 + y, y0 - x, color);
+            ud_display_fill_point(self, x0 - y, y0 - x, color);
+            ud_display_fill_point(self, x0 + y, y0 - x, color);
         }
         
         if(d < 0) {
