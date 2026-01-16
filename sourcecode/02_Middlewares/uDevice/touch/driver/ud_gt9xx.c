@@ -54,11 +54,6 @@ static void gt9xx_get_product_id(uint32_t * id)
 
 }
 
-static void gt9xx_get_info()
-{
-    
-}
-
 static void gt9xx_set_irq_callback(const struct ud_touch_ops ** ops, touchpad_irq_callback_t irq_cb)
 {
     const struct ud_gt9xx * self = (const struct ud_gt9xx *)ops;
@@ -68,13 +63,24 @@ static void gt9xx_set_irq_callback(const struct ud_touch_ops ** ops, touchpad_ir
 
 void ud_gt9xx_ioctrl(const touch_ops_t ** ops, unsigned int cmd, void * arg)
 {
-
+    switch(cmd) {
+        case GT9XX_IOCTL_GET_PRODUCT_ID:
+            gt9xx_get_product_id((uint32_t *)arg);
+            break;
+        case GT9XX_IOCTL_SET_IRQ_CALLBACK:
+            gt9xx_set_irq_callback(ops, (touchpad_irq_callback_t)arg);
+            break;
+        case GT9XX_IOCTL_RESET:
+            gt9xx_reset(ops);
+            break;
+        default:
+            break;
+    }
 }
 
 void ud_gt9xx_read_touch_data(const struct ud_touch_ops ** ops, struct ud_touch_point * points)
 {
     uint8_t touch_buf[2 + GT9XX_MAX_TOUCH_POINTS * 8] = {0};
-    const struct ud_gt9xx * self = (const struct ud_gt9xx *)ops;
 
     gt9xx_read_reg(ops, GT9XX_READ_STATUS, 1, touch_buf);
 
@@ -104,3 +110,4 @@ void ud_gt9xx_read_touch_data(const struct ud_touch_ops ** ops, struct ud_touch_
         }
     }
 }
+

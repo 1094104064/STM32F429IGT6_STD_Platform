@@ -30,7 +30,7 @@ static void i2c_delay(struct ud_i2c_bit * i2c)
     ops->delay_us(2);
 }
 
-static void i2c_start(struct ud_i2c_bit * i2c)
+void i2c_start(struct ud_i2c_bit * i2c)
 {
     const struct ud_i2c_bit_ops * ops = i2c->ops;
 
@@ -45,7 +45,7 @@ static void i2c_start(struct ud_i2c_bit * i2c)
     i2c_delay(i2c);
 }
 
-static void i2c_stop(struct ud_i2c_bit * i2c)
+void i2c_stop(struct ud_i2c_bit * i2c)
 {
     const struct ud_i2c_bit_ops * ops = i2c->ops;
 
@@ -59,7 +59,7 @@ static void i2c_stop(struct ud_i2c_bit * i2c)
     i2c_delay(i2c);
 }
 
-static uint8_t i2c_wait_ack(struct ud_i2c_bit * i2c)
+uint8_t i2c_wait_ack(struct ud_i2c_bit * i2c)
 {
     const struct ud_i2c_bit_ops * ops = i2c->ops;
     uint8_t ack;
@@ -79,7 +79,7 @@ static uint8_t i2c_wait_ack(struct ud_i2c_bit * i2c)
     return ack;
 }
 
-static uint8_t i2c_write_byte(struct ud_i2c_bit * i2c, uint8_t byte)
+uint8_t i2c_write_byte(struct ud_i2c_bit * i2c, uint8_t byte)
 {
     const struct ud_i2c_bit_ops * ops = i2c->ops;
 
@@ -105,7 +105,7 @@ static uint8_t i2c_write_byte(struct ud_i2c_bit * i2c, uint8_t byte)
     return 0;
 }
 
-static uint8_t i2c_read_byte(struct ud_i2c_bit * i2c, uint8_t ack)
+uint8_t i2c_read_byte(struct ud_i2c_bit * i2c, uint8_t ack)
 {
     const struct ud_i2c_bit_ops * ops = i2c->ops;
     uint8_t byte = 0;
@@ -146,7 +146,7 @@ static uint8_t i2c_read_byte(struct ud_i2c_bit * i2c, uint8_t ack)
     return byte;
 }
 
-static uint8_t i2c_send_ack_or_nack(struct ud_i2c_bit * i2c, uint8_t ack)
+uint8_t i2c_send_ack_or_nack(struct ud_i2c_bit * i2c, uint8_t ack)
 {
     const struct ud_i2c_bit_ops * ops = i2c->ops;
 

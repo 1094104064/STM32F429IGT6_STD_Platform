@@ -40,7 +40,7 @@ static void w25qxx_wait_busy(const struct ud_sflash_ops ** ops)
     flash_spi_deselect_chip(self->spi_ops);
 }
 
-void ud_w25qxx_get_jedec_id(const const struct ud_sflash_ops ** ops, uint32_t * jedec_id)
+void ud_w25qxx_get_jedec_id(const struct ud_sflash_ops ** ops, uint32_t * jedec_id)
 {
     const struct ud_w25qxx * self = (const struct ud_w25qxx *)ops;
     uint8_t tx_data[4] = {W25QXX_READ_DEVICE_ID_CMD, 0, 0, 0};

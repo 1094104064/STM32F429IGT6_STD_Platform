@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F429_439xx,</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\sourcecode\05_Core;..\..\sourcecode\05_Core\CMSIS\Include;..\..\sourcecode\05_Core\CMSIS\Device\ST\STM32F4xx\Include;..\..\sourcecode\05_Core\STM32F4xx_StdPeriph_Driver\inc;..\..\sourcecode\04_Bsp;..\..\sourcecode\03_Common\mm;..\..\sourcecode\03_Common\utils;..\..\sourcecode\02_Middlewares\uDevice</IncludePath>
+              <IncludePath>..\..\sourcecode\05_Core\CMSIS\Include;..\..\sourcecode\05_Core\CMSIS\Device\ST\STM32F4xx\Include;..\..\sourcecode\05_Core\STM32F4xx_StdPeriph_Driver\inc;..\..\sourcecode\04_Bsp;..\..\sourcecode\03_Common\mm;..\..\sourcecode\03_Common\utils;..\..\sourcecode\02_Middlewares\uDevice</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -560,7 +560,14 @@
           <GroupName>Middlewares/uDevice/sflash/bsp</GroupName>
         </Group>
         <Group>
-          <GroupName>Middlewares/uDevice/sensor</GroupName>
+          <GroupName>Middlewares/uDevice/sensor/src</GroupName>
+          <Files>
+            <File>
+              <FileName>ud_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\02_Middlewares\uDevice\sensor\core\ud_sensor.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Common/mm</GroupName>
@@ -680,16 +687,6 @@
               <FileName>bsp_tick.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\sourcecode\04_Bsp\bsp_tick.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Core/ISR</GroupName>
-          <Files>
-            <File>
-              <FileName>stm32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\sourcecode\05_Core\ISR\stm32f4xx_it.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -911,6 +908,11 @@
         <Group>
           <GroupName>Core/CMSIS</GroupName>
           <Files>
+            <File>
+              <FileName>stm32f4xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\sourcecode\05_Core\CMSIS\Device\ST\STM32F4xx\Source\stm32f4xx_it.c</FilePath>
+            </File>
             <File>
               <FileName>system_stm32f4xx.c</FileName>
               <FileType>1</FileType>

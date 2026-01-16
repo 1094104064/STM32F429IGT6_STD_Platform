@@ -56,7 +56,11 @@ struct ud_gt9xx
 /**********************
  *      TYPEDEFS
  **********************/
- 
+typedef enum {
+    GT9XX_IOCTL_GET_PRODUCT_ID = 0,
+    GT9XX_IOCTL_SET_IRQ_CALLBACK,
+    GT9XX_IOCTL_RESET,
+} gt9xx_ioctl_cmd_t;
 /**********************
 *  GLOBAL PROTOTYPES
  **********************/

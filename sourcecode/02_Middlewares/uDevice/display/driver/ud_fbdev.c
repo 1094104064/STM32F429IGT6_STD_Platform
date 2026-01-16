@@ -3,7 +3,7 @@
 
 void ud_fbdev_prepare(const struct ud_display_ops ** ops)
 {
-    const struct ud_fbdev * self = (const struct ud_fbdev *)ops;
+
 
 }
 
@@ -39,29 +39,31 @@ void ud_fbdev_copy_area(const struct ud_display_ops ** ops, uint16_t x, uint16_t
 void ud_fbdev_enable_backlight(const struct ud_display_ops ** ops, bool state)
 {
     const struct ud_fbdev * self = (const struct ud_fbdev *)ops;
+
+    panel_backlight_enable(self->backlight_ops, state);
 }
 
 void ud_fbdev_set_backlight_brightness(const struct ud_display_ops ** ops, uint8_t brightness)
 {
     const struct ud_fbdev * self = (const struct ud_fbdev *)ops;
+
+    panel_backlight_set_brightness(self->backlight_ops, brightness);
 }
 
 void ud_fbdev_get_backlight_brightness(const struct ud_display_ops ** ops, uint8_t * brightness)
 {
     const struct ud_fbdev * self = (const struct ud_fbdev *)ops;
+
+    panel_backlight_get_brightness(self->backlight_ops, brightness);
 }
 
 void ud_fbdev_ioctl(const struct ud_display_ops ** ops, unsigned int cmd, void * arg)
 {
-    const struct ud_fbdev * self = (const struct ud_fbdev *)ops;
+
 }
 
 
 
-static void ud_fbdev_register()
-{
-    
-}
 
 const struct ud_fbdev_var fbdev_var =
 {
